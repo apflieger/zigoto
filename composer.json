@@ -20,7 +20,9 @@
         "friendsofsymfony/user-bundle": "~1.3"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "phpunit/phpunit": "5.0.*",
+        "phpunit/php-code-coverage": "dev-master#b8436b000263f6d72fbad1d36890e247ce84857e"
     },
     "scripts": {
         "post-install-cmd": [
