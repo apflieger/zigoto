@@ -21,8 +21,8 @@ class RegisterEleveurTest extends WebTestCase
         $registrationForm = $client->request('GET', '/register/')->filter('form')->form();
 
         // Création d'un nouvel utilisateur
-        $registrationForm['fos_user_registration_form[username]'] = 'test';
-        $registrationForm['fos_user_registration_form[email]'] = 'test@gizoto.com';
+        $registrationForm['fos_user_registration_form[username]'] = 'RegisterEleveurTest';
+        $registrationForm['fos_user_registration_form[email]'] = 'RegisterEleveurTest@gizoto.com';
         $registrationForm['fos_user_registration_form[plainPassword][first]'] = 'test';
         $registrationForm['fos_user_registration_form[plainPassword][second]'] = 'test';
 
@@ -33,5 +33,19 @@ class RegisterEleveurTest extends WebTestCase
 
         // On est connecté sur ce nouvel utilisateur et on a le role ROLE_ELEVEUR
         $this->assertTrue($client->getContainer()->get('security.authorization_checker')->isGranted('ROLE_ELEVEUR'));
+
+        /**
+         * @var \Doctrine\DBAL\Connection $conn
+         */
+        $conn = $client->getContainer()->get('database_connection');
+
+        /**
+         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+         */
+        $doctrine = $client->getContainer()->get('doctrine');
+
+        $testUser = $doctrine->getRepository('AppBundle:User')->findOneBy(['username' => 'RegisterEleveurTest']);
+        $doctrine->getManager()->remove($testUser);
+        $doctrine->getManager()->flush();
     }
 }
