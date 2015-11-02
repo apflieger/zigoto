@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -17,9 +18,10 @@ class DefaultController extends Controller
          */
         $authorizationChecker = $this->get('security.authorization_checker');
 
-        if (!$authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED'))
+        if (!$authorizationChecker->isGranted('ROLE_ELEVEUR'))
             return $this->render('index.html.twig');
-
+        else
+            return new Response('Work in progress');
 
     }
 }

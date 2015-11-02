@@ -25,6 +25,5 @@ class User extends \FOS\UserBundle\Entity\User
     public function __construct()
     {
         parent::__construct();
-        $this->addRole('ROLE_ELEVEUR');
     }
 }

@@ -24,24 +24,23 @@ class UserUtils
     {
         $registrationForm = $client->request('GET', '/register/')->filter('form')->form();
 
+        $username = $test->getName() . rand();
         // Création d'un nouvel utilisateur
-        $registrationForm['fos_user_registration_form[username]'] = $test->getName();
-        $registrationForm['fos_user_registration_form[email]'] = $test->getName() . '@gizoto.com';
+        $registrationForm['fos_user_registration_form[username]'] = $username;
+        $registrationForm['fos_user_registration_form[email]'] = $username . '@gizoto.com';
         $registrationForm['fos_user_registration_form[plainPassword][first]'] = 'test';
         $registrationForm['fos_user_registration_form[plainPassword][second]'] = 'test';
 
         $client->submit($registrationForm);
-        return $client->getContainer()->get('security.context')->getToken()->getUser();
-    }
-
-    public static function delete(Client $client, User $user){
         /**
-         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+         * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
          */
-        $doctrine = $client->getContainer()->get('doctrine');
+        $tokenStorage = $client->getContainer()->get('security.token_storage');
 
-        $doctrine->getManager()->remove($user);
-        $doctrine->getManager()->flush();
+        $user = $tokenStorage->getToken()->getUser();
+
+        if ($user === 'anon.')
+            throw new \Exception("Creation du user a échouée : " . $test->getName());
+        return $user;
     }
-
 }

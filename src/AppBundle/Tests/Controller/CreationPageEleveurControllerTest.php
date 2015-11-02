@@ -9,6 +9,7 @@
 namespace AppBundle\Tests\Security;
 
 
+use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use AppBundle\Tests\RequireLogin;
@@ -31,6 +32,20 @@ class CreationPageEleveurControllerTest  extends WebTestCase
 
     public function testNouvelEleveur()
     {
+        $client = static::createClient();
+        $user = UserUtils::create($client, $this);
 
+        $this->assertFalse($user->hasRole('ROLE_ELEVEUR'));
+        $crawler = $client->request('GET', '/');
+        $creationPageEleveurForm = $crawler->filter('#creation_page-eleveur')->form();
+        $client->submit($creationPageEleveurForm);
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        /**
+         * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
+         */
+        $tokenStorage = $client->getContainer()->get('security.token_storage');
+        $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole('ROLE_ELEVEUR'));
     }
 }
