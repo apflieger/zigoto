@@ -4,18 +4,22 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-        ));
+        /**
+         * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker $authorizationChecker
+         */
+        $authorizationChecker = $this->get('security.authorization_checker');
+
+        if (!$authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED'))
+            return $this->render('index.html.twig');
+
+
     }
 }
