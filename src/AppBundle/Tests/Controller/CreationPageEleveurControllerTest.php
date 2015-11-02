@@ -9,11 +9,14 @@
 namespace AppBundle\Tests\Security;
 
 
-use AppBundle\Tests\UserUtils;
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use AppBundle\Tests\RequireLogin;
+use AppBundle\Tests\InjectClient;
 
 class CreationPageEleveurControllerTest  extends WebTestCase
 {
+
     public function testNonConnecte()
     {
         $client = static::createClient();
