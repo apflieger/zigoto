@@ -14,6 +14,6 @@ class DefaultControllerTest extends WebTestCase
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertContains('Créez votre page éleveur', $crawler->filter('h1')->text());
-        $this->assertEquals(1, $crawler->filter('#creation_page-eleveur')->count());
+        $this->assertEquals(1, $crawler->filter('#creation-page-eleveur')->count());
     }
 }

@@ -24,7 +24,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
 
         $crawler = $client->request('GET', '/');
 
-        $creationPageEleveurForm = $crawler->filter('#creation_page-eleveur')->form();
+        $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
         $client->submit($creationPageEleveurForm);
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertStringEndsWith('/login', $client->getResponse()->headers->get('Location'));
@@ -37,7 +37,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
 
         $this->assertFalse($user->hasRole('ROLE_ELEVEUR'));
         $crawler = $client->request('GET', '/');
-        $creationPageEleveurForm = $crawler->filter('#creation_page-eleveur')->form();
+        $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
         $client->submit($creationPageEleveurForm);
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
