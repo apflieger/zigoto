@@ -40,12 +40,18 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
         $client->submit($creationPageEleveurForm);
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         /**
          * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
          */
         $tokenStorage = $client->getContainer()->get('security.token_storage');
         $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole('ROLE_ELEVEUR'));
+
+        // Redirection vers la home de l'éleveur
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $client->followRedirect();
+        $this->assertEquals('/', $client->getRequest()->getRequestUri());
+        $this->assertEquals('Work in progress', $client->getCrawler()->text());
+        //$this->assertEquals('Bonjour '.$user->getUsername(), $client->followRedirect()->filter('h1')->text());
     }
 }

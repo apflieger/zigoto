@@ -9,16 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/", name="index")
      */
     public function indexAction()
     {
         /**
-         * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker $authorizationChecker
+         * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
          */
-        $authorizationChecker = $this->get('security.authorization_checker');
+        $tokenStorage = $this->container->get('security.token_storage');
 
-        if (!$authorizationChecker->isGranted('ROLE_ELEVEUR'))
+        $user = $tokenStorage->getToken()->getUser();
+        if ($user == 'anon.' || !$user->hasRole('ROLE_ELEVEUR'))
             return $this->render('index.html.twig');
         else
             return new Response('Work in progress');

@@ -39,6 +39,6 @@ class CreationPageEleveurController extends Controller
         $doctrine = $this->container->get('doctrine');
 
         $doctrine->getManager()->flush();
-        return new Response("woot");
+        return $this->redirectToRoute('index');
     }
 }
