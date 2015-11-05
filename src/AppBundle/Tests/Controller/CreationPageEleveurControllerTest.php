@@ -9,6 +9,7 @@
 namespace AppBundle\Tests\Security;
 
 
+use AppBundle\Entity\ERole;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -35,7 +36,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $client = static::createClient();
         $user = UserUtils::create($client, $this);
 
-        $this->assertFalse($user->hasRole('ROLE_ELEVEUR'));
+        $this->assertFalse($user->hasRole(ERole::ELEVEUR));
         $crawler = $client->request('GET', '/');
         $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
         $client->submit($creationPageEleveurForm);
@@ -45,7 +46,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
          * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
          */
         $tokenStorage = $client->getContainer()->get('security.token_storage');
-        $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole('ROLE_ELEVEUR'));
+        $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole(ERole::ELEVEUR));
 
         // Redirection vers la home de l'éleveur
         $this->assertEquals(302, $client->getResponse()->getStatusCode());

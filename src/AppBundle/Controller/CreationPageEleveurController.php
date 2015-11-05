@@ -8,6 +8,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,7 +32,7 @@ class CreationPageEleveurController extends Controller
          * @var User $user
          */
         $user = $tokenStorage->getToken()->getUser();
-        $user->addRole('ROLE_ELEVEUR');
+        $user->addRole(ERole::ELEVEUR);
 
         /**
          * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine

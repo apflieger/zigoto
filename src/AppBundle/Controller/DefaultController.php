@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,7 +21,7 @@ class DefaultController extends Controller
         $tokenStorage = $this->container->get('security.token_storage');
 
         $user = $tokenStorage->getToken()->getUser();
-        if ($user == 'anon.' || !$user->hasRole('ROLE_ELEVEUR'))
+        if ($user == 'anon.' || !$user->hasRole(ERole::ELEVEUR))
             return $this->render('index.html.twig');
         else
             return $this->render('index-eleveur.html.twig', ['username' => $user->getUserName()]);
