@@ -51,7 +51,6 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $client->followRedirect();
         $this->assertEquals('/', $client->getRequest()->getRequestUri());
-        $this->assertEquals('Work in progress', $client->getCrawler()->text());
-        //$this->assertEquals('Bonjour '.$user->getUsername(), $client->followRedirect()->filter('h1')->text());
+        $this->assertEquals('Bonjour '.$user->getUsername(), $client->getCrawler()->filter('h1')->text());
     }
 }
