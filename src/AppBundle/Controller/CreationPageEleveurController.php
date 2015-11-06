@@ -9,10 +9,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ERole;
+use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurReflog;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CreationPageEleveurController extends Controller
@@ -21,7 +24,7 @@ class CreationPageEleveurController extends Controller
      * @Route("/creation-page-eleveur")
      * @Method("POST")
      */
-    public function creationPageEleveurAction()
+    public function creationPageEleveurAction(Request $request)
     {
         /**
          * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
@@ -39,7 +42,26 @@ class CreationPageEleveurController extends Controller
          */
         $doctrine = $this->container->get('doctrine');
 
+        //Création de la page eleveur
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setOwner($user);
+        $pageEleveur->setUrl($request->request->all()['elevage']['nom']);
+
+        $doctrine->getManager()->persist($pageEleveur);
+
+        //Ajout de la 1ere entrée dans le reflog de cette page
+        $reflog = new PageEleveurReflog();
+        $reflog->setUrl($pageEleveur->getUrl());
+        $reflog->setDateTime(new \DateTime());
+        $reflog->setLogEntry(0);
+        $reflog->setPageEleveur($pageEleveur);
+        $reflog->setUser($user);
+        $reflog->setCommentaire("Création de la page");
+
+        $doctrine->getManager()->persist($reflog);
+
         $doctrine->getManager()->flush();
-        return $this->redirectToRoute('index');
+
+        return $this->redirectToRoute('pageEleveur', ['eleveurURL' => $pageEleveur->getUrl()]);
     }
 }

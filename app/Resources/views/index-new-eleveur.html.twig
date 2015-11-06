@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Bonjour {{ username }}</h1>
+    <h2>Créez votre page éleveur</h2>
+    <form id="creation-page-eleveur" action="/creation-page-eleveur" method="post">
+        <label for="elevage-nom">Nom de votre élevage : </label>
+        <input name="elevage[nom]" id="elevage-nom" type="text"/>
+        <input type="submit" value="Créer ma page éleveur">
+    </form>
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}

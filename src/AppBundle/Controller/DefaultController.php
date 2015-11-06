@@ -21,10 +21,11 @@ class DefaultController extends Controller
         $tokenStorage = $this->container->get('security.token_storage');
 
         $user = $tokenStorage->getToken()->getUser();
-        if ($user == 'anon.' || !$user->hasRole(ERole::ELEVEUR))
+        if ($user == 'anon.')
             return $this->render('index.html.twig');
-        else
-            return $this->render('index-eleveur.html.twig', ['username' => $user->getUserName()]);
+        else if (!$user->hasRole(ERole::ELEVEUR))
+            return $this->render('index-new-eleveur.html.twig', ['username' => $user->getUserName()]);
+        else return $this->render('index-eleveur.html.twig', ['username' => $user->getUserName()]);
 
     }
 }
