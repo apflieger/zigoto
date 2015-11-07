@@ -19,20 +19,13 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('a[href="/login"]')->count());
     }
 
-
-    public function testIndexEleveur()
+    public function testIndexNewEleveur()
     {
         $client = static::createClient();
-        $user = UserUtils::create($client, $this);
+        UserUtils::create($client, $this);
 
-        $this->assertFalse($user->hasRole(ERole::ELEVEUR));
         $crawler = $client->request('GET', '/');
-        $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
-        $nomElevage = "testNouvelEleveur" . rand();
-        $creationPageEleveurForm['elevage[nom]'] = $nomElevage;
-        $client->submit($creationPageEleveurForm);
-
-        // Redirection vers la home de l'éleveur
-        $this->assertEquals('Bonjour '.$user->getUsername(), $client->request('GET', '/')->filter('h1')->text());
+        $this->assertCount(1, $crawler->filter('form#creation-page-eleveur'));
     }
+
 }

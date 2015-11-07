@@ -24,6 +24,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $user = UserUtils::create($client, $this);
 
         $this->assertFalse($user->hasRole(ERole::ELEVEUR));
+
         $crawler = $client->request('GET', '/');
         $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
         $nomElevage = 'pageEleveur_' . $user->getUsername();
@@ -40,5 +41,6 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $client->followRedirect();
         $this->assertEquals('/' . $nomElevage, $client->getRequest()->getRequestUri());
+        $this->assertEquals('Bonjour '.$user->getUsername(), $client->request('GET', '/')->filter('h1')->text());
     }
 }

@@ -19,6 +19,7 @@ class UserUtils
      * @param Client $client
      * @param WebTestCase $test
      * @return User
+     * @throws \Exception
      */
     public static function create(Client $client, WebTestCase $test)
     {
