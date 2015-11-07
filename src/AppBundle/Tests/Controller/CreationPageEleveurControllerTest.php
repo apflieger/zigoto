@@ -43,4 +43,10 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $this->assertEquals('/' . $nomElevage, $client->getRequest()->getRequestUri());
         $this->assertEquals('Bonjour '.$user->getUsername(), $client->request('GET', '/')->filter('h1')->text());
     }
+
+    public function testAnonyme() {
+        $client = static::createClient();
+        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'testAnonyme']]);
+        $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
+    }
 }
