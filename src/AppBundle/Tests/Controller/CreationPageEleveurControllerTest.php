@@ -14,6 +14,7 @@ use AppBundle\Tests\InjectClient;
 use AppBundle\Tests\RequireLogin;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class CreationPageEleveurControllerTest  extends WebTestCase
@@ -44,9 +45,33 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $this->assertEquals('Bonjour '.$user->getUsername(), $client->request('GET', '/')->filter('h1')->text());
     }
 
-    public function testAnonyme() {
+    public function testAnonyme()
+    {
         $client = static::createClient();
         $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'testAnonyme']]);
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
+    }
+
+    public function testUnUserDeuxPages()
+    {
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'deuxiemePage']]);
+        $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
+        $this->assertEquals('Vous avez deja une page eleveur', $client->getResponse()->getContent());
+    }
+
+    public function testDeuxUserMemePage()
+    {
+        $client = static::createClient();
+        $pageEleveur1 = UserUtils::createNewEleveur($client, $this);
+
+        $user2 = UserUtils::create($client, $this);
+        //user2 utilise le meme nom que pageEleveur1
+        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => $pageEleveur1->getUrl()]]);
+
+        $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
+        $this->assertEquals('Une page eleveur du meme nom existe deja', $client->getResponse()->getContent());
     }
 }

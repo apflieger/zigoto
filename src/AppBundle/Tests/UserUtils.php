@@ -9,6 +9,7 @@
 namespace AppBundle\Tests;
 
 
+use AppBundle\Entity\PageEleveur;
 use FOS\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -43,5 +44,26 @@ class UserUtils
         if ($user === 'anon.')
             throw new \Exception("Creation du user a échouée : " . $test->getName());
         return $user;
+    }
+
+    public static function createNewEleveur(Client $client, WebTestCase $test)
+    {
+        $user = self::create($client, $test);
+        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'elevage_' . $user->getUsername()]]);
+
+        /**
+         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+         */
+        $doctrine = $client->getContainer()->get('doctrine');
+
+        /**
+         * @var PageEleveur $pageEleveur
+         */
+        $pageEleveur = $doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['owner' => $user]);
+
+        if (!$pageEleveur)
+            throw new \Exception('Création de la page eleveur a échoué');
+
+        return $pageEleveur;
     }
 }

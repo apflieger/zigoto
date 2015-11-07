@@ -27,25 +27,34 @@ class CreationPageEleveurController extends Controller
     public function creationPageEleveurAction(Request $request)
     {
         /**
+         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+         */
+        $doctrine = $this->container->get('doctrine');
+        $pageEleveurRepository = $doctrine->getRepository('AppBundle:PageEleveur');
+
+        $urlPageEleveur = $request->request->all()['elevage']['nom'];
+
+        if (count($pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
+            return new Response('Une page eleveur du meme nom existe deja', Response::HTTP_CONFLICT);
+
+        /**
          * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
          */
         $tokenStorage = $this->container->get('security.token_storage');
-
         /**
          * @var User $user
          */
         $user = $tokenStorage->getToken()->getUser();
-        $user->addRole(ERole::ELEVEUR);
 
-        /**
-         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-         */
-        $doctrine = $this->container->get('doctrine');
+        if (count($pageEleveurRepository->findBy(['owner' => $user])) > 0)
+            return new Response('Vous avez deja une page eleveur', Response::HTTP_CONFLICT);
+
+        $user->addRole(ERole::ELEVEUR);
 
         //Création de la page eleveur
         $pageEleveur = new PageEleveur();
         $pageEleveur->setOwner($user);
-        $pageEleveur->setUrl($request->request->all()['elevage']['nom']);
+        $pageEleveur->setUrl($urlPageEleveur);
 
         $doctrine->getManager()->persist($pageEleveur);
 

@@ -29,7 +29,8 @@ class PageEleveur
     private $url;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * Il ne peut y avoir qu'une page eleveur par utilisateur
+     * @ORM\OneToOne(targetEntity="User")
      * @var User
      */
     private $owner;
