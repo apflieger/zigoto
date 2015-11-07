@@ -24,11 +24,13 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $client = static::createClient();
         $user = UserUtils::create($client, $this);
 
+        // tant qu'il n'a pas créé sa page eleveur il n'a pas le ROLE_ELEVEUR
         $this->assertFalse($user->hasRole(ERole::ELEVEUR));
 
+        // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
         $crawler = $client->request('GET', '/');
         $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
-        $nomElevage = 'pageEleveur_' . $user->getUsername();
+        $nomElevage = 'elevage_' . $user->getUsername();
         $creationPageEleveurForm['elevage[nom]'] = $nomElevage;
         $client->submit($creationPageEleveurForm);
 
@@ -38,7 +40,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $tokenStorage = $client->getContainer()->get('security.token_storage');
         $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole(ERole::ELEVEUR));
 
-        // Redirection vers la home de l'éleveur
+        // Redirection vers sa page eleveur fraichement créé
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $client->followRedirect();
         $this->assertEquals('/' . $nomElevage, $client->getRequest()->getRequestUri());
@@ -68,6 +70,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $pageEleveur1 = UserUtils::createNewEleveur($client, $this);
 
         $user2 = UserUtils::create($client, $this);
+        
         //user2 utilise le meme nom que pageEleveur1
         $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => $pageEleveur1->getUrl()]]);
 

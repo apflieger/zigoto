@@ -25,6 +25,8 @@ class DefaultControllerTest extends WebTestCase
         UserUtils::create($client, $this);
 
         $crawler = $client->request('GET', '/');
+
+        // Quand l'utilisateur est connecté, on lui propose de créer sa page directement depuis la home
         $this->assertCount(1, $crawler->filter('form#creation-page-eleveur'));
     }
 
