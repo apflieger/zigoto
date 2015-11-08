@@ -36,6 +36,12 @@ class PageEleveur
     private $owner;
 
     /**
+     * @ORM\OneToOne(targetEntity="PageEleveurCommit")
+     * @var PageEleveurCommit
+     */
+    private $commit;
+
+    /**
      * @return int
      */
     public function getId()
@@ -72,5 +78,29 @@ class PageEleveur
         $this->owner = $owner;
     }
 
+    /**
+     * @return PageEleveurCommit
+     */
+    public function getCommit()
+    {
+        return $this->commit;
+    }
 
+    /**
+     * @param PageEleveurCommit $commit
+     */
+    public function setCommit(PageEleveurCommit $commit)
+    {
+        $this->commit = $commit;
+    }
+
+    public function getNom()
+    {
+        return $this->getCommit()->getNom();
+    }
+
+    public function getDescription()
+    {
+        return $this->getCommit()->getDescription();
+    }
 }

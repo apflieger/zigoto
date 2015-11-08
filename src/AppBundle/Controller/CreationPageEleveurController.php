@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\PageEleveurReflog;
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -32,9 +33,9 @@ class CreationPageEleveurController extends Controller
         $doctrine = $this->container->get('doctrine');
         $pageEleveurRepository = $doctrine->getRepository('AppBundle:PageEleveur');
 
-        $urlPageEleveur = $request->request->all()['elevage']['nom'];
+        $nomPageEleveur = $request->request->all()['elevage']['nom'];
 
-        if (count($pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
+        if (count($pageEleveurRepository->findBy(['url' => $nomPageEleveur])) > 0)
             return new Response('Une page eleveur du meme nom existe deja', Response::HTTP_CONFLICT);
 
         /**
@@ -54,9 +55,12 @@ class CreationPageEleveurController extends Controller
         //Création de la page eleveur
         $pageEleveur = new PageEleveur();
         $pageEleveur->setOwner($user);
-        $pageEleveur->setUrl($urlPageEleveur);
+        $pageEleveur->setUrl($nomPageEleveur);
 
-        $doctrine->getManager()->persist($pageEleveur);
+        $pageEleveurCommit = new PageEleveurCommit();
+        $pageEleveurCommit->setNom($nomPageEleveur);
+
+        $pageEleveur->setCommit($pageEleveurCommit);
 
         //Ajout de la 1ere entrée dans le reflog de cette page
         $reflog = new PageEleveurReflog();
@@ -67,6 +71,8 @@ class CreationPageEleveurController extends Controller
         $reflog->setUser($user);
         $reflog->setCommentaire("Création de la page");
 
+        $doctrine->getManager()->persist($pageEleveurCommit);
+        $doctrine->getManager()->persist($pageEleveur);
         $doctrine->getManager()->persist($reflog);
 
         $doctrine->getManager()->flush();

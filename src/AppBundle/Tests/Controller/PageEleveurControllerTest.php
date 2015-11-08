@@ -31,6 +31,6 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
 
-        $this->assertEquals($pageEleveur->getUrl(), $crawler->filter('h1')->text());
+        $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
     }
 }
