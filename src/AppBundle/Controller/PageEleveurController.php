@@ -35,6 +35,6 @@ class PageEleveurController extends Controller
         if (!$pageEleveur)
             throw $this->createNotFoundException();
 
-        return new Response("La belle page de " . $pageEleveur->getOwner()->getUsername());
+        return $this->render('page-eleveur.html.twig', ['pageEleveur' => $pageEleveur]);
     }
 }
