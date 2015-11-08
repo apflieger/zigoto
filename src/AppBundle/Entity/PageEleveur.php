@@ -24,7 +24,7 @@ class PageEleveur
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=120)
+     * @ORM\Column(type="string", length=120, unique=true)
      */
     private $url;
 

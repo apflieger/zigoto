@@ -9,6 +9,7 @@
 namespace AppBundle\Tests\Security;
 
 
+use AppBundle\Controller\CreationPageEleveurController;
 use AppBundle\Entity\ERole;
 use AppBundle\Tests\InjectClient;
 use AppBundle\Tests\RequireLogin;
@@ -30,7 +31,8 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
         $crawler = $client->request('GET', '/');
         $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
-        $nomElevage = 'elevage_' . $user->getUsername();
+        $rand = rand();
+        $nomElevage = 'Les Chartreux de Tatouine ' . $rand;
         $creationPageEleveurForm['elevage[nom]'] = $nomElevage;
         $client->submit($creationPageEleveurForm);
 
@@ -43,7 +45,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         // Redirection vers sa page eleveur fraichement créé
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $client->followRedirect();
-        $this->assertEquals('/' . $nomElevage, $client->getRequest()->getRequestUri());
+        $this->assertEquals('/les-chartreux-de-tatouine-' . $rand, $client->getRequest()->getRequestUri());
         $this->assertEquals('Bonjour '.$user->getUsername(), $client->request('GET', '/')->filter('h1')->text());
     }
 
@@ -69,12 +71,36 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $client = static::createClient();
         $pageEleveur1 = UserUtils::createNewEleveur($client, $this);
 
-        $user2 = UserUtils::create($client, $this);
+        // connexion avec un nouvel user
+        UserUtils::create($client, $this);
         
-        //user2 utilise le meme nom que pageEleveur1
+        //le 2eme user utilise le meme nom que pageEleveur1
         $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => $pageEleveur1->getUrl()]]);
 
         $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
         $this->assertEquals('Une page eleveur du meme nom existe deja', $client->getResponse()->getContent());
+    }
+
+    public function testConvertionUrl()
+    {
+        $controller = new CreationPageEleveurController();
+
+        // conservation des caractères de base
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', $controller->convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
+
+        // trim
+        $this->assertEquals('aaa', $controller->convertToUrl(' aaa '));
+
+        // to lowercase
+        $this->assertEquals('aaa', $controller->convertToUrl('AaA'));
+
+        // suppression des caractères spéciaux
+        $this->assertEquals('', $controller->convertToUrl('!?,.<>=&'));
+
+        // remplacement des caractères convertibles
+        $this->assertEquals('eureace', $controller->convertToUrl('€éàçè&'));
+
+        // espaces convertis en dash
+        $this->assertEquals('un-deux-trois', $controller->convertToUrl('un deux trois'));
     }
 }

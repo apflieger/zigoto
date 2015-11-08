@@ -35,7 +35,9 @@ class CreationPageEleveurController extends Controller
 
         $nomPageEleveur = $request->request->all()['elevage']['nom'];
 
-        if (count($pageEleveurRepository->findBy(['url' => $nomPageEleveur])) > 0)
+        $urlPageEleveur = $this->convertToUrl($nomPageEleveur);
+
+        if (count($pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
             return new Response('Une page eleveur du meme nom existe deja', Response::HTTP_CONFLICT);
 
         /**
@@ -55,7 +57,7 @@ class CreationPageEleveurController extends Controller
         //Création de la page eleveur
         $pageEleveur = new PageEleveur();
         $pageEleveur->setOwner($user);
-        $pageEleveur->setUrl($nomPageEleveur);
+        $pageEleveur->setUrl($urlPageEleveur);
 
         $pageEleveurCommit = new PageEleveurCommit();
         $pageEleveurCommit->setNom($nomPageEleveur);
@@ -78,5 +80,27 @@ class CreationPageEleveurController extends Controller
         $doctrine->getManager()->flush();
 
         return $this->redirectToRoute('pageEleveur', ['eleveurURL' => $pageEleveur->getUrl()]);
+    }
+
+    /**
+     * @param $str string
+     * @return string
+     */
+    public function convertToUrl($str)
+    {
+        // conversion de tous les caractères spéciaux vers de l'ascii
+        $ascii = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+
+        // suppression de tous les caractères qui ne sont pas des chiffres, lettres, ou "_+- "
+        $ascii = preg_replace("/[^a-zA-Z0-9\/_+ -]/", '', $ascii);
+
+        // lowercase
+        $ascii = strtolower($ascii);
+
+        // remplacement de tout ce qui n'est pas chiffres ou lettres par le séparateur '-'
+        $ascii = preg_replace("/[\/_+ -]+/", '-', $ascii);
+
+        // trim
+        return trim($ascii, '-');
     }
 }
