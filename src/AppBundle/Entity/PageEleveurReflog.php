@@ -60,6 +60,24 @@ class PageEleveurReflog
     private $commentaire;
 
     /**
+     * @param PageEleveur $pageEleveur
+     * @param User $user
+     * @param \DateTime $dateTime
+     * @param int $logEntry
+     * @param string $url
+     * @param string $commentaire
+     */
+    public function __construct(PageEleveur $pageEleveur, User $user, \DateTime $dateTime, $logEntry, $url, $commentaire)
+    {
+        $this->pageEleveur = $pageEleveur;
+        $this->user = $user;
+        $this->dateTime = $dateTime;
+        $this->logEntry = $logEntry;
+        $this->url = $url;
+        $this->commentaire = $commentaire;
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -75,11 +93,6 @@ class PageEleveurReflog
         return $this->pageEleveur;
     }
 
-    public function setPageEleveur(PageEleveur $pageEleveur)
-    {
-        $this->pageEleveur = $pageEleveur;
-    }
-
     /**
      * @return User
      */
@@ -88,22 +101,12 @@ class PageEleveurReflog
         return $this->user;
     }
 
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-    }
-
     /**
      * @return \DateTime
      */
     public function getDateTime()
     {
         return $this->dateTime;
-    }
-
-    public function setDateTime(\DateTime $dateTime)
-    {
-        $this->dateTime = $dateTime;
     }
 
     /**
@@ -115,14 +118,6 @@ class PageEleveurReflog
     }
 
     /**
-     * @param  int $logEntry
-     */
-    public function setLogEntry($logEntry)
-    {
-        $this->logEntry = $logEntry;
-    }
-
-    /**
      * @return string
      */
     public function getUrl()
@@ -131,26 +126,10 @@ class PageEleveurReflog
     }
 
     /**
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
-    /**
      * @return string
      */
     public function getCommentaire()
     {
         return $this->commentaire;
-    }
-
-    /**
-     * @param string $commentaire
-     */
-    public function setCommentaire($commentaire)
-    {
-        $this->commentaire = $commentaire;
     }
 }

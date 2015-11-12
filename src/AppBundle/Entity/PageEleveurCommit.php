@@ -41,6 +41,18 @@ class PageEleveurCommit
     private $parent;
 
     /**
+     * @param string $nom
+     * @param string $description
+     * @param PageEleveurCommit|null $parent
+     */
+    public function __construct($nom, $description, PageEleveurCommit $parent = null)
+    {
+        $this->nom = $nom;
+        $this->description = $description;
+        $this->parent = $parent;
+    }
+
+    /**
      * @return mixed
      */
     public function getNom()
@@ -49,34 +61,10 @@ class PageEleveurCommit
     }
 
     /**
-     * @param mixed $nom
-     */
-    public function setNom($nom)
-    {
-        $this->nom = $nom;
-    }
-
-    /**
      * @return mixed
      */
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * @param mixed $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @param mixed $parent
-     */
-    public function setParent($parent)
-    {
-        $this->parent = $parent;
     }
 }

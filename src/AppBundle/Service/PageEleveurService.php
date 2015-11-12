@@ -33,10 +33,10 @@ class PageEleveurService
     }
 
     /**
-     * @param $nomPageEleveur string
-     * @param $owner User
+     * @param string $nomPageEleveur
+     * @param User $owner
      * @return PageEleveur
-     * @throws \Exception
+     * @throws PageEleveurException
      */
     public function create($nomPageEleveur, User $owner)
     {
@@ -57,19 +57,12 @@ class PageEleveurService
         $pageEleveur->setOwner($owner);
         $pageEleveur->setUrl($urlPageEleveur);
 
-        $pageEleveurCommit = new PageEleveurCommit();
-        $pageEleveurCommit->setNom($nomPageEleveur);
+        $pageEleveurCommit = new PageEleveurCommit($nomPageEleveur, '', NULL);
 
         $pageEleveur->setCommit($pageEleveurCommit);
 
         //Ajout de la 1ere entrée dans le reflog de cette page
-        $reflog = new PageEleveurReflog();
-        $reflog->setUrl($pageEleveur->getUrl());
-        $reflog->setDateTime(new \DateTime());
-        $reflog->setLogEntry(0);
-        $reflog->setPageEleveur($pageEleveur);
-        $reflog->setUser($owner);
-        $reflog->setCommentaire("Création de la page");
+        $reflog = new PageEleveurReflog($pageEleveur, $owner, new \DateTime(), 0, $pageEleveur->getUrl(), 'Création de la page');
 
         $this->doctrine->getManager()->persist($pageEleveurCommit);
         $this->doctrine->getManager()->persist($pageEleveur);
