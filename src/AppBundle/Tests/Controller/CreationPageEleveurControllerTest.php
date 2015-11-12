@@ -83,24 +83,25 @@ class CreationPageEleveurControllerTest  extends WebTestCase
 
     public function testConvertionUrl()
     {
-        $controller = new CreationPageEleveurController();
+        $client = static::createClient();
+        $pageEleveurService = $client->getContainer()->get('page_eleveur');
 
         // conservation des caractères de base
-        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', $controller->convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', $pageEleveurService->convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
 
         // trim
-        $this->assertEquals('aaa', $controller->convertToUrl(' aaa '));
+        $this->assertEquals('aaa', $pageEleveurService->convertToUrl(' aaa '));
 
         // to lowercase
-        $this->assertEquals('aaa', $controller->convertToUrl('AaA'));
+        $this->assertEquals('aaa', $pageEleveurService->convertToUrl('AaA'));
 
         // suppression des caractères spéciaux
-        $this->assertEquals('', $controller->convertToUrl('!?,.<>=&'));
+        $this->assertEquals('', $pageEleveurService->convertToUrl('!?,.<>=&'));
 
         // remplacement des caractères convertibles
-        $this->assertEquals('eureace', $controller->convertToUrl('€éàçè&'));
+        $this->assertEquals('eureace', $pageEleveurService->convertToUrl('€éàçè&'));
 
         // espaces convertis en dash
-        $this->assertEquals('un-deux-trois', $controller->convertToUrl('un deux trois'));
+        $this->assertEquals('un-deux-trois', $pageEleveurService->convertToUrl('un deux trois'));
     }
 }
