@@ -48,7 +48,7 @@ class CreationPageEleveurController extends Controller
 
         try
         {
-            $pageEleveur = $pageEleveurService->createPageEleveur($nomPageEleveur, $user);
+            $pageEleveur = $pageEleveurService->create($nomPageEleveur, $user);
         } catch (PageEleveurException $e)
         {
             return new Response($e->getMessage(), Response::HTTP_CONFLICT);

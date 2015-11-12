@@ -38,11 +38,11 @@ class PageEleveurService
      * @return PageEleveur
      * @throws \Exception
      */
-    public function createPageEleveur($nomPageEleveur, User $owner)
+    public function create($nomPageEleveur, User $owner)
     {
         $pageEleveurRepository = $this->doctrine->getRepository('AppBundle:PageEleveur');
 
-        $urlPageEleveur = $this->convertToUrl($nomPageEleveur);
+        $urlPageEleveur = self::convertToUrl($nomPageEleveur);
 
         if (count($pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
             throw new PageEleveurException('Une page eleveur du meme nom existe deja');
@@ -85,7 +85,7 @@ class PageEleveurService
      * @param $str string
      * @return string
      */
-    public function convertToUrl($str)
+    public static function convertToUrl($str)
     {
         // conversion de tous les caractères spéciaux vers de l'ascii
         $ascii = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
@@ -102,4 +102,19 @@ class PageEleveurService
         // trim
         return trim($ascii, '-');
     }
+
+    /**
+     * @param $url string
+     * @return PageEleveur
+     */
+    public function getForUrl($url)
+    {
+        /**
+         * @var PageEleveur $pageEleveur
+         */
+        $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $url]);
+
+        return $pageEleveur;
+    }
+
 }

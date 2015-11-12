@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Service\PageEleveurService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,14 +24,11 @@ class PageEleveurController extends Controller
     public function pageEleveurAction($eleveurURL)
     {
         /**
-         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+         * @var PageEleveurService $pageEleveurService
          */
-        $doctrine = $this->container->get('doctrine');
+        $pageEleveurService = $this->container->get('page_eleveur');
 
-        /**
-         * @var PageEleveur $pageEleveur
-         */
-        $pageEleveur = $doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $eleveurURL]);
+        $pageEleveur = $pageEleveurService->getForUrl($eleveurURL);
 
         if (!$pageEleveur)
             throw $this->createNotFoundException();

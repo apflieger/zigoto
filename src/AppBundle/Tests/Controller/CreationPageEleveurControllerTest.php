@@ -11,6 +11,7 @@ namespace AppBundle\Tests\Security;
 
 use AppBundle\Controller\CreationPageEleveurController;
 use AppBundle\Entity\ERole;
+use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\InjectClient;
 use AppBundle\Tests\RequireLogin;
 use AppBundle\Tests\UserUtils;
@@ -83,25 +84,22 @@ class CreationPageEleveurControllerTest  extends WebTestCase
 
     public function testConvertionUrl()
     {
-        $client = static::createClient();
-        $pageEleveurService = $client->getContainer()->get('page_eleveur');
-
         // conservation des caractères de base
-        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', $pageEleveurService->convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
 
         // trim
-        $this->assertEquals('aaa', $pageEleveurService->convertToUrl(' aaa '));
+        $this->assertEquals('aaa', PageEleveurService::convertToUrl(' aaa '));
 
         // to lowercase
-        $this->assertEquals('aaa', $pageEleveurService->convertToUrl('AaA'));
+        $this->assertEquals('aaa', PageEleveurService::convertToUrl('AaA'));
 
         // suppression des caractères spéciaux
-        $this->assertEquals('', $pageEleveurService->convertToUrl('!?,.<>=&'));
+        $this->assertEquals('', PageEleveurService::convertToUrl('!?,.<>=&'));
 
         // remplacement des caractères convertibles
-        $this->assertEquals('eureace', $pageEleveurService->convertToUrl('€éàçè&'));
+        $this->assertEquals('eureace', PageEleveurService::convertToUrl('€éàçè&'));
 
         // espaces convertis en dash
-        $this->assertEquals('un-deux-trois', $pageEleveurService->convertToUrl('un deux trois'));
+        $this->assertEquals('un-deux-trois', PageEleveurService::convertToUrl('un deux trois'));
     }
 }
