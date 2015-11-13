@@ -35,7 +35,7 @@ class PageEleveurService
     /**
      * @param string $nomPageEleveur
      * @param User $owner
-     * @return PageEleveur
+     * @return string
      * @throws PageEleveurException
      */
     public function create($nomPageEleveur, User $owner)
@@ -70,7 +70,7 @@ class PageEleveurService
 
         $this->doctrine->getManager()->flush();
 
-        return $pageEleveur;
+        return $pageEleveur->getUrl();
     }
 
 
@@ -98,7 +98,7 @@ class PageEleveurService
 
     /**
      * @param $url string
-     * @return PageEleveur
+     * @return PageEleveurCommit
      */
     public function getForUrl($url)
     {
@@ -107,7 +107,33 @@ class PageEleveurService
          */
         $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $url]);
 
-        return $pageEleveur;
+        if (is_null($pageEleveur))
+            return null;
+        else
+            return $pageEleveur->getCommit();
     }
 
+    /**
+     * @param string $url
+     * @param PageEleveurCommit $commit
+     * @param User $user
+     * @throws PageEleveurException
+     */
+    public function commit($url, PageEleveurCommit $commit, User $user)
+    {
+        /**
+         * @var PageEleveur $pageEleveur
+         */
+        $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $url, 'owner' => $user]);
+
+        if (!$pageEleveur)
+            throw new PageEleveurException();
+
+        if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
+            throw new PageEleveurException();
+
+        $this->doctrine->getManager()->persist($commit);
+        $pageEleveur->setCommit($commit);
+        $this->doctrine->getManager()->flush();
+    }
 }

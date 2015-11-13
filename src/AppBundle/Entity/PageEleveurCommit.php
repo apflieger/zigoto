@@ -53,7 +53,7 @@ class PageEleveurCommit
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getNom()
     {
@@ -61,10 +61,23 @@ class PageEleveurCommit
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDescription()
     {
         return $this->description;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return PageEleveurCommit|null
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 }

@@ -48,12 +48,12 @@ class CreationPageEleveurController extends Controller
 
         try
         {
-            $pageEleveur = $pageEleveurService->create($nomPageEleveur, $user);
+            $url = $pageEleveurService->create($nomPageEleveur, $user);
         } catch (PageEleveurException $e)
         {
             return new Response($e->getMessage(), Response::HTTP_CONFLICT);
         }
 
-        return $this->redirectToRoute('pageEleveur', ['eleveurURL' => $pageEleveur->getUrl()]);
+        return $this->redirectToRoute('pageEleveur', ['eleveurURL' => $url]);
     }
 }
