@@ -54,6 +54,6 @@ class CreationPageEleveurController extends Controller
             return new Response($e->getMessage(), Response::HTTP_CONFLICT);
         }
 
-        return $this->redirectToRoute('pageEleveur', ['eleveurURL' => $url]);
+        return $this->redirectToRoute('getPageEleveur', ['eleveurURL' => $url]);
     }
 }

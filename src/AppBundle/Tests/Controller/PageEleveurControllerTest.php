@@ -13,6 +13,7 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class PageEleveurControllerTest extends WebTestCase
 {
@@ -46,4 +47,18 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
     }
 
+    public function testCommit()
+    {
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        $client->request('POST', '/' . $pageEleveur->getUrl(),
+            ['head' => $pageEleveur->getCommit()->getId(),
+                'description' => $this->getName()]);
+
+        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+
+        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+        $this->assertEquals($this->getName(), $crawler->filter('#description')->text());
+    }
 }

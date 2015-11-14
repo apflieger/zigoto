@@ -15,6 +15,7 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\PageEleveurReflog;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Symfony\Bridge\Monolog\Logger;
 
 class PageEleveurService
 {
@@ -25,11 +26,17 @@ class PageEleveurService
     private $doctrine;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
      * @param Registry $doctrine
      */
-    public function __construct(Registry $doctrine)
+    public function __construct(Registry $doctrine, Logger $logger)
     {
         $this->doctrine = $doctrine;
+        $this->logger = $logger;
     }
 
     /**
@@ -62,7 +69,14 @@ class PageEleveurService
         $pageEleveur->setCommit($pageEleveurCommit);
 
         //Ajout de la 1ere entrée dans le reflog de cette page
-        $reflog = new PageEleveurReflog($pageEleveur, $owner, new \DateTime(), 0, $pageEleveur->getUrl(), 'Création de la page');
+        $reflog = new PageEleveurReflog(
+            $pageEleveur,
+            $owner,
+            new \DateTime(),
+            0,
+            $pageEleveur->getUrl(),
+            'create',
+            $pageEleveurCommit);
 
         $this->doctrine->getManager()->persist($pageEleveurCommit);
         $this->doctrine->getManager()->persist($pageEleveur);
@@ -100,7 +114,7 @@ class PageEleveurService
      * @param $url string
      * @return PageEleveurCommit
      */
-    public function getForUrl($url)
+    public function getCommitByUrl($url)
     {
         /**
          * @var PageEleveur $pageEleveur
@@ -111,6 +125,19 @@ class PageEleveurService
             return null;
         else
             return $pageEleveur->getCommit();
+    }
+
+    /**
+     * @param int $id
+     * @return PageEleveurCommit
+     */
+    public function getCommit($id)
+    {
+        /**
+         * @var PageEleveurCommit $pageEleveurCommit
+         */
+        $pageEleveurCommit = $this->doctrine->getRepository('AppBundle:PageEleveurCommit')->find($id);
+        return $pageEleveurCommit;
     }
 
     /**
@@ -134,6 +161,44 @@ class PageEleveurService
 
         $this->doctrine->getManager()->persist($commit);
         $pageEleveur->setCommit($commit);
+
+        /**
+         * @var PageEleveurReflog $headReflog
+         */
+        $headReflog = $this->doctrine->getRepository('AppBundle:PageEleveurReflog')->findBy(
+            ['pageEleveur' => $pageEleveur],
+            ['logEntry' => 'DESC'],
+            1)[0];
+
+        $reflogMessage = 'error on commit';
+        $reflogEntry = -1;
+
+        if (!$headReflog)
+        {
+            $this->logger->error('Pas d\' entrée au reflog de ' . $url . ' - page eleveur ' . $pageEleveur->getId());
+        }
+        else if ($headReflog->getCommit()->getId() !== $commit->getParent()->getId())
+        {
+            $this->logger->error('Incohérence dans le reflog de ' . $url . ' headReflog : ' . $headReflog->getId() .
+            ' n\'est pas sur le commit ' . $commit->getParent()->getId());
+        }
+        else
+        {
+            $reflogMessage = 'commit';
+            $reflogEntry = $headReflog->getLogEntry() +1;
+        }
+
+        $reflog = new PageEleveurReflog(
+            $pageEleveur,
+            $user,
+            new \DateTime(),
+            $reflogEntry,
+            $pageEleveur->getUrl(),
+            $reflogMessage,
+            $commit);
+
+        $this->doctrine->getManager()->persist($reflog);
+
         $this->doctrine->getManager()->flush();
     }
 }

@@ -60,6 +60,13 @@ class PageEleveurReflog
     private $commentaire;
 
     /**
+     * @ORM\ManyToOne(targetEntity="PageEleveurCommit")
+     * @ORM\JoinColumn(nullable=false)
+     * @var PageEleveurCommit
+     */
+    private $commit;
+
+    /**
      * @param PageEleveur $pageEleveur
      * @param User $user
      * @param \DateTime $dateTime
@@ -67,7 +74,7 @@ class PageEleveurReflog
      * @param string $url
      * @param string $commentaire
      */
-    public function __construct(PageEleveur $pageEleveur, User $user, \DateTime $dateTime, $logEntry, $url, $commentaire)
+    public function __construct(PageEleveur $pageEleveur, User $user, \DateTime $dateTime, $logEntry, $url, $commentaire, PageEleveurCommit $commit)
     {
         $this->pageEleveur = $pageEleveur;
         $this->user = $user;
@@ -75,6 +82,7 @@ class PageEleveurReflog
         $this->logEntry = $logEntry;
         $this->url = $url;
         $this->commentaire = $commentaire;
+        $this->commit = $commit;
     }
 
     /**
@@ -132,4 +140,13 @@ class PageEleveurReflog
     {
         return $this->commentaire;
     }
+
+    /**
+     * @return PageEleveurCommit
+     */
+    public function getCommit()
+    {
+        return $this->commit;
+    }
+
 }
