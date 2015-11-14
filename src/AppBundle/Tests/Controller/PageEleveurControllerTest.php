@@ -37,14 +37,19 @@ class PageEleveurControllerTest extends WebTestCase
          */
         $pageEleveurService = $client->getContainer()->get('page_eleveur');
 
-        $pageEleveurService->commit($pageEleveur->getUrl(),
-            new PageEleveurCommit($pageEleveur->getNom(), 'nouvelle description', $pageEleveur->getCommit()),
-            $pageEleveur->getOwner());
+        $commit = new PageEleveurCommit($pageEleveur->getNom(), 'nouvelle description', $pageEleveur->getCommit());
+        $pageEleveurService->commit($pageEleveur->getUrl(), $commit, $pageEleveur->getOwner());
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
 
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
+        $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
+
+        // On vérifie qu'il y a un script qui passe l'id du commit au JS
+        $this->assertEquals(1, $crawler->filter('script')->reduce(function($script) use ($commit){
+            return strpos($script->text(), 'var headCommit="'.$commit->getId().'";');
+        })->count());
     }
 
     public function testCommit()

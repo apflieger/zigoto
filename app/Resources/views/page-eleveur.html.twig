@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}{{ commit.nom }}{% endblock %}
 {% block body %}
-    <h1>{{ pageEleveur.nom }}</h1>
-    <section id="description">{{ pageEleveur.description }}</section>
+    <h1>{{ commit.nom }}</h1>
+    <section id="description">{{ commit.description }}</section>
 {% endblock %}
 
-{% block stylesheets %}
-
+{% block javascripts %}
+    <script type="text/javascript">
+        var headCommit="{{ commit.id }}";
+    </script>
 {% endblock %}

@@ -31,12 +31,12 @@ class PageEleveurController extends Controller
          */
         $pageEleveurService = $this->container->get('page_eleveur');
 
-        $pageEleveur = $pageEleveurService->getCommitByUrl($eleveurURL);
+        $commit = $pageEleveurService->getCommitByUrl($eleveurURL);
 
-        if (!$pageEleveur)
+        if (!$commit)
             throw $this->createNotFoundException();
 
-        return $this->render('page-eleveur.html.twig', ['pageEleveur' => $pageEleveur]);
+        return $this->render('page-eleveur.html.twig', ['commit' => $commit]);
     }
 
     /**
