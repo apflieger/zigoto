@@ -1,0 +1,8 @@
+{
+  "name": "zigoto",
+  "version": "1.0.0",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "bootstrap": "^3.3.5"
+  }
+}
