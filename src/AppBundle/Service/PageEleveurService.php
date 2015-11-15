@@ -15,13 +15,16 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\PageEleveurReflog;
 use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Monolog\Logger;
+
 
 class PageEleveurService
 {
 
     /**
-     * @var Registry
+     * @var ObjectManager
      */
     private $doctrine;
 
@@ -30,10 +33,7 @@ class PageEleveurService
      */
     private $logger;
 
-    /**
-     * @param Registry $doctrine
-     */
-    public function __construct(Registry $doctrine, Logger $logger)
+    public function __construct(EntityManager $doctrine, Logger $logger)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
@@ -78,11 +78,11 @@ class PageEleveurService
             'create',
             $pageEleveurCommit);
 
-        $this->doctrine->getManager()->persist($pageEleveurCommit);
-        $this->doctrine->getManager()->persist($pageEleveur);
-        $this->doctrine->getManager()->persist($reflog);
+        $this->doctrine->persist($pageEleveurCommit);
+        $this->doctrine->persist($pageEleveur);
+        $this->doctrine->persist($reflog);
 
-        $this->doctrine->getManager()->flush();
+        $this->doctrine->flush();
 
         return $pageEleveur->getUrl();
     }
@@ -141,51 +141,54 @@ class PageEleveurService
     }
 
     /**
-     * @param string $url
+     * @param $pageEleveurId
      * @param PageEleveurCommit $commit
      * @param User $user
      * @throws PageEleveurException
      */
-    public function commit($url, PageEleveurCommit $commit, User $user)
+    public function commit($pageEleveurId, PageEleveurCommit $commit, User $user)
     {
         /**
          * @var PageEleveur $pageEleveur
          */
-        $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $url, 'owner' => $user]);
+        $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->find($pageEleveurId);
 
         if (!$pageEleveur)
+            throw new PageEleveurException();
+
+        if ($pageEleveur->getOwner()->getId() !== $user->getId())
             throw new PageEleveurException();
 
         if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
             throw new PageEleveurException();
 
-        $this->doctrine->getManager()->persist($commit);
+        $this->doctrine->persist($commit);
         $pageEleveur->setCommit($commit);
 
         /**
-         * @var PageEleveurReflog $headReflog
+         * @var PageEleveurReflog[] $headReflog
          */
         $headReflog = $this->doctrine->getRepository('AppBundle:PageEleveurReflog')->findBy(
             ['pageEleveur' => $pageEleveur],
             ['logEntry' => 'DESC'],
-            1)[0];
+            1);
 
         $reflogMessage = 'error on commit';
         $reflogEntry = -1;
 
-        if (!$headReflog)
+        if (!$headReflog || empty($headReflog))
         {
-            $this->logger->error('Pas d\' entrée au reflog de ' . $url . ' - page eleveur ' . $pageEleveur->getId());
+            $this->logger->error('Pas d\' entrée au reflog de ' . $pageEleveurId . ' - page eleveur ' . $pageEleveur->getId());
         }
-        else if ($headReflog->getCommit()->getId() !== $commit->getParent()->getId())
+        else if ($headReflog[0]->getCommit()->getId() !== $commit->getParent()->getId())
         {
-            $this->logger->error('Incohérence dans le reflog de ' . $url . ' headReflog : ' . $headReflog->getId() .
+            $this->logger->error('Incohérence dans le reflog de ' . $pageEleveurId . ' headReflog : ' . $headReflog[0]->getId() .
             ' n\'est pas sur le commit ' . $commit->getParent()->getId());
         }
         else
         {
             $reflogMessage = 'commit';
-            $reflogEntry = $headReflog->getLogEntry() +1;
+            $reflogEntry = $headReflog[0]->getLogEntry() +1;
         }
 
         $reflog = new PageEleveurReflog(
@@ -197,8 +200,8 @@ class PageEleveurService
             $reflogMessage,
             $commit);
 
-        $this->doctrine->getManager()->persist($reflog);
+        $this->doctrine->persist($reflog);
 
-        $this->doctrine->getManager()->flush();
+        $this->doctrine->flush();
     }
 }

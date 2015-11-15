@@ -40,13 +40,14 @@ class PageEleveurController extends Controller
     }
 
     /**
-     * @Route("/{eleveurURL}", name="commitPageEleveur")
+     * @Route("/commit-page-eleveur", name="commitPageEleveur")
      * @Method("POST")
      */
-    public function commitAction($eleveurURL, Request $request)
+    public function commitAction(Request $request)
     {
         $description = $request->request->get('description');
         $head = $request->request->get('head');
+        $pageEleveurId = $request->request->get('pageEleveur');
 
         /**
          * @var TokenStorage $tokenStorage
@@ -65,7 +66,7 @@ class PageEleveurController extends Controller
 
         $newCommit = new PageEleveurCommit($commit->getNom(), $description, $commit);
 
-        $pageEleveurService->commit($eleveurURL, $newCommit, $user);
+        $pageEleveurService->commit($pageEleveurId, $newCommit, $user);
 
         return new Response();
     }

@@ -22,6 +22,14 @@ class User extends \FOS\UserBundle\Entity\User
      */
     protected $id;
 
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     public function __construct()
     {
         parent::__construct();

@@ -38,7 +38,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveurService = $client->getContainer()->get('page_eleveur');
 
         $commit = new PageEleveurCommit($pageEleveur->getNom(), 'nouvelle description', $pageEleveur->getCommit());
-        $pageEleveurService->commit($pageEleveur->getUrl(), $commit, $pageEleveur->getOwner());
+        $pageEleveurService->commit($pageEleveur->getId(), $commit, $pageEleveur->getOwner());
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
 
@@ -57,8 +57,9 @@ class PageEleveurControllerTest extends WebTestCase
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
 
-        $client->request('POST', '/' . $pageEleveur->getUrl(),
+        $client->request('POST', '/commit-page-eleveur',
             ['head' => $pageEleveur->getCommit()->getId(),
+                'pageEleveur' => $pageEleveur->getId(),
                 'description' => $this->getName()]);
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
