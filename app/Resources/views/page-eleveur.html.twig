@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ commit.nom }}{% endblock %}
+{% block title %}{{ pageEleveur.nom }}{% endblock %}
 {% block body %}
-    <h1>{{ commit.nom }}</h1>
-    <section id="description">{{ commit.description }}</section>
+    <h1>{{ pageEleveur.nom }}</h1>
+    <section id="description">{{ pageEleveur.description }}</section>
 {% endblock %}
 
 {% block javascripts %}
     <script type="text/javascript">
-        var headCommit="{{ commit.id }}";
+        // Initialisation des constantes Javascript
+        var pageEleveur="{{ pageEleveur.id }}";
+        var headCommit="{{ pageEleveur.commit.id }}";
     </script>
 {% endblock %}

@@ -112,19 +112,16 @@ class PageEleveurService
 
     /**
      * @param $url string
-     * @return PageEleveurCommit
+     * @return PageEleveur
      */
-    public function getCommitByUrl($url)
+    public function getByUrl($url)
     {
         /**
          * @var PageEleveur $pageEleveur
          */
         $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $url]);
 
-        if (is_null($pageEleveur))
-            return null;
-        else
-            return $pageEleveur->getCommit();
+        return $pageEleveur;
     }
 
     /**

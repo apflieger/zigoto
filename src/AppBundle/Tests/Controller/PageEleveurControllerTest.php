@@ -47,9 +47,13 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
-        $this->assertEquals(1, $crawler->filter('script')->reduce(function($script) use ($commit){
-            return strpos($script->text(), 'var headCommit="'.$commit->getId().'";');
-        })->count());
+        $script = $crawler->filter('script')->reduce(function ($script) {
+            return strpos($script->text(), 'Initialisation des constantes Javascript');
+        });
+        $this->assertEquals(1, $script->count());
+
+        $this->assertContains('var headCommit="'.$commit->getId().'";', $script->text());
+        $this->assertContains('var pageEleveur="'.$pageEleveur->getId().'";', $script->text());
     }
 
     public function testCommit()
