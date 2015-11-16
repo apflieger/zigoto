@@ -42,10 +42,11 @@ class PageEleveurService
     /**
      * @param string $nomPageEleveur
      * @param User $owner
+     * @param User $commiter
      * @return string
      * @throws PageEleveurException
      */
-    public function create($nomPageEleveur, User $owner)
+    public function create($nomPageEleveur, User $owner, User $commiter)
     {
         $pageEleveurRepository = $this->doctrine->getRepository('AppBundle:PageEleveur');
 
@@ -71,7 +72,7 @@ class PageEleveurService
         //Ajout de la 1ere entrée dans le reflog de cette page
         $reflog = new PageEleveurReflog(
             $pageEleveur,
-            $owner,
+            $commiter,
             new \DateTime(),
             0,
             $pageEleveur->getUrl(),
@@ -153,9 +154,6 @@ class PageEleveurService
         if (!$pageEleveur)
             throw new PageEleveurException();
 
-        if ($pageEleveur->getOwner()->getId() !== $user->getId())
-            throw new PageEleveurException();
-
         if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
             throw new PageEleveurException();
 
@@ -200,5 +198,15 @@ class PageEleveurService
         $this->doctrine->persist($reflog);
 
         $this->doctrine->flush();
+    }
+
+    /**
+     * @param $pageEleveurId
+     * @return null|PageEleveur
+     */
+    public function get($pageEleveurId)
+    {
+        $pageEleveurRepository = $this->doctrine->getRepository('AppBundle:PageEleveur');
+        return $pageEleveurRepository->find($pageEleveurId);
     }
 }

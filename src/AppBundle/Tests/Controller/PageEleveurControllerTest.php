@@ -71,4 +71,21 @@ class PageEleveurControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
         $this->assertEquals($this->getName(), $crawler->filter('#description')->text());
     }
+
+    public function testDroitCommitRefuse()
+    {
+
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        // Connexion avec un autre user
+        UserUtils::create($client, $this);
+
+        $client->request('POST', '/commit-page-eleveur',
+            ['head' => $pageEleveur->getCommit()->getId(),
+                'pageEleveur' => $pageEleveur->getId(),
+                'description' => $this->getName()]);
+
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
+    }
 }

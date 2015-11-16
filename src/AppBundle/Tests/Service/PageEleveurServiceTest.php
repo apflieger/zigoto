@@ -91,25 +91,6 @@ class PageEleveurServiceTest extends KernelTestCase
         return $commit;
     }
 
-    /**
-     * @expectedException \AppBundle\Service\PageEleveurException
-     */
-    public function testDroitCommitRefuse()
-    {
-        $user1 = new User();
-        $user1->setId(1);
-        $pageEleveur = new PageEleveur();
-        $pageEleveur->setOwner($user1);
-
-        $this->pageEleveurRepository->expects($this->any())
-            ->method('find')->withAnyParameters()->willReturn($pageEleveur);
-
-        // user2 essaye de commit sur cette page
-        $user2 = new User();
-        $user2->setId(2);
-        $this->pageEleveurService->commit('', new PageEleveurCommit('', '', null), $user2);
-    }
-
     public function testCommitFastForward()
     {
         $user = new User();
