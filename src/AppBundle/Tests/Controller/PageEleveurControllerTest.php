@@ -61,15 +61,37 @@ class PageEleveurControllerTest extends WebTestCase
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
 
+        // Modification du nom et de la description de la page
         $client->request('POST', '/commit-page-eleveur',
             ['head' => $pageEleveur->getCommit()->getId(),
                 'pageEleveur' => $pageEleveur->getId(),
-                'description' => $this->getName()]);
+                'nom' => 'nouveau nom',
+                'description' => 'description non nulle']);
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
-        $this->assertEquals($this->getName(), $crawler->filter('#description')->text());
+        $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
+        $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
+
+        /**
+         * @var PageEleveurService $pageEleveurService
+         */
+        $pageEleveurService = $client->getContainer()->get('page_eleveur');
+        $lastCommit = $pageEleveurService->get($pageEleveur->getId())->getCommit();
+
+        // Commit sans modifier le contenu de la page. Les paramètres sont optionnels pour
+        // pouvoir envoyer seulement ce qu'on veut modifier
+        $client->request('POST', '/commit-page-eleveur',
+            ['head' => $lastCommit->getId(),
+                'pageEleveur' => $pageEleveur->getId()]);
+
+        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+
+        // La page n'a pas changé
+        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+        $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
+        $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
     }
 
     public function testDroitCommitRefuse()
