@@ -70,20 +70,18 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
+        // La réponse du POST retourne l'identifiant du commit créé dans le contenu
+        $newCommitId = $client->getResponse()->getContent();
+
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
         $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
 
-        /**
-         * @var PageEleveurService $pageEleveurService
-         */
-        $pageEleveurService = $client->getContainer()->get('page_eleveur');
-        $lastCommit = $pageEleveurService->get($pageEleveur->getId())->getCommit();
 
         // Commit sans modifier le contenu de la page. Les paramètres sont optionnels pour
         // pouvoir envoyer seulement ce qu'on veut modifier
         $client->request('POST', '/commit-page-eleveur',
-            ['head' => $lastCommit->getId(),
+            ['head' => $newCommitId,
                 'pageEleveur' => $pageEleveur->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());

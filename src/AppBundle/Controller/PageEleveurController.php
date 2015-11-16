@@ -83,6 +83,6 @@ class PageEleveurController extends Controller
 
         $pageEleveurService->commit($pageEleveurId, $newCommit, $user);
 
-        return new Response();
+        return new Response($newCommit->getId());
     }
 }
