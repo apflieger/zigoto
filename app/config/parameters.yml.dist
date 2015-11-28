@@ -4,9 +4,12 @@
 parameters:
     database_host:     127.0.0.1
     database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
+    dev_database_name: zigoto
+    dev_database_user: runtime
+    dev_database_password: null
+    test_database_name: zigoto_unit
+    test_database_user: phpunit
+    test_database_password: null
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"
 
