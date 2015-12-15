@@ -13,6 +13,11 @@ mysql
 * créer deux bases : une pour l'app et une pour les tests unitaires
 * créer un ou deux users et leur donner les droits pour requeter les bases
 
+node
+----
+* installer node
+* `npm install -g gulp-cli`
+
 setup
 -----
 * `composer install`
@@ -23,4 +28,5 @@ setup
 Usage
 -----
 * pour lancer les tests : `./bin/phpunit -c app`
-* pour lancer le serveur : `php app/console server:run` 
+* pour lancer le serveur : `php app/console server:run`
+* pour rebuilder le front : `gulp`
