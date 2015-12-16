@@ -46,11 +46,11 @@ class PageEleveurController extends Controller
      */
     public function commitAction(Request $request)
     {
-        $head = $request->request->get('head');
-        $pageEleveurId = $request->request->get('pageEleveur');
+        $head = $request->request->get('pageEleveur.head');
+        $pageEleveurId = $request->request->get('pageEleveur.id');
 
-        $nom = $request->request->get('nom');
-        $description = $request->request->get('description');
+        $nom = $request->request->get('pageEleveur.nom');
+        $description = $request->request->get('pageEleveur.description');
 
         /**
          * @var TokenStorage $tokenStorage

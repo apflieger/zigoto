@@ -63,10 +63,10 @@ class PageEleveurControllerTest extends WebTestCase
 
         // Modification du nom et de la description de la page
         $client->request('POST', '/commit-page-eleveur',
-            ['head' => $pageEleveur->getCommit()->getId(),
-                'pageEleveur' => $pageEleveur->getId(),
-                'nom' => 'nouveau nom',
-                'description' => 'description non nulle']);
+            ['pageEleveur.head' => $pageEleveur->getCommit()->getId(),
+                'pageEleveur.id' => $pageEleveur->getId(),
+                'pageEleveur.nom' => 'nouveau nom',
+                'pageEleveur.description' => 'description non nulle']);
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -81,8 +81,8 @@ class PageEleveurControllerTest extends WebTestCase
         // Commit sans modifier le contenu de la page. Les paramètres sont optionnels pour
         // pouvoir envoyer seulement ce qu'on veut modifier
         $client->request('POST', '/commit-page-eleveur',
-            ['head' => $newCommitId,
-                'pageEleveur' => $pageEleveur->getId()]);
+            ['pageEleveur.head' => $newCommitId,
+                'pageEleveur.id' => $pageEleveur->getId()]);
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
@@ -102,9 +102,9 @@ class PageEleveurControllerTest extends WebTestCase
         UserUtils::create($client, $this);
 
         $client->request('POST', '/commit-page-eleveur',
-            ['head' => $pageEleveur->getCommit()->getId(),
-                'pageEleveur' => $pageEleveur->getId(),
-                'description' => $this->getName()]);
+            ['pageEleveur.head' => $pageEleveur->getCommit()->getId(),
+                'pageEleveur.id' => $pageEleveur->getId(),
+                'pageEleveur.description' => $this->getName()]);
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
     }
