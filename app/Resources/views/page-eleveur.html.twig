@@ -15,9 +15,11 @@
 {% block javascripts %}
     <script type="text/javascript">
         // Initialisation des constantes Javascript
-        var pageEleveur="{{ pageEleveur.id }}";
-        var headCommit="{{ pageEleveur.commit.id }}";
-        var pageEleveurDescription="{{ pageEleveur.description }}";
+        var globPageEleveur = {
+            "id": "{{ pageEleveur.id }}",
+            "commit": "{{ pageEleveur.commit.id }}",
+            "description": "{{ pageEleveur.description }}"
+        };
     </script>
     <script src="build/angular.js"></script>
     <script src="build/PageEleveurCtrl.js"></script>

@@ -4,5 +4,5 @@
 var zigoto = angular.module('zigoto', []);
 
 zigoto.controller('PageEleveurCtrl', function ($scope) {
-    $scope.pageEleveur = {'description': pageEleveurDescription};
+    $scope.pageEleveur = globPageEleveur;
 });

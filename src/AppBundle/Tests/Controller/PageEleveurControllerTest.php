@@ -52,8 +52,9 @@ class PageEleveurControllerTest extends WebTestCase
         });
         $this->assertEquals(1, $script->count());
 
-        $this->assertContains('var headCommit="'.$commit->getId().'";', $script->text());
-        $this->assertContains('var pageEleveur="'.$pageEleveur->getId().'";', $script->text());
+        $this->assertContains('"id": "'.$pageEleveur->getId().'"', $script->text());
+        $this->assertContains('"commit": "'.$commit->getId().'"', $script->text());
+        $this->assertContains('"description": "nouvelle description"', $script->text());
     }
 
     public function testCommit()
