@@ -1,8 +1,15 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ pageEleveur.nom }}{% endblock %}
 {% block body %}
-    <h1>{{ pageEleveur.nom }}</h1>
-    <section id="description">{{ pageEleveur.description }}</section>
+    <div ng-app="zigoto">
+        <h1>{{ pageEleveur.nom }}</h1>
+        <section id="description">{{ pageEleveur.description }}</section>
+        <div ng-controller="PageEleveurCtrl">
+            <form>
+                <input type="textarea" ng-model="pageEleveur.description" />
+            </form>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
@@ -10,5 +17,8 @@
         // Initialisation des constantes Javascript
         var pageEleveur="{{ pageEleveur.id }}";
         var headCommit="{{ pageEleveur.commit.id }}";
+        var pageEleveurDescription="{{ pageEleveur.description }}";
     </script>
+    <script src="build/angular.js"></script>
+    <script src="build/PageEleveurCtrl.js"></script>
 {% endblock %}
