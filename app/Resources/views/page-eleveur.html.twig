@@ -2,25 +2,29 @@
 {% block title %}{{ pageEleveur.nom }}{% endblock %}
 {% block body %}
     <div ng-app="zigoto">
-        <h1>{{ pageEleveur.nom }}</h1>
-        <section id="description">{{ pageEleveur.description }}</section>
         <div ng-controller="PageEleveurCtrl">
-            <form>
-                <input type="textarea" ng-model="pageEleveur.description" />
-            </form>
+            <h1>{{ pageEleveur.nom }}</h1>
+            <section id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</section>
+            {% if isOwner %}
+                <input type="textarea" ng-model="pageEleveur.description" ng-blur="commit()"/>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript">
-        // Initialisation des constantes Javascript
-        var globPageEleveur = {
-            "id": "{{ pageEleveur.id }}",
-            "commit": "{{ pageEleveur.commit.id }}",
-            "description": "{{ pageEleveur.description }}"
-        };
-    </script>
-    <script src="build/angular.js"></script>
-    <script src="build/PageEleveurCtrl.js"></script>
+    {% if isOwner %}
+        <!-- flag owner -->
+        <script type="text/javascript">
+            // flag const-js
+            var globPageEleveur = {
+                "id": "{{ pageEleveur.id }}",
+                "commit": "{{ pageEleveur.commit.id }}",
+                "nom": "{{ pageEleveur.nom }}",
+                "description": "{{ pageEleveur.description }}"
+            };
+        </script>
+        <script src="build/angular.js"></script>
+        <script src="build/PageEleveurCtrl.js"></script>
+    {% endif %}
 {% endblock %}

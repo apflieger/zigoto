@@ -37,7 +37,19 @@ class PageEleveurController extends Controller
         if (!$pageEleveur)
             throw $this->createNotFoundException();
 
-        return $this->render('page-eleveur.html.twig',['pageEleveur' => $pageEleveur]);
+        /**
+         * @var TokenStorage $tokenStorage
+         */
+        $tokenStorage = $this->container->get('security.token_storage');
+        /**
+         * @var User $user
+         */
+        $user = $tokenStorage->getToken()->getUser();
+        $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
+
+        return $this->render('page-eleveur.html.twig',
+            ['pageEleveur' => $pageEleveur,
+            'isOwner' => $isOwner]);
     }
 
     /**

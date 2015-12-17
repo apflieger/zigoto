@@ -5,4 +5,7 @@ var zigoto = angular.module('zigoto', []);
 
 zigoto.controller('PageEleveurCtrl', function ($scope) {
     $scope.pageEleveur = globPageEleveur;
+    $scope.commit = function() {
+        console.debug($scope.pageEleveur);
+    };
 });

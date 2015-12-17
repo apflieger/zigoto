@@ -48,12 +48,13 @@ class PageEleveurControllerTest extends WebTestCase
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function ($script) {
-            return strpos($script->text(), 'Initialisation des constantes Javascript');
+            return strpos($script->text(), 'const-js');
         });
         $this->assertEquals(1, $script->count());
 
         $this->assertContains('"id": "'.$pageEleveur->getId().'"', $script->text());
         $this->assertContains('"commit": "'.$commit->getId().'"', $script->text());
+        $this->assertContains('"nom": "'.$pageEleveur->getNom().'"', $script->text());
         $this->assertContains('"description": "nouvelle description"', $script->text());
     }
 
@@ -108,5 +109,27 @@ class PageEleveurControllerTest extends WebTestCase
                 'pageEleveur.description' => $this->getName()]);
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
+    }
+
+    public function testAccesOwner()
+    {
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+
+        $this->assertContains('owner', $crawler->html());
+    }
+
+    public function testAccesAnonyme()
+    {
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        $client->request('GET', '/logout');
+
+        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+
+        $this->assertNotContains('owner', $crawler->html());
     }
 }
