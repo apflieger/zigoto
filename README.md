@@ -30,3 +30,4 @@ Usage
 * pour lancer les tests : `./bin/phpunit -c app`
 * pour lancer le serveur : `php app/console server:run`
 * pour rebuilder le front : `gulp`
+* pour watch le js : `gulp watch`

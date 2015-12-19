@@ -15,6 +15,7 @@ gulp.task('js', function() {
 
 gulp.task('default', ['external', 'js']);
 
-gulp.task('watch', function(){
+gulp.task('watch', ['js'], function(){
+
     gulp.watch('app/Resources/js/*.js', ['js']);
 });
