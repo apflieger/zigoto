@@ -3,10 +3,10 @@
 {% block body %}
     <div ng-app="zigoto">
         <div ng-controller="PageEleveurCtrl">
-            <h1>{{ pageEleveur.nom }}</h1>
-            <section id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</section>
+            <h1>{{ pageEleveur.commit.nom }}</h1>
+            <section id="description" ng-bind="pageEleveur.commit.description">{{ pageEleveur.commit.description }}</section>
             {% if isOwner %}
-                <input type="textarea" ng-model="pageEleveur.description" ng-blur="commit()"/>
+                <input type="textarea" ng-model="pageEleveur.commit.description" ng-blur="commit()"/>
             {% endif %}
         </div>
     </div>
@@ -17,12 +17,9 @@
         <!-- flag owner -->
         <script type="text/javascript">
             // flag const-js
-            var globPageEleveur = {
-                "id": "{{ pageEleveur.id }}",
-                "commit": "{{ pageEleveur.commit.id }}",
-                "nom": "{{ pageEleveur.nom }}",
-                "description": "{{ pageEleveur.description }}"
-            };
+            {% autoescape false %}
+                var globPageEleveur = {{ jsonPageEleveur }};
+            {% endautoescape %}
         </script>
         <script src="build/angular.js"></script>
         <script src="build/PageEleveurCtrl.js"></script>

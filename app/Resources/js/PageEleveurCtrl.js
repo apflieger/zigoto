@@ -3,9 +3,17 @@
  */
 var zigoto = angular.module('zigoto', []);
 
-zigoto.controller('PageEleveurCtrl', function ($scope) {
+zigoto.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.pageEleveur = globPageEleveur;
     $scope.commit = function() {
-        console.debug($scope.pageEleveur);
+        $http({
+            method: 'POST',
+            url: '/commit-page-eleveur',
+            data: $scope.pageEleveur
+        }).then(function successCallback(response) {
+            $scope.pageEleveur.commit.id = response.data;
+        }, function errorCallback(response) {
+            console.debug(response);
+        });
     };
-});
+}]);

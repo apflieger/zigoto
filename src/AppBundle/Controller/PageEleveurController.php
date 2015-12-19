@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurService;
@@ -47,9 +48,26 @@ class PageEleveurController extends Controller
         $user = $tokenStorage->getToken()->getUser();
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
 
-        return $this->render('page-eleveur.html.twig',
-            ['pageEleveur' => $pageEleveur,
-            'isOwner' => $isOwner]);
+        return $this->render('page-eleveur.html.twig', array(
+            'pageEleveur' => $pageEleveur,
+            'jsonPageEleveur' => self::jsonPageEleveur($pageEleveur),
+            'isOwner' => $isOwner));
+    }
+
+    /**
+     * @param PageEleveur $pageEleveur
+     * @return string
+     */
+    public static function jsonPageEleveur(PageEleveur $pageEleveur)
+    {
+        return json_encode(array(
+            'id' => $pageEleveur->getId(),
+            'commit' => array(
+                'id' => $pageEleveur->getCommit()->getId(),
+                'nom' => $pageEleveur->getCommit()->getNom(),
+                'description' => $pageEleveur->getCommit()->getDescription()
+            )
+        ));
     }
 
     /**
@@ -58,11 +76,7 @@ class PageEleveurController extends Controller
      */
     public function commitAction(Request $request)
     {
-        $head = $request->request->get('pageEleveur.head');
-        $pageEleveurId = $request->request->get('pageEleveur.id');
-
-        $nom = $request->request->get('pageEleveur.nom');
-        $description = $request->request->get('pageEleveur.description');
+        $clientPageEleveur = json_decode($request->getContent());
 
         /**
          * @var TokenStorage $tokenStorage
@@ -78,22 +92,20 @@ class PageEleveurController extends Controller
          */
         $pageEleveurService = $this->container->get('page_eleveur');
 
-        $pageEleveur = $pageEleveurService->get($pageEleveurId);
+        $pageEleveur = $pageEleveurService->get($clientPageEleveur->id);
 
         if ($pageEleveur->getOwner()->getId() !== $user->getId())
             return new Response('Vous n\'avez pas les droit de modifier la page', Response::HTTP_FORBIDDEN);
 
-        $commit = $pageEleveurService->getCommit($head);
+        $commit = $pageEleveurService->getCommit($clientPageEleveur->commit->id);
 
-        if (!$nom)
-            $nom = $commit->getNom();
+        $nom = $clientPageEleveur->commit->nom;
 
-        if (!$description)
-            $description = $commit->getDescription();
+        $description = $clientPageEleveur->commit->description;
 
         $newCommit = new PageEleveurCommit($nom, $description, $commit);
 
-        $pageEleveurService->commit($pageEleveurId, $newCommit, $user);
+        $pageEleveurService->commit($clientPageEleveur->id, $newCommit, $user);
 
         return new Response($newCommit->getId());
     }

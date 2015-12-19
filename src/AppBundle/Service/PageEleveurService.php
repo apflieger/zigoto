@@ -152,10 +152,12 @@ class PageEleveurService
         $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->find($pageEleveurId);
 
         if (!$pageEleveur)
-            throw new PageEleveurException();
+            throw new PageEleveurException('Page eleveur n\'existe pas ' . $pageEleveurId);
 
         if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
-            throw new PageEleveurException();
+            throw new PageEleveurException('Commit non fast forward : ' .
+                $commit->getParent()->getId() .
+                ', parent à ' . $pageEleveur->getCommit()->getId());
 
         $this->doctrine->persist($commit);
         $pageEleveur->setCommit($commit);
