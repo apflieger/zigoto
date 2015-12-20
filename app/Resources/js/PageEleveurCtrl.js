@@ -1,7 +1,7 @@
 /**
  * Created by arnaudpflieger on 17/12/2015.
  */
-var zigoto = angular.module('zigoto', []);
+var zigoto = angular.module('zigoto', ['xeditable']);
 
 zigoto.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.pageEleveur = globPageEleveur;

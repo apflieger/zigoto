@@ -1,13 +1,14 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ pageEleveur.nom }}{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="build/xeditable.css">{% endblock %}
 {% block body %}
     <div ng-app="zigoto">
         <div ng-controller="PageEleveurCtrl">
             <h1>{{ pageEleveur.commit.nom }}</h1>
-            <section id="description" ng-bind="pageEleveur.commit.description">{{ pageEleveur.commit.description }}</section>
-            {% if isOwner %}
-                <input type="textarea" ng-model="pageEleveur.commit.description" ng-blur="commit()"/>
-            {% endif %}
+
+            <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.commit.description" e-rows="10" e-cols="100">
+                <pre ng-bind="pageEleveur.commit.description">{{ pageEleveur.commit.description }}</pre>
+            </a>
         </div>
     </div>
 {% endblock %}
@@ -22,6 +23,7 @@
             {% endautoescape %}
         </script>
         <script src="build/angular.js"></script>
+        <script src="build/xeditable.min.js"></script>
         <script src="build/PageEleveurCtrl.js"></script>
     {% endif %}
 {% endblock %}

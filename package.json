@@ -2,10 +2,12 @@
   "name": "zigoto",
   "version": "1.0.0",
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "del": "2.2.0",
+    "gulp": "3.9.0"
   },
   "dependencies": {
     "angular": "1.4.8",
+    "angular-xeditable-npm": "0.1.9",
     "bootstrap": "3.3.5"
   },
   "scripts": {
