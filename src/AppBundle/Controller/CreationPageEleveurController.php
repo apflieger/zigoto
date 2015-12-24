@@ -46,11 +46,9 @@ class CreationPageEleveurController extends Controller
          */
         $pageEleveurService = $this->container->get('page_eleveur');
 
-        try
-        {
+        try {
             $url = $pageEleveurService->create($nomPageEleveur, $user, $user);
-        } catch (PageEleveurException $e)
-        {
+        } catch (PageEleveurException $e) {
             return new Response($e->getMessage(), Response::HTTP_CONFLICT);
         }
 

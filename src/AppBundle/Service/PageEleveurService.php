@@ -50,7 +50,13 @@ class PageEleveurService
     {
         $pageEleveurRepository = $this->doctrine->getRepository('AppBundle:PageEleveur');
 
+        if (empty($pageEleveurRepository))
+            throw new Exception();
+
         $urlPageEleveur = self::convertToUrl($nomPageEleveur);
+
+        if (empty($urlPageEleveur))
+            throw new Exception($nomPageEleveur);
 
         if (count($pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
             throw new PageEleveurException('Une page eleveur du meme nom existe deja');
