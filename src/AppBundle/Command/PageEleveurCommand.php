@@ -9,10 +9,12 @@
 namespace AppBundle\Command;
 
 
+use AppBundle\Entity\ERole;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,33 +22,71 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PageEleveurCommand extends ContainerAwareCommand
 {
+    const CMD_DELETE = 'delete';
+
+    /**
+     * @var PageEleveurService
+     */
+    private $pageEleveurService;
+
+    /**
+     * @var \FOS\UserBundle\Model\UserInterface
+     */
+    private $commandLineUser;
+
     protected function configure()
     {
         $this
-            ->setName('zigoto:page-eleveur:lorem')
+            ->setName('zigoto:page-eleveur:delete')
             ->addArgument(
                 'id',
                 InputArgument::REQUIRED,
-                'identifiant de la page eleveur'
-            )
-            ->setDescription('Commit une page eleveur bidon');
+                'identifiant de la page eleveur')
+            ->setDescription('Supprime la page eleveur de facon consistante')
+            ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * @var PageEleveurService $pageEleveurService
-         */
-        $pageEleveurService = $this->getContainer()->get('page_eleveur');
+        $this->pageEleveurService = $this->getContainer()->get('page_eleveur');
 
-        $pageEleveur = $pageEleveurService->get($input->getArgument('id'));
+        $this->commandLineUser = $this->ensureCommandLineUser($output);
+
+        $pageEleveur = $this->pageEleveurService->get($input->getArgument('id'));
 
         if (!$pageEleveur)
-        {
-            $output->writeln('Page eleveur ' . $input->getArgument('id') . ' n\'exiset pas.');
-            return 1;
+            throw new Exception('Page eleveur ' . $input->getArgument('id') . ' n\'exiset pas.');
+
+        $pageEleveur->getOwner()->removeRole(ERole::ELEVEUR);
+        /**
+         * @var \FOS\UserBundle\Doctrine\UserManager $userManager
+         */
+        $userManager = $this->getContainer()->get('fos_user.user_manager');
+        $userManager->updateUser($pageEleveur->getOwner());
+
+        /**
+         * @var \Doctrine\ORM\EntityManager $doctrine
+         */
+        $doctrine = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $reflogs = $doctrine->getRepository('AppBundle:PageEleveurReflog')->findBy(
+            array('pageEleveur' => $pageEleveur)
+        );
+
+        foreach ($reflogs as $reflog) {
+            $doctrine->remove($reflog);
         }
 
+        $doctrine->remove($pageEleveur);
+        $doctrine->flush();
+        return 0;
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @return \FOS\UserBundle\Model\UserInterface
+     */
+    private function ensureCommandLineUser(OutputInterface $output)
+    {
         /**
          * @var \FOS\UserBundle\Doctrine\UserManager $userManager
          */
@@ -66,14 +106,9 @@ class PageEleveurCommand extends ContainerAwareCommand
             $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
             $entityManager->persist($commandLineUser);
             $entityManager->flush($commandLineUser);
-            $output->writeln('Création du user CommandLine('.$commandLineUser->getId().').');
+            $output->writeln('1ere utilisation de la commande');
+            $output->writeln('Création du user CommandLine id '.$commandLineUser->getId());
         }
-
-        $commit = new PageEleveurCommit($pageEleveur->getNom(), 'lorem ipsum', $pageEleveur->getCommit());
-        $pageEleveurService->commit($pageEleveur->getId(), $commit, $commandLineUser);
-
-        $output->writeln('Page eleveur commitée');
+        return $commandLineUser;
     }
-
-
 }
