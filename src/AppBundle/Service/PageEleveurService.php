@@ -17,6 +17,7 @@ use AppBundle\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Symfony\Bridge\Monolog\Logger;
 
 
