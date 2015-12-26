@@ -34,7 +34,7 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         $creationPageEleveurForm = $crawler->filter('#creation-page-eleveur')->form();
         $rand = rand();
         $nomElevage = 'Les Chartreux de Tatouine ' . $rand;
-        $creationPageEleveurForm['elevage[nom]'] = $nomElevage;
+        $creationPageEleveurForm['form[nom]'] = $nomElevage;
         $client->submit($creationPageEleveurForm);
 
         /**
@@ -53,18 +53,8 @@ class CreationPageEleveurControllerTest  extends WebTestCase
     public function testAnonyme()
     {
         $client = static::createClient();
-        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'testAnonyme']]);
+        $client->request('POST', '/', ['form' => ['nom' => 'testAnonyme']]);
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
-    }
-
-    public function testUnUserDeuxPages()
-    {
-        $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
-
-        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'deuxiemePage']]);
-        $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
-        $this->assertEquals('Vous avez deja une page eleveur', $client->getResponse()->getContent());
     }
 
     public function testDeuxUserMemePage()
@@ -76,7 +66,9 @@ class CreationPageEleveurControllerTest  extends WebTestCase
         UserUtils::create($client, $this);
         
         //le 2eme user utilise le meme nom que pageEleveur1
-        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => $pageEleveur1->getUrl()]]);
+        $pageEleveurForm = $client->request('GET', '/')->filter('form')->form();
+        $pageEleveurForm['form[nom]'] = $pageEleveur1->getNom();
+        $client->submit($pageEleveurForm);
 
         $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
         $this->assertEquals('Une page eleveur du meme nom existe deja', $client->getResponse()->getContent());

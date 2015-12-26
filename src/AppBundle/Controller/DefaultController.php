@@ -46,7 +46,7 @@ class DefaultController extends Controller
                 $pageEleveurService = $this->container->get('page_eleveur');
 
                 try {
-                    $url = $pageEleveurService->create($form->getData()['nom'], $user, $user);
+                    $url = $pageEleveurService->create($form->getData()['nom'], $user, $user)->getUrl();
                 } catch (PageEleveurException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 }

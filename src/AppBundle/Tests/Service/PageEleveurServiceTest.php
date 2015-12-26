@@ -192,4 +192,28 @@ class PageEleveurServiceTest extends KernelTestCase
         $this->logger->expects($this->once())->method('error');
         $this->pageEleveurService->commit('', $commit3, $user);
     }
+
+    /**
+     * @expectedException \AppBundle\Service\PageEleveurException
+     */
+    public function testUnUserDeuxPages()
+    {
+        $user = new User();
+        $this->pageEleveurRepository
+            ->method('findBy')
+            ->willReturn(array(), new PageEleveur());
+        $this->pageEleveurService->create('page2', $user, $user);
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\PageEleveurException
+     */
+    public function testDeuxUserMemePage()
+    {
+        $user = new User();
+        $this->pageEleveurRepository
+            ->method('findBy')
+            ->willReturn(new PageEleveur());
+        $this->pageEleveurService->create('page2', $user, $user);
+    }
 }

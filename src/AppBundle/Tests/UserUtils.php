@@ -10,6 +10,7 @@ namespace AppBundle\Tests;
 
 
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Service\PageEleveurService;
 use FOS\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -49,21 +50,12 @@ class UserUtils
     public static function createNewEleveur(Client $client, WebTestCase $test)
     {
         $user = self::create($client, $test);
-        $client->request('POST', '/creation-page-eleveur', ['elevage' => ['nom' => 'elevage_' . $user->getUsername()]]);
 
         /**
-         * @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+         * @var PageEleveurService $pageEleveurService
          */
-        $doctrine = $client->getContainer()->get('doctrine');
+        $pageEleveurService = $client->getContainer()->get('page_eleveur');
 
-        /**
-         * @var PageEleveur $pageEleveur
-         */
-        $pageEleveur = $doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['owner' => $user]);
-
-        if (!$pageEleveur)
-            throw new \Exception('Création de la page eleveur a échoué');
-
-        return $pageEleveur;
+        return $pageEleveurService->create('elevage_' . $user->getUsername(), $user, $user);
     }
 }

@@ -23,7 +23,7 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     access_control:
+        - { path: ^/$, role: IS_AUTHENTICATED_FULLY, methods: POST }
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/creation-page-eleveur, role: IS_AUTHENTICATED_FULLY }

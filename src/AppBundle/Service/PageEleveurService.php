@@ -44,7 +44,7 @@ class PageEleveurService
      * @param string $nomPageEleveur
      * @param User $owner
      * @param User $commiter
-     * @return string
+     * @return PageEleveur
      * @throws PageEleveurException
      */
     public function create($nomPageEleveur, User $owner, User $commiter)
@@ -92,7 +92,7 @@ class PageEleveurService
 
         $this->doctrine->flush();
 
-        return $pageEleveur->getUrl();
+        return $pageEleveur;
     }
 
 

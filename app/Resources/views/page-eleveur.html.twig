@@ -7,7 +7,7 @@
             <h1>{{ pageEleveur.commit.nom }}</h1>
 
             <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.commit.description" e-rows="10" e-cols="100">
-                <pre ng-bind="pageEleveur.commit.description">{{ pageEleveur.commit.description }}</pre>
+                <pre id="description" ng-bind="pageEleveur.commit.description">{{ pageEleveur.commit.description }}</pre>
             </a>
         </div>
     </div>
