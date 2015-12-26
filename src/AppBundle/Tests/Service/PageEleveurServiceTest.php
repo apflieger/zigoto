@@ -216,4 +216,25 @@ class PageEleveurServiceTest extends KernelTestCase
             ->willReturn(new PageEleveur());
         $this->pageEleveurService->create('page2', $user, $user);
     }
+
+    public function testConvertionUrl()
+    {
+        // conservation des caractères de base
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
+
+        // trim
+        $this->assertEquals('aaa', PageEleveurService::convertToUrl(' aaa '));
+
+        // to lowercase
+        $this->assertEquals('aaa', PageEleveurService::convertToUrl('AaA'));
+
+        // suppression des caractères spéciaux
+        $this->assertEquals('', PageEleveurService::convertToUrl('!?,.<>=&'));
+
+        // remplacement des caractères convertibles
+        $this->assertEquals('eureace', PageEleveurService::convertToUrl('€éàçè&'));
+
+        // espaces convertis en dash
+        $this->assertEquals('un-deux-trois', PageEleveurService::convertToUrl('un deux trois'));
+    }
 }
