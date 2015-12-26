@@ -29,7 +29,7 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         // Quand l'utilisateur est connecté, on lui propose de créer sa page directement depuis la home
-        $this->assertCount(1, $crawler->filter('form#creation-page-eleveur'));
+        $this->assertCount(1, $crawler->filter('form[name="creation-page-eleveur"]'));
     }
 
     public function testCreationPageEleveur()
@@ -42,10 +42,10 @@ class DefaultControllerTest extends WebTestCase
 
         // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
         $crawler = $client->request('GET', '/');
-        $creationPageEleveurForm = $crawler->filter('form#creation-page-eleveur')->form();
+        $creationPageEleveurForm = $crawler->filter('form[name="creation-page-eleveur"]')->form();
         $rand = rand();
         $nomElevage = 'Les Chartreux de Tatouine ' . $rand;
-        $creationPageEleveurForm['form[nom]'] = $nomElevage;
+        $creationPageEleveurForm['creation-page-eleveur[nom]'] = $nomElevage;
         $client->submit($creationPageEleveurForm);
 
         /**
@@ -66,10 +66,10 @@ class DefaultControllerTest extends WebTestCase
         $client = static::createClient();
 
         $user = UserUtils::create($client, $this);
-        $pageEleveurForm = $client->request('GET', '/')->filter('form#creation-page-eleveur')->form();
+        $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
 
         $client->request('GET', '/logout');
-        $pageEleveurForm['form[nom]'] = $this->getName() . rand();
+        $pageEleveurForm['creation-page-eleveur[nom]'] = $this->getName() . rand();
         $client->submit($pageEleveurForm);
 
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
@@ -84,8 +84,8 @@ class DefaultControllerTest extends WebTestCase
         UserUtils::create($client, $this);
 
         //le 2eme user utilise le meme nom que pageEleveur1
-        $pageEleveurForm = $client->request('GET', '/')->filter('form#creation-page-eleveur')->form();
-        $pageEleveurForm['form[nom]'] = $pageEleveur1->getNom();
+        $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+        $pageEleveurForm['creation-page-eleveur[nom]'] = $pageEleveur1->getNom();
         $client->submit($pageEleveurForm);
 
         $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());

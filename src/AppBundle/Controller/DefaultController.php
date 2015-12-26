@@ -32,7 +32,7 @@ class DefaultController extends Controller
              */
             $formFactory = $this->get('form.factory');
 
-            $form = $formFactory->createBuilder()
+            $form = $formFactory->createNamedBuilder('creation-page-eleveur')
                 ->add('nom', 'text')
                 ->add('save', 'submit', array('label' => 'Créer ma page éleveur'))
                 ->getForm();
@@ -56,7 +56,7 @@ class DefaultController extends Controller
 
             return $this->render('index-new-eleveur.html.twig', [
                 'username' => $user->getUserName(),
-                'form' => $form->createView()
+                'creationPageEleveur' => $form->createView()
             ]);
         }
         else return $this->render('index-eleveur.html.twig', ['username' => $user->getUserName()]);
