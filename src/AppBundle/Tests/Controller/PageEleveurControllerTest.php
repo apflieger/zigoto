@@ -113,7 +113,7 @@ class PageEleveurControllerTest extends WebTestCase
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
 
-        $client->request('GET', '/logout');
+        UserUtils::logout($client);
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
 

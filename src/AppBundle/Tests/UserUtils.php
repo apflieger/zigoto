@@ -11,6 +11,7 @@ namespace AppBundle\Tests;
 
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Service\PageEleveurService;
+use FOS\UserBundle\Doctrine\UserManager;
 use FOS\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -25,25 +26,20 @@ class UserUtils
      */
     public static function create(Client $client, WebTestCase $test)
     {
-        $registrationForm = $client->request('GET', '/register/')->filter('form')->form();
-
-        $username = $test->getName() . rand();
-        // Création d'un nouvel utilisateur
-        $registrationForm['fos_user_registration_form[username]'] = $username;
-        $registrationForm['fos_user_registration_form[email]'] = $username . '@gizoto.com';
-        $registrationForm['fos_user_registration_form[plainPassword][first]'] = 'test';
-        $registrationForm['fos_user_registration_form[plainPassword][second]'] = 'test';
-
-        $client->submit($registrationForm);
         /**
-         * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
+         * @var $userManager UserManager
          */
-        $tokenStorage = $client->getContainer()->get('security.token_storage');
+        $userManager = $client->getContainer()->get('fos_user.user_manager');
+        $username = $test->getName() . rand();
+        $user = $userManager->createUser();
+        $user->setUsername($username);
+        $user->setEmail($username . '@gizoto.com');
+        $user->setPlainPassword('test');
+        $user->setEnabled(true);
+        $userManager->updateUser($user);
 
-        $user = $tokenStorage->getToken()->getUser();
-
-        if ($user === 'anon.')
-            throw new \Exception("Creation du user a échouée : " . $test->getName());
+        $client->setServerParameter('PHP_AUTH_USER', $username);
+        $client->setServerParameter('PHP_AUTH_PW', 'test');
         return $user;
     }
 
@@ -57,5 +53,11 @@ class UserUtils
         $pageEleveurService = $client->getContainer()->get('page_eleveur');
 
         return $pageEleveurService->create('elevage_' . $user->getUsername(), $user, $user);
+    }
+
+    public static function logout(Client $client)
+    {
+        $client->setServerParameters(array());
+        $client->getCookieJar()->clear();
     }
 }

@@ -68,11 +68,12 @@ class DefaultControllerTest extends WebTestCase
         $user = UserUtils::create($client, $this);
         $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
 
-        $client->request('GET', '/logout');
+        UserUtils::logout($client);
+
         $pageEleveurForm['creation-page-eleveur[nom]'] = $this->getName() . rand();
         $client->submit($pageEleveurForm);
 
-        $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $client->getResponse()->getStatusCode());
     }
 
     public function testDeuxUserMemePage()

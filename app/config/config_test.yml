@@ -21,3 +21,11 @@ doctrine:
 swiftmailer:
     disable_delivery: true
 
+security:
+    encoders:
+            # Les tests s'exécutent beaucoup plus vide sans le cryptage des mots de passe
+            FOS\UserBundle\Model\UserInterface: plaintext
+    firewalls:
+        fos:
+            form_login: false
+            http_basic: true
