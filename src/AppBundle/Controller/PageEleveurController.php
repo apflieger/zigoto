@@ -73,6 +73,9 @@ class PageEleveurController extends Controller
     /**
      * @Route("/commit-page-eleveur", name="commitPageEleveur")
      * @Method("POST")
+     * @param Request $request
+     * @return Response
+     * @throws \AppBundle\Service\PageEleveurException
      */
     public function commitAction(Request $request)
     {

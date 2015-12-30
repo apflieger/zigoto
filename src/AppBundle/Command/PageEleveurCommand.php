@@ -10,7 +10,6 @@ namespace AppBundle\Command;
 
 
 use AppBundle\Entity\ERole;
-use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
@@ -92,6 +91,7 @@ class PageEleveurCommand extends ContainerAwareCommand
          */
         $userManager = $this->getContainer()->get('fos_user.user_manager');
 
+        /** @var User $commandLineUser */
         $commandLineUser = $userManager->findUserByUsername('CommandLine');
 
         if (!$commandLineUser)

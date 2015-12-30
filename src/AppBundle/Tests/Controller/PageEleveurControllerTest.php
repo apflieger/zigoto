@@ -14,6 +14,7 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
 class PageEleveurControllerTest extends WebTestCase
@@ -48,7 +49,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
-        $script = $crawler->filter('script')->reduce(function ($script) {
+        $script = $crawler->filter('script')->reduce(function (Crawler $script) {
             return strpos($script->text(), 'const-js');
         });
         $this->assertEquals(1, $script->count());
@@ -76,7 +77,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
         // La réponse du POST retourne l'identifiant du commit créé dans le contenu
-        $newCommitId = $client->getResponse()->getContent();
+        $client->getResponse()->getContent();
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());

@@ -14,7 +14,6 @@ use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\PageEleveurReflog;
 use AppBundle\Entity\User;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Exception;

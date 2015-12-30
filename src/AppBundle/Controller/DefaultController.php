@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ERole;
+use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurException;
 use AppBundle\Service\PageEleveurService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -10,20 +11,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="index")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Exception
      */
     public function indexAction(Request $request)
     {
         /**
-         * @var \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage $tokenStorage
+         * @var TokenStorage $tokenStorage
          */
         $tokenStorage = $this->container->get('security.token_storage');
 
-        $user = $tokenStorage->getToken()->getUser();
+        /**
+         * @var AnonymousToken
+         */
+        $token = $tokenStorage->getToken();
+
+        /**
+         * @var User
+         */
+        $user = $token->getUser();
         if ($user == 'anon.')
             return $this->render('index.html.twig');
         else if (!$user->hasRole(ERole::ELEVEUR)){
