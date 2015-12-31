@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="page_eleveur")
  */
-class PageEleveur
+class PageEleveur implements BranchInterface
 {
     /**
      * @ORM\Id
@@ -50,7 +50,7 @@ class PageEleveur
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getUrl()
     {
@@ -58,7 +58,7 @@ class PageEleveur
     }
 
     /**
-     * @param string $url
+     * @inheritdoc
      */
     public function setUrl($url)
     {
@@ -66,20 +66,23 @@ class PageEleveur
     }
 
     /**
-     * @return User
+     * @inheritdoc
      */
     public function getOwner()
     {
         return $this->owner;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setOwner(User $owner)
     {
         $this->owner = $owner;
     }
 
     /**
-     * @return PageEleveurCommit
+     * @inheritdoc
      */
     public function getCommit()
     {
@@ -87,9 +90,9 @@ class PageEleveur
     }
 
     /**
-     * @param PageEleveurCommit $commit
+     * @inheritdoc
      */
-    public function setCommit(PageEleveurCommit $commit)
+    public function setCommit(CommitInterface $commit)
     {
         $this->commit = $commit;
     }

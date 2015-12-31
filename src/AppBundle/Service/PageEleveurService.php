@@ -45,6 +45,7 @@ class PageEleveurService
      * @param User $owner
      * @param User $commiter
      * @return PageEleveur
+     * @throws Exception
      * @throws PageEleveurException
      */
     public function create($nomPageEleveur, User $owner, User $commiter)
@@ -146,7 +147,7 @@ class PageEleveurService
     }
 
     /**
-     * @param $pageEleveurId
+     * @param $pageEleveurId int
      * @param PageEleveurCommit $commit
      * @param User $user
      * @throws PageEleveurException
@@ -180,17 +181,14 @@ class PageEleveurService
         $reflogMessage = 'error on commit';
         $reflogEntry = -1;
 
-        if (!$headReflog || empty($headReflog))
-        {
+        if (!$headReflog || empty($headReflog)) {
             $this->logger->error('Pas d\' entrée au reflog de ' . $pageEleveurId . ' - page eleveur ' . $pageEleveur->getId());
         }
-        else if ($headReflog[0]->getCommit()->getId() !== $commit->getParent()->getId())
-        {
+        else if ($headReflog[0]->getCommit()->getId() !== $commit->getParent()->getId()) {
             $this->logger->error('Incohérence dans le reflog de ' . $pageEleveurId . ' headReflog : ' . $headReflog[0]->getId() .
             ' n\'est pas sur le commit ' . $commit->getParent()->getId());
         }
-        else
-        {
+        else {
             $reflogMessage = 'commit';
             $reflogEntry = $headReflog[0]->getLogEntry() +1;
         }

@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="page_eleveur_commit")
  */
-class PageEleveurCommit
+class PageEleveurCommit implements CommitInterface
 {
     /**
      * @ORM\Id
