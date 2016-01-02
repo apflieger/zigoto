@@ -12,7 +12,9 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
+use AppBundle\Repository\PageEleveurCommitRepository;
 use AppBundle\Service\PageEleveurService;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,7 +102,11 @@ class PageEleveurController extends Controller
         if ($pageEleveur->getOwner()->getId() !== $user->getId())
             return new Response('Vous n\'avez pas les droit de modifier la page', Response::HTTP_FORBIDDEN);
 
-        $commit = $pageEleveurService->getCommit($clientPageEleveur->commit->id);
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        /** @var PageEleveurCommitRepository $pageEleveurCommitRepository */
+        $pageEleveurCommitRepository = $entityManager->getRepository('AppBundle:PageEleveurCommit');
+        $commit = $pageEleveurCommitRepository->find($clientPageEleveur->commit->id);
 
         $nom = $clientPageEleveur->commit->nom;
 

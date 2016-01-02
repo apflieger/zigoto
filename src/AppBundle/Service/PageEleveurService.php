@@ -134,19 +134,6 @@ class PageEleveurService
     }
 
     /**
-     * @param int $id
-     * @return PageEleveurCommit
-     */
-    public function getCommit($id)
-    {
-        /**
-         * @var PageEleveurCommit $pageEleveurCommit
-         */
-        $pageEleveurCommit = $this->doctrine->getRepository('AppBundle:PageEleveurCommit')->find($id);
-        return $pageEleveurCommit;
-    }
-
-    /**
      * @param $pageEleveurId int
      * @param PageEleveurCommit $commit
      * @param User $user
