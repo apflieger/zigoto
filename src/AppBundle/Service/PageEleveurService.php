@@ -120,20 +120,6 @@ class PageEleveurService
     }
 
     /**
-     * @param $url string
-     * @return PageEleveur
-     */
-    public function getByUrl($url)
-    {
-        /**
-         * @var PageEleveur $pageEleveur
-         */
-        $pageEleveur = $this->pageEleveurRepository->findOneBy(['url' => $url]);
-
-        return $pageEleveur;
-    }
-
-    /**
      * @param $pageEleveurId int
      * @param PageEleveurCommit $commit
      * @param User $user

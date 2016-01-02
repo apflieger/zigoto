@@ -12,9 +12,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageEleveurCommitRepository;
+use AppBundle\Repository\PageEleveurRepository;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,12 +31,13 @@ class PageEleveurController extends Controller
      */
     public function getAction($eleveurURL)
     {
-        /**
-         * @var PageEleveurService $pageEleveurService
-         */
-        $pageEleveurService = $this->container->get('page_eleveur');
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        /** @var PageEleveurRepository $pageEleveurRepository */
+        $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
 
-        $pageEleveur = $pageEleveurService->getByUrl($eleveurURL);
+        /** @var PageEleveur $pageEleveur */
+        $pageEleveur = $pageEleveurRepository->findByUrl($eleveurURL);
 
         if (!$pageEleveur)
             throw $this->createNotFoundException();
@@ -104,7 +106,7 @@ class PageEleveurController extends Controller
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        /** @var PageEleveurCommitRepository $pageEleveurCommitRepository */
+        /** @var EntityRepository $pageEleveurCommitRepository */
         $pageEleveurCommitRepository = $entityManager->getRepository('AppBundle:PageEleveurCommit');
         $commit = $pageEleveurCommitRepository->find($clientPageEleveur->commit->id);
 
