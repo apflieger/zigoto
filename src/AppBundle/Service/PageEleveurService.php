@@ -16,6 +16,7 @@ use AppBundle\Entity\PageEleveurReflog;
 use AppBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Exception;
 use Symfony\Bridge\Monolog\Logger;
 
@@ -23,20 +24,22 @@ use Symfony\Bridge\Monolog\Logger;
 class PageEleveurService
 {
 
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     private $doctrine;
 
-    /**
-     * @var Logger
-     */
+    /** @var Logger */
     private $logger;
 
-    public function __construct(EntityManager $doctrine, Logger $logger)
+    /** @var EntityRepository */
+    private $pageEleveurRepository;
+
+    public function __construct(EntityManager $doctrine,
+                                EntityRepository $pageEleveurRepository,
+                                Logger $logger)
     {
         $this->doctrine = $doctrine;
         $this->logger = $logger;
+        $this->pageEleveurRepository = $pageEleveurRepository;
     }
 
     /**
@@ -49,9 +52,7 @@ class PageEleveurService
      */
     public function create($nomPageEleveur, User $owner, User $commiter)
     {
-        $pageEleveurRepository = $this->doctrine->getRepository('AppBundle:PageEleveur');
-
-        if (empty($pageEleveurRepository))
+        if (empty($this->pageEleveurRepository))
             throw new Exception();
 
         $urlPageEleveur = self::convertToUrl($nomPageEleveur);
@@ -59,10 +60,10 @@ class PageEleveurService
         if (empty($urlPageEleveur))
             throw new Exception($nomPageEleveur);
 
-        if (count($pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
+        if (count($this->pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
             throw new PageEleveurException('Une page eleveur du meme nom existe deja');
 
-        if (count($pageEleveurRepository->findBy(['owner' => $owner])) > 0)
+        if (count($this->pageEleveurRepository->findBy(['owner' => $owner])) > 0)
             throw new PageEleveurException('Vous avez deja une page eleveur');
 
         $owner->addRole(ERole::ELEVEUR);
@@ -106,13 +107,13 @@ class PageEleveurService
         $ascii = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
 
         // suppression de tous les caractères qui ne sont pas des chiffres, lettres, ou "_+- "
-        $ascii = preg_replace("/[^a-zA-Z0-9\/_+ -]/", '', $ascii);
+        $ascii = preg_replace('/[^a-zA-Z0-9\/_+ -]/', '', $ascii);
 
         // lowercase
         $ascii = strtolower($ascii);
 
         // remplacement de tout ce qui n'est pas chiffres ou lettres par le séparateur '-'
-        $ascii = preg_replace("/[\/_+ -]+/", '-', $ascii);
+        $ascii = preg_replace('/[\/_+ -]+/', '-', $ascii);
 
         // trim
         return trim($ascii, '-');
@@ -127,7 +128,7 @@ class PageEleveurService
         /**
          * @var PageEleveur $pageEleveur
          */
-        $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->findOneBy(['url' => $url]);
+        $pageEleveur = $this->pageEleveurRepository->findOneBy(['url' => $url]);
 
         return $pageEleveur;
     }
@@ -156,7 +157,7 @@ class PageEleveurService
         /**
          * @var PageEleveur $pageEleveur
          */
-        $pageEleveur = $this->doctrine->getRepository('AppBundle:PageEleveur')->find($pageEleveurId);
+        $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
 
         if (!$pageEleveur)
             throw new PageEleveurException('Page eleveur n\'existe pas ' . $pageEleveurId);
@@ -212,7 +213,6 @@ class PageEleveurService
      */
     public function get($pageEleveurId)
     {
-        $pageEleveurRepository = $this->doctrine->getRepository('AppBundle:PageEleveur');
-        return $pageEleveurRepository->find($pageEleveurId);
+        return $this->pageEleveurRepository->find($pageEleveurId);
     }
 }

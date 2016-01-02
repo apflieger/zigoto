@@ -68,7 +68,7 @@ class PageEleveurServiceTest extends KernelTestCase
                 [ 'AppBundle:PageEleveurReflog', $this->pageEleveurReflogRepository]]));
 
         $this->logger = $this->getMockBuilder('Symfony\Bridge\Monolog\Logger')->disableOriginalConstructor()->getMock();
-        $this->pageEleveurService = new PageEleveurService($this->entityManager, $this->logger);
+        $this->pageEleveurService = new PageEleveurService($this->entityManager, $this->pageEleveurRepository, $this->logger);
     }
 
     /**

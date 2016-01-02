@@ -9,4 +9,7 @@ services:
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
     page_eleveur:
         class: AppBundle\Service\PageEleveurService
-        arguments : ["@doctrine.orm.entity_manager", "@logger"]
+        arguments :
+          - @doctrine.orm.entity_manager
+          - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
+          - @logger
