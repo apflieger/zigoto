@@ -179,13 +179,4 @@ class PageEleveurService
 
         $this->doctrine->flush();
     }
-
-    /**
-     * @param $pageEleveurId
-     * @return null|PageEleveur
-     */
-    public function get($pageEleveurId)
-    {
-        return $this->pageEleveurRepository->find($pageEleveurId);
-    }
 }

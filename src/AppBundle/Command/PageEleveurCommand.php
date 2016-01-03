@@ -47,11 +47,13 @@ class PageEleveurCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->pageEleveurService = $this->getContainer()->get('page_eleveur');
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
 
         $this->commandLineUser = $this->ensureCommandLineUser($output);
 
-        $pageEleveur = $this->pageEleveurService->get($input->getArgument('id'));
+        $pageEleveur = $pageEleveurRepository->find($input->getArgument('id'));
 
         if (!$pageEleveur)
             throw new Exception('Page eleveur ' . $input->getArgument('id') . ' n\'exiset pas.');

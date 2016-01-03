@@ -85,21 +85,16 @@ class PageEleveurController extends Controller
     {
         $clientPageEleveur = json_decode($request->getContent());
 
-        /**
-         * @var TokenStorage $tokenStorage
-         */
+        /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
-        /**
-         * @var User $user
-         */
+        /** @var User $user */
         $user = $tokenStorage->getToken()->getUser();
 
-        /**
-         * @var PageEleveurService $pageEleveurService
-         */
-        $pageEleveurService = $this->container->get('page_eleveur');
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->container->get('doctrine.orm.entity_manager');
+        $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
 
-        $pageEleveur = $pageEleveurService->get($clientPageEleveur->id);
+        $pageEleveur = $pageEleveurRepository->find($clientPageEleveur->id);
 
         if ($pageEleveur->getOwner()->getId() !== $user->getId())
             return new Response('Vous n\'avez pas les droit de modifier la page', Response::HTTP_FORBIDDEN);
@@ -115,6 +110,9 @@ class PageEleveurController extends Controller
         $description = $clientPageEleveur->commit->description;
 
         $newCommit = new PageEleveurCommit($nom, $description, $commit);
+
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->container->get('page_eleveur');
 
         $pageEleveurService->commit($clientPageEleveur->id, $newCommit, $user);
 
