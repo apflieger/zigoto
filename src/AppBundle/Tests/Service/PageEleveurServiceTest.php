@@ -76,7 +76,7 @@ class PageEleveurServiceTest extends KernelTestCase
      */
     public function testUrlVide()
     {
-        $this->pageEleveurService->create('', new User(), new User());
+        $this->pageEleveurService->create(new PageEleveur(new PageEleveurCommit('', '', null), new User()), new User());
     }
 
     /**
@@ -103,7 +103,7 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur();
+        $pageEleveur = new PageEleveur(null, $user);
         $pageEleveur->setOwner($user);
 
         $this->pageEleveurRepository->expects($this->any())
@@ -130,7 +130,7 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur();
+        $pageEleveur = new PageEleveur(null, $user);
         $pageEleveur->setOwner($user);
 
         $this->pageEleveurRepository->expects($this->any())
@@ -154,7 +154,7 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur();
+        $pageEleveur = new PageEleveur(null, $user);
         $pageEleveur->setOwner($user);
 
         $this->pageEleveurRepository->expects($this->any())
@@ -175,7 +175,7 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur();
+        $pageEleveur = new PageEleveur(null, $user);
         $pageEleveur->setOwner($user);
 
         $this->pageEleveurRepository->expects($this->any())
@@ -209,8 +209,8 @@ class PageEleveurServiceTest extends KernelTestCase
         $user = new User();
         $this->pageEleveurRepository
             ->method('findBy')
-            ->willReturn(array(), new PageEleveur());
-        $this->pageEleveurService->create('page2', $user, $user);
+            ->willReturn(array(), new PageEleveur(null, $user));
+        $this->pageEleveurService->create(new PageEleveur(new PageEleveurCommit('page2', '', null), $user), $user);
     }
 
     /**
@@ -221,8 +221,9 @@ class PageEleveurServiceTest extends KernelTestCase
         $user = new User();
         $this->pageEleveurRepository
             ->method('findBy')
-            ->willReturn(new PageEleveur());
-        $this->pageEleveurService->create('page2', $user, $user);
+            ->willReturn(new PageEleveur(null, $user));
+
+        $this->pageEleveurService->create(new PageEleveur(new PageEleveurCommit('page2', '', null), $user), $user);
     }
 
     public function testConvertionUrl()

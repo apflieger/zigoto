@@ -10,6 +10,7 @@ namespace AppBundle\Tests;
 
 
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\PageEleveurService;
 use FOS\UserBundle\Doctrine\UserManager;
 use FOS\UserBundle\Entity\User;
@@ -51,8 +52,7 @@ class UserUtils
          * @var PageEleveurService $pageEleveurService
          */
         $pageEleveurService = $client->getContainer()->get('page_eleveur');
-
-        return $pageEleveurService->create('elevage_' . $user->getUsername(), $user, $user);
+        return $pageEleveurService->create(new PageEleveur(new PageEleveurCommit('elevage_' . $user->getUsername(), '', null), $user), $user);
     }
 
     public static function logout(Client $client)

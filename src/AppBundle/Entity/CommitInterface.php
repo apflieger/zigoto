@@ -16,4 +16,9 @@ interface CommitInterface
      */
     public function getParent();
 
+    /**
+     * @return string
+     */
+    public function getNom();
+
 }

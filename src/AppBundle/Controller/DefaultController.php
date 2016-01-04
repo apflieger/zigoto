@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ERole;
+use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurException;
 use AppBundle\Service\PageEleveurService;
@@ -60,7 +62,8 @@ class DefaultController extends Controller
                 $pageEleveurService = $this->container->get('page_eleveur');
 
                 try {
-                    $url = $pageEleveurService->create($form->getData()['nom'], $user, $user)->getUrl();
+                    $pageEleveur = new PageEleveur(new PageEleveurCommit($form->getData()['nom'], '', null), $user);
+                    $url = $pageEleveurService->create($pageEleveur, $user)->getUrl();
                 } catch (PageEleveurException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 }

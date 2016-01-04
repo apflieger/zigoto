@@ -41,6 +41,12 @@ class PageEleveur implements BranchInterface
      */
     private $commit;
 
+    public function __construct(PageEleveurCommit $commit = null, User $owner)
+    {
+        $this->commit = $commit;
+        $this->owner = $owner;
+    }
+
     /**
      * @return int
      */

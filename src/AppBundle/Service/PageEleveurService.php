@@ -9,6 +9,7 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Entity\BranchInterface;
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
@@ -43,54 +44,51 @@ class PageEleveurService
     }
 
     /**
-     * @param string $nomPageEleveur
-     * @param User $owner
+     * @param BranchInterface $branch
      * @param User $commiter
      * @return PageEleveur
      * @throws Exception
      * @throws PageEleveurException
      */
-    public function create($nomPageEleveur, User $owner, User $commiter)
+    public function create(BranchInterface $branch, User $commiter)
     {
-        $urlPageEleveur = self::convertToUrl($nomPageEleveur);
+        if (!$branch->getCommit())
+            throw new Exception('Commit null');
 
-        if (empty($urlPageEleveur))
-            throw new Exception($nomPageEleveur);
+        if (!$branch->getOwner())
+            throw new Exception('Owner null');
 
-        if (count($this->pageEleveurRepository->findBy(['url' => $urlPageEleveur])) > 0)
+        if (empty($branch->getUrl()))
+            $branch->setUrl(self::convertToUrl($branch->getCommit()->getNom()));
+
+        if (empty($branch->getUrl()))
+            throw new Exception($branch->getCommit()->getNom());
+
+        if (count($this->pageEleveurRepository->findBy(['url' => $branch->getUrl()])) > 0)
             throw new PageEleveurException('Une page eleveur du meme nom existe deja');
 
-        if (count($this->pageEleveurRepository->findBy(['owner' => $owner])) > 0)
+        if (count($this->pageEleveurRepository->findBy(['owner' => $branch->getOwner()])) > 0)
             throw new PageEleveurException('Vous avez deja une page eleveur');
 
-        $owner->addRole(ERole::ELEVEUR);
-
-        //Création de la page eleveur
-        $pageEleveur = new PageEleveur();
-        $pageEleveur->setOwner($owner);
-        $pageEleveur->setUrl($urlPageEleveur);
-
-        $pageEleveurCommit = new PageEleveurCommit($nomPageEleveur, '', NULL);
-
-        $pageEleveur->setCommit($pageEleveurCommit);
+        $branch->getOwner()->addRole(ERole::ELEVEUR);
 
         //Ajout de la 1ere entrée dans le reflog de cette page
         $reflog = new PageEleveurReflog(
-            $pageEleveur,
+            $branch,
             $commiter,
             new \DateTime(),
             0,
-            $pageEleveur->getUrl(),
+            $branch->getUrl(),
             'create',
-            $pageEleveurCommit);
+            $branch->getCommit());
 
-        $this->doctrine->persist($pageEleveurCommit);
-        $this->doctrine->persist($pageEleveur);
+        $this->doctrine->persist($branch);
+        $this->doctrine->persist($branch->getCommit());
         $this->doctrine->persist($reflog);
 
         $this->doctrine->flush();
 
-        return $pageEleveur;
+        return $branch;
     }
 
 
