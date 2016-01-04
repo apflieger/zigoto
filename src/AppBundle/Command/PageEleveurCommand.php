@@ -11,7 +11,7 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
-use AppBundle\Service\PageEleveurService;
+use AppBundle\Service\HistoryService;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;

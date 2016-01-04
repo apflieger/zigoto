@@ -13,7 +13,7 @@ use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurException;
-use AppBundle\Service\PageEleveurService;
+use AppBundle\Service\HistoryService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -28,7 +28,7 @@ class PageEleveurServiceTest extends KernelTestCase
     private $entityManager;
 
     /**
-     * @var PageEleveurService $pageEleveurService
+     * @var HistoryService $pageEleveurService
      */
     private $pageEleveurService;
 
@@ -62,7 +62,7 @@ class PageEleveurServiceTest extends KernelTestCase
                 ['AppBundle:PageEleveur',$this->pageEleveurRepository]]));
 
         $this->logger = $this->getMockBuilder('Symfony\Bridge\Monolog\Logger')->disableOriginalConstructor()->getMock();
-        $this->pageEleveurService = new PageEleveurService($this->entityManager, $this->pageEleveurRepository, $this->logger);
+        $this->pageEleveurService = new HistoryService($this->entityManager, $this->pageEleveurRepository, $this->logger);
     }
 
     /**
@@ -167,21 +167,21 @@ class PageEleveurServiceTest extends KernelTestCase
     public function testConvertionUrl()
     {
         // conservation des caractères de base
-        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', HistoryService::convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
 
         // trim
-        $this->assertEquals('aaa', PageEleveurService::convertToUrl(' aaa '));
+        $this->assertEquals('aaa', HistoryService::convertToUrl(' aaa '));
 
         // to lowercase
-        $this->assertEquals('aaa', PageEleveurService::convertToUrl('AaA'));
+        $this->assertEquals('aaa', HistoryService::convertToUrl('AaA'));
 
         // suppression des caractères spéciaux
-        $this->assertEquals('', PageEleveurService::convertToUrl('!?,.<>=&'));
+        $this->assertEquals('', HistoryService::convertToUrl('!?,.<>=&'));
 
         // remplacement des caractères convertibles
-        $this->assertEquals('eureace', PageEleveurService::convertToUrl('€éàçè&'));
+        $this->assertEquals('eureace', HistoryService::convertToUrl('€éàçè&'));
 
         // espaces convertis en dash
-        $this->assertEquals('un-deux-trois', PageEleveurService::convertToUrl('un deux trois'));
+        $this->assertEquals('un-deux-trois', HistoryService::convertToUrl('un deux trois'));
     }
 }

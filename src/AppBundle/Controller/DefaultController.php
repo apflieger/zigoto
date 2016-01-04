@@ -7,7 +7,7 @@ use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurException;
-use AppBundle\Service\PageEleveurService;
+use AppBundle\Service\HistoryService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
@@ -57,9 +57,9 @@ class DefaultController extends Controller
 
             if ($form->isSubmitted() && $form->isValid()) {
                 /**
-                 * @var $pageEleveurService PageEleveurService
+                 * @var $pageEleveurService HistoryService
                  */
-                $pageEleveurService = $this->container->get('page_eleveur');
+                $pageEleveurService = $this->container->get('zigoto.history');
 
                 try {
                     $pageEleveur = new PageEleveur(new PageEleveurCommit($form->getData()['nom'], '', null), $user);

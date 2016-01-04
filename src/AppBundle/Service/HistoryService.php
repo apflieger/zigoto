@@ -20,7 +20,7 @@ use Exception;
 use Symfony\Bridge\Monolog\Logger;
 
 
-class PageEleveurService
+class HistoryService
 {
 
     /** @var ObjectManager */
