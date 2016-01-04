@@ -72,6 +72,14 @@ class PageEleveurServiceTest extends KernelTestCase
     }
 
     /**
+     * @expectedException \Exception
+     */
+    public function testUrlVide()
+    {
+        $this->pageEleveurService->create('', new User(), new User());
+    }
+
+    /**
      * @expectedException \AppBundle\Service\PageEleveurException
      */
     public function testPageInexistante()

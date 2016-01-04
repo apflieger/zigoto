@@ -52,9 +52,6 @@ class PageEleveurService
      */
     public function create($nomPageEleveur, User $owner, User $commiter)
     {
-        if (empty($this->pageEleveurRepository))
-            throw new Exception();
-
         $urlPageEleveur = self::convertToUrl($nomPageEleveur);
 
         if (empty($urlPageEleveur))
