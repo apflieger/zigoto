@@ -21,18 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PageEleveurCommand extends ContainerAwareCommand
 {
-    const CMD_DELETE = 'delete';
-
-    /**
-     * @var PageEleveurService
-     */
-    private $pageEleveurService;
-
-    /**
-     * @var \FOS\UserBundle\Model\UserInterface
-     */
-    private $commandLineUser;
-
     protected function configure()
     {
         $this
@@ -50,8 +38,6 @@ class PageEleveurCommand extends ContainerAwareCommand
         /** @var EntityManager $entityManager */
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
-
-        $this->commandLineUser = $this->ensureCommandLineUser($output);
 
         $pageEleveur = $pageEleveurRepository->find($input->getArgument('id'));
 
@@ -80,37 +66,5 @@ class PageEleveurCommand extends ContainerAwareCommand
         $doctrine->remove($pageEleveur);
         $doctrine->flush();
         return 0;
-    }
-
-    /**
-     * @param OutputInterface $output
-     * @return \FOS\UserBundle\Model\UserInterface
-     */
-    private function ensureCommandLineUser(OutputInterface $output)
-    {
-        /**
-         * @var \FOS\UserBundle\Doctrine\UserManager $userManager
-         */
-        $userManager = $this->getContainer()->get('fos_user.user_manager');
-
-        /** @var User $commandLineUser */
-        $commandLineUser = $userManager->findUserByUsername('CommandLine');
-
-        if (!$commandLineUser)
-        {
-            $commandLineUser = $userManager->createUser();
-            $commandLineUser->setUsername('CommandLine');
-            $commandLineUser->setEmail('CommandLine@zigoto.com');
-            $commandLineUser->setPlainPassword('tatouine');
-            /**
-             * @var EntityManager $entityManager
-             */
-            $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-            $entityManager->persist($commandLineUser);
-            $entityManager->flush($commandLineUser);
-            $output->writeln('1ere utilisation de la commande');
-            $output->writeln('Création du user CommandLine id '.$commandLineUser->getId());
-        }
-        return $commandLineUser;
     }
 }
