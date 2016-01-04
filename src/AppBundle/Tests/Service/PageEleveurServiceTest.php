@@ -33,9 +33,9 @@ class PageEleveurServiceTest extends KernelTestCase
     private $pageEleveurService;
 
     /**
-     * @var EntityRepository $pageEleveurRepository $pageEleveurReflogRepository
+     * @var EntityRepository $pageEleveurRepository
      */
-    private $pageEleveurRepository, $pageEleveurReflogRepository;
+    private $pageEleveurRepository;
 
     private $logger;
 
@@ -51,11 +51,6 @@ class PageEleveurServiceTest extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageEleveurReflogRepository = $this
-            ->getMockBuilder('\Doctrine\ORM\EntityRepository')
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $this->entityManager = $this
             ->getMockBuilder('\Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
@@ -64,8 +59,7 @@ class PageEleveurServiceTest extends KernelTestCase
         $this->entityManager->expects($this->any())
             ->method('getRepository')
             ->will($this->returnValueMap([
-                ['AppBundle:PageEleveur',$this->pageEleveurRepository],
-                [ 'AppBundle:PageEleveurReflog', $this->pageEleveurReflogRepository]]));
+                ['AppBundle:PageEleveur',$this->pageEleveurRepository]]));
 
         $this->logger = $this->getMockBuilder('Symfony\Bridge\Monolog\Logger')->disableOriginalConstructor()->getMock();
         $this->pageEleveurService = new PageEleveurService($this->entityManager, $this->pageEleveurRepository, $this->logger);
@@ -112,11 +106,6 @@ class PageEleveurServiceTest extends KernelTestCase
         $commit1 = $this->newCommit(1);
         $pageEleveur->setCommit($commit1);
 
-        $reflog1 = $this->getMockBuilder('\AppBundle\Entity\PageEleveurReflog')
-            ->disableOriginalConstructor()->getMock();
-        $reflog1->method('getCommit')->willReturn($commit1);
-        $this->pageEleveurReflogRepository->method('findBy')->willReturn([$reflog1]);
-
         $commit2 = $this->newCommit(2, $commit1);
 
         $this->logger->expects($this->never())->method('error');
@@ -147,57 +136,6 @@ class PageEleveurServiceTest extends KernelTestCase
         $commit3 = $this->newCommit(3, $commit1);
 
         // le commit sur commit3 doit échouer car il n'est pas fastforward depuis commit2
-        $this->pageEleveurService->commit('', $commit3, $user);
-    }
-
-    public function testReflogManquant()
-    {
-        $user = new User();
-        $user->setId(1);
-        $pageEleveur = new PageEleveur(null, $user);
-        $pageEleveur->setOwner($user);
-
-        $this->pageEleveurRepository->expects($this->any())
-            ->method('find')->withAnyParameters()->willReturn($pageEleveur);
-
-        $commit1 = $this->newCommit(1);
-        $pageEleveur->setCommit($commit1);
-
-        $this->pageEleveurReflogRepository->method('findBy')->willReturn([]);
-
-        $commit2= $this->newCommit(2, $commit1);
-
-        $this->logger->expects($this->once())->method('error');
-        $this->pageEleveurService->commit('', $commit2, $user);
-    }
-
-    public function testReflogIncoherent()
-    {
-        $user = new User();
-        $user->setId(1);
-        $pageEleveur = new PageEleveur(null, $user);
-        $pageEleveur->setOwner($user);
-
-        $this->pageEleveurRepository->expects($this->any())
-            ->method('find')->withAnyParameters()->willReturn($pageEleveur);
-
-        $commit1 = $this->newCommit(1);
-
-        // le reflog est resté sur commit1
-        $reflog1 = $this->getMockBuilder('\AppBundle\Entity\PageEleveurReflog')
-            ->disableOriginalConstructor()->getMock();
-        $reflog1->method('getCommit')->willReturn($commit1);
-        $this->pageEleveurReflogRepository->method('findBy')->willReturn([$reflog1]);
-
-        // la page est sur commit2
-        $commit2= $this->newCommit(2, $commit1);
-        $pageEleveur->setCommit($commit2);
-
-        //on essaye de commiter commit3 descendant de commit2
-        $commit3= $this->newCommit(3, $commit2);
-
-        // le reflog n'est pas là où il devrait être (commit2) mais le commit passe quand meme
-        $this->logger->expects($this->once())->method('error');
         $this->pageEleveurService->commit('', $commit3, $user);
     }
 

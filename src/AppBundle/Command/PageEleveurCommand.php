@@ -55,13 +55,6 @@ class PageEleveurCommand extends ContainerAwareCommand
          * @var \Doctrine\ORM\EntityManager $doctrine
          */
         $doctrine = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $reflogs = $doctrine->getRepository('AppBundle:PageEleveurReflog')->findBy(
-            array('pageEleveur' => $pageEleveur)
-        );
-
-        foreach ($reflogs as $reflog) {
-            $doctrine->remove($reflog);
-        }
 
         $doctrine->remove($pageEleveur);
         $doctrine->flush();
