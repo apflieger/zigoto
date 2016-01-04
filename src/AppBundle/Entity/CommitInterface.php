@@ -21,4 +21,9 @@ interface CommitInterface
      */
     public function getNom();
 
+    /**
+     * @return int
+     */
+    public function getId();
+
 }

@@ -10,9 +10,8 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\BranchInterface;
+use AppBundle\Entity\CommitInterface;
 use AppBundle\Entity\ERole;
-use AppBundle\Entity\PageEleveur;
-use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
@@ -45,7 +44,7 @@ class PageEleveurService
     /**
      * @param BranchInterface $branch
      * @param User $commiter
-     * @return PageEleveur
+     * @return BranchInterface
      * @throws Exception
      * @throws PageEleveurException
      */
@@ -104,14 +103,14 @@ class PageEleveurService
 
     /**
      * @param $pageEleveurId int
-     * @param PageEleveurCommit $commit
+     * @param CommitInterface $commit
      * @param User $user
      * @throws PageEleveurException
      */
-    public function commit($pageEleveurId, PageEleveurCommit $commit, User $user)
+    public function commit($pageEleveurId, CommitInterface $commit, User $user)
     {
         /**
-         * @var PageEleveur $pageEleveur
+         * @var BranchInterface $pageEleveur
          */
         $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
 
