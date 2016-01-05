@@ -32,6 +32,17 @@ class DefaultControllerTest extends WebTestCase
         $this->assertCount(1, $crawler->filter('form[name="creation-page-eleveur"]'));
     }
 
+    public function testIndexEleveur()
+    {
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        $crawler = $client->request('GET', '/');
+
+        // L'eleveur a un lien vers sa page
+        $this->assertContains($pageEleveur->getUrl(), $crawler->filter('a#page-eleveur')->attr('href'));
+    }
+
     public function testCreationPageEleveur()
     {
         $client = static::createClient();

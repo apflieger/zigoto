@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
+use AppBundle\Repository\PageEleveurRepository;
 use AppBundle\Service\PageEleveurService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -72,6 +73,16 @@ class DefaultController extends Controller
                 'creationPageEleveur' => $form->createView()
             ]);
         }
-        else return $this->render('index-eleveur.html.twig', ['username' => $user->getUserName()]);
+        else {
+            /** @var PageEleveurRepository $pageEleveurRepository */
+            $pageEleveurRepository = $this->get('doctrine.orm.entity_manager')->getRepository('AppBundle:PageEleveur');
+            $pageEleveur = $pageEleveurRepository->findOneBy([
+                'owner' => $user
+            ]);
+            return $this->render('index-eleveur.html.twig', [
+                'username' => $user->getUserName(),
+                'pageEleveur' => $pageEleveur
+            ]);
+        }
     }
 }
