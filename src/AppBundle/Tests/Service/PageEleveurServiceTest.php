@@ -14,6 +14,7 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\PageEleveurException;
 use AppBundle\Service\HistoryService;
+use AppBundle\Service\PageEleveurService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -37,7 +38,11 @@ class PageEleveurServiceTest extends KernelTestCase
      */
     private $pageEleveurRepository;
 
-    private $logger;
+    /**
+     * @var HistoryService $historyService
+     */
+    private $historyService;
+
 
     /**
      * @before
@@ -61,8 +66,8 @@ class PageEleveurServiceTest extends KernelTestCase
             ->will($this->returnValueMap([
                 ['AppBundle:PageEleveur',$this->pageEleveurRepository]]));
 
-        $this->logger = $this->getMockBuilder('Symfony\Bridge\Monolog\Logger')->disableOriginalConstructor()->getMock();
-        $this->pageEleveurService = new HistoryService($this->entityManager, $this->pageEleveurRepository, $this->logger);
+        $this->historyService = new HistoryService($this->entityManager, $this->pageEleveurRepository);
+        $this->pageEleveurService = new PageEleveurService($this->historyService, $this->pageEleveurRepository);
     }
 
     /**
@@ -70,7 +75,7 @@ class PageEleveurServiceTest extends KernelTestCase
      */
     public function testUrlVide()
     {
-        $this->pageEleveurService->create(new PageEleveur(new PageEleveurCommit('', '', null), new User()), new User());
+        $this->pageEleveurService->create('', new User());
     }
 
     /**
@@ -81,7 +86,7 @@ class PageEleveurServiceTest extends KernelTestCase
         $this->pageEleveurRepository->expects($this->any())
             ->method('find')->withAnyParameters()->willReturn(null);
 
-        $this->pageEleveurService->commit('', new PageEleveurCommit('', '', null), new User());
+        $this->historyService->commit('', new PageEleveurCommit('', '', null), new User());
     }
 
     private function newCommit($id, $parent = null)
@@ -108,8 +113,7 @@ class PageEleveurServiceTest extends KernelTestCase
 
         $commit2 = $this->newCommit(2, $commit1);
 
-        $this->logger->expects($this->never())->method('error');
-        $this->pageEleveurService->commit('', $commit2, $user);
+        $this->historyService->commit('', $commit2, $user);
     }
 
     /**
@@ -136,7 +140,7 @@ class PageEleveurServiceTest extends KernelTestCase
         $commit3 = $this->newCommit(3, $commit1);
 
         // le commit sur commit3 doit échouer car il n'est pas fastforward depuis commit2
-        $this->pageEleveurService->commit('', $commit3, $user);
+        $this->historyService->commit('', $commit3, $user);
     }
 
     /**
@@ -148,7 +152,7 @@ class PageEleveurServiceTest extends KernelTestCase
         $this->pageEleveurRepository
             ->method('findBy')
             ->willReturn(array(), new PageEleveur(null, $user));
-        $this->pageEleveurService->create(new PageEleveur(new PageEleveurCommit('page2', '', null), $user), $user);
+        $this->pageEleveurService->create('page2', $user);
     }
 
     /**
@@ -161,27 +165,27 @@ class PageEleveurServiceTest extends KernelTestCase
             ->method('findBy')
             ->willReturn(new PageEleveur(null, $user));
 
-        $this->pageEleveurService->create(new PageEleveur(new PageEleveurCommit('page2', '', null), $user), $user);
+        $this->pageEleveurService->create('page2', $user);
     }
 
     public function testConvertionUrl()
     {
         // conservation des caractères de base
-        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', HistoryService::convertToUrl('azertyuiopqsdfghjklmwxcvbn1234567890'));
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::slug('azertyuiopqsdfghjklmwxcvbn1234567890'));
 
         // trim
-        $this->assertEquals('aaa', HistoryService::convertToUrl(' aaa '));
+        $this->assertEquals('aaa', PageEleveurService::slug(' aaa '));
 
         // to lowercase
-        $this->assertEquals('aaa', HistoryService::convertToUrl('AaA'));
+        $this->assertEquals('aaa', PageEleveurService::slug('AaA'));
 
         // suppression des caractères spéciaux
-        $this->assertEquals('', HistoryService::convertToUrl('!?,.<>=&'));
+        $this->assertEquals('', PageEleveurService::slug('!?,.<>=&'));
 
         // remplacement des caractères convertibles
-        $this->assertEquals('eureace', HistoryService::convertToUrl('€éàçè&'));
+        $this->assertEquals('eureace', PageEleveurService::slug('€éàçè&'));
 
         // espaces convertis en dash
-        $this->assertEquals('un-deux-trois', HistoryService::convertToUrl('un deux trois'));
+        $this->assertEquals('un-deux-trois', PageEleveurService::slug('un deux trois'));
     }
 }

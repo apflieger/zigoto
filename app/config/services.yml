@@ -10,6 +10,11 @@ services:
     zigoto.history:
         class: AppBundle\Service\HistoryService
         arguments :
-          - @doctrine.orm.entity_manager
-          - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
-          - @logger
+            - @doctrine.orm.entity_manager
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
+
+    zigoto.page_eleveur:
+        class: AppBundle\Service\PageEleveurService
+        arguments:
+            - @zigoto.history
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')

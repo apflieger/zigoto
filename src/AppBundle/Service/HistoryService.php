@@ -22,33 +22,25 @@ use Symfony\Bridge\Monolog\Logger;
 
 class HistoryService
 {
-
     /** @var ObjectManager */
     private $doctrine;
-
-    /** @var Logger */
-    private $logger;
 
     /** @var EntityRepository */
     private $pageEleveurRepository;
 
     public function __construct(EntityManager $doctrine,
-                                EntityRepository $pageEleveurRepository,
-                                Logger $logger)
+                                EntityRepository $pageEleveurRepository)
     {
         $this->doctrine = $doctrine;
-        $this->logger = $logger;
         $this->pageEleveurRepository = $pageEleveurRepository;
     }
 
     /**
      * @param BranchInterface $branch
-     * @param User $commiter
      * @return BranchInterface
      * @throws Exception
-     * @throws PageEleveurException
      */
-    public function create(BranchInterface $branch, User $commiter)
+    public function create(BranchInterface $branch)
     {
         if (!$branch->getCommit())
             throw new Exception('Commit null');
@@ -57,18 +49,7 @@ class HistoryService
             throw new Exception('Owner null');
 
         if (empty($branch->getUrl()))
-            $branch->setUrl(self::convertToUrl($branch->getCommit()->getNom()));
-
-        if (empty($branch->getUrl()))
-            throw new Exception($branch->getCommit()->getNom());
-
-        if (count($this->pageEleveurRepository->findBy(['url' => $branch->getUrl()])) > 0)
-            throw new PageEleveurException('Une page eleveur du meme nom existe deja');
-
-        if (count($this->pageEleveurRepository->findBy(['owner' => $branch->getOwner()])) > 0)
-            throw new PageEleveurException('Vous avez deja une page eleveur');
-
-        $branch->getOwner()->addRole(ERole::ELEVEUR);
+            throw new Exception('Slug null');
 
         $this->doctrine->persist($branch);
         $this->doctrine->persist($branch->getCommit());
@@ -79,27 +60,7 @@ class HistoryService
     }
 
 
-    /**
-     * @param $str string
-     * @return string
-     */
-    public static function convertToUrl($str)
-    {
-        // conversion de tous les caractères spéciaux vers de l'ascii
-        $ascii = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
 
-        // suppression de tous les caractères qui ne sont pas des chiffres, lettres, ou "_+- "
-        $ascii = preg_replace('/[^a-zA-Z0-9\/_+ -]/', '', $ascii);
-
-        // lowercase
-        $ascii = strtolower($ascii);
-
-        // remplacement de tout ce qui n'est pas chiffres ou lettres par le séparateur '-'
-        $ascii = preg_replace('/[\/_+ -]+/', '-', $ascii);
-
-        // trim
-        return trim($ascii, '-');
-    }
 
     /**
      * @param $pageEleveurId int

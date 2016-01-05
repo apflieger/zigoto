@@ -59,11 +59,10 @@ class DefaultController extends Controller
                 /**
                  * @var $pageEleveurService HistoryService
                  */
-                $pageEleveurService = $this->container->get('zigoto.history');
+                $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
                 try {
-                    $pageEleveur = new PageEleveur(new PageEleveurCommit($form->getData()['nom'], '', null), $user);
-                    $url = $pageEleveurService->create($pageEleveur, $user)->getUrl();
+                    $url = $pageEleveurService->create($form->getData()['nom'], $user)->getUrl();
                 } catch (PageEleveurException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 }

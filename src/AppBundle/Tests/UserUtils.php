@@ -12,6 +12,7 @@ namespace AppBundle\Tests;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\HistoryService;
+use AppBundle\Service\PageEleveurService;
 use FOS\UserBundle\Doctrine\UserManager;
 use FOS\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -49,10 +50,10 @@ class UserUtils
         $user = self::create($client, $test);
 
         /**
-         * @var HistoryService $pageEleveurService
+         * @var PageEleveurService $pageEleveurService
          */
-        $pageEleveurService = $client->getContainer()->get('zigoto.history');
-        return $pageEleveurService->create(new PageEleveur(new PageEleveurCommit('elevage_' . $user->getUsername(), '', null), $user), $user);
+        $pageEleveurService = $client->getContainer()->get('zigoto.page_eleveur');
+        return $pageEleveurService->create('elevage_' . $user->getUsername(), $user);
     }
 
     public static function logout(Client $client)
