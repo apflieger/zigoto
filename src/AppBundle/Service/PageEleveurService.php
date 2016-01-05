@@ -9,6 +9,7 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Controller\DisplayableException;
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
@@ -37,10 +38,17 @@ class PageEleveurService
         $this->pageEleveurCommitRepository = $pageEleveurCommitRepository;
     }
 
+    /**
+     * @param string $nom
+     * @param User $owner
+     * @return \AppBundle\Entity\BranchInterface|PageEleveur
+     * @throws DisplayableException
+     * @throws \Exception
+     */
     public function create(string $nom, User $owner)
     {
         if (count($this->pageEleveurRepository->findBy(['owner' => $owner])) > 0)
-            throw new PageEleveurException('user ' . $owner->getId() . ' a deja une page eleveur');
+            throw new DisplayableException('user ' . $owner->getId() . ' a deja une page eleveur');
 
 
         $commit = new PageEleveurCommit($nom, '', null);
@@ -50,16 +58,14 @@ class PageEleveurService
         $pageEleveur->setUrl(self::slug($nom));
 
         if (empty($pageEleveur->getUrl()))
-            throw new PageEleveurException('Le nom n\'"'.$nom.'"est pas valide');
+            throw new DisplayableException('Le nom n\'"'.$nom.'"est pas valide');
 
         if (count($this->pageEleveurRepository->findBy(['url' => $pageEleveur->getUrl()])) > 0)
-            throw new PageEleveurException('Une page eleveur du meme nom existe deja');
+            throw new DisplayableException('Une page eleveur du meme nom existe deja');
 
-        try {
-            return $this->history->create($pageEleveur);
-        } finally {
-            $owner->addRole(ERole::ELEVEUR);
-        }
+        $pageEleveur = $this->history->create($pageEleveur);
+        $owner->addRole(ERole::ELEVEUR);
+        return $pageEleveur;
     }
 
     /**
@@ -91,7 +97,7 @@ class PageEleveurService
      * @param string $nom
      * @param string $description
      * @return PageEleveurCommit
-     * @throws PageEleveurException
+     * @throws HistoryException
      */
     public function commit(User $user, int $pageEleveurId, int $currentCommitId, string $nom, string $description)
     {

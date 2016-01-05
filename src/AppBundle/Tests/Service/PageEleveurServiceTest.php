@@ -12,7 +12,7 @@ namespace AppBundle\Tests\Service;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
-use AppBundle\Service\PageEleveurException;
+use AppBundle\Service\HistoryException;
 use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -92,7 +92,7 @@ class PageEleveurServiceTest extends KernelTestCase
     }
 
     /**
-     * @expectedException \AppBundle\Service\PageEleveurException
+     * @expectedException \AppBundle\Service\HistoryException
      */
     public function testPageInexistante()
     {
@@ -140,7 +140,7 @@ class PageEleveurServiceTest extends KernelTestCase
     }
 
     /**
-     * @expectedException \AppBundle\Service\PageEleveurException
+     * @expectedException \AppBundle\Service\HistoryException
      */
     public function testCommitNonFastForward()
     {
@@ -168,7 +168,7 @@ class PageEleveurServiceTest extends KernelTestCase
     }
 
     /**
-     * @expectedException \AppBundle\Service\PageEleveurException
+     * @expectedException \Exception
      */
     public function testUnUserDeuxPages()
     {
@@ -180,7 +180,7 @@ class PageEleveurServiceTest extends KernelTestCase
     }
 
     /**
-     * @expectedException \AppBundle\Service\PageEleveurException
+     * @expectedException \Exception
      */
     public function testDeuxUserMemePage()
     {

@@ -13,6 +13,7 @@ use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageEleveurRepository;
+use AppBundle\Service\HistoryException;
 use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
@@ -80,7 +81,6 @@ class PageEleveurController extends Controller
      * @Method("POST")
      * @param Request $request
      * @return Response
-     * @throws \AppBundle\Service\PageEleveurException
      */
     public function commitAction(Request $request)
     {
@@ -113,8 +113,20 @@ class PageEleveurController extends Controller
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
-        $newCommit = $pageEleveurService->commit($user, $clientPageEleveur->id, $commit->getId(), $nom, $description);
-
-        return new Response($newCommit->getId());
+        try {
+            $newCommit = $pageEleveurService->commit($user, $clientPageEleveur->id, $commit->getId(), $nom, $description);
+            return new Response($newCommit->getId());
+        } catch (HistoryException $e) {
+            $message = '';
+            switch ($e->getType()) {
+                case HistoryException::BRANCHE_INCONNUE:
+                    $message = 'Votre page a été supprimée.';
+                    break;
+                case HistoryException::NON_FAST_FORWARD:
+                    $message = 'Plusieurs édition de la page sont en cours, veuillez rafraichir.';
+                    break;
+            }
+            return new Response($message, Response::HTTP_CONFLICT);
+        }
     }
 }

@@ -6,7 +6,7 @@ use AppBundle\Entity\ERole;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
-use AppBundle\Service\PageEleveurException;
+use AppBundle\Service\HistoryException;
 use AppBundle\Service\HistoryService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -63,7 +63,7 @@ class DefaultController extends Controller
 
                 try {
                     $url = $pageEleveurService->create($form->getData()['nom'], $user)->getUrl();
-                } catch (PageEleveurException $e) {
+                } catch (DisplayableException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 }
 

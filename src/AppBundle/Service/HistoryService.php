@@ -24,13 +24,13 @@ class HistoryService
     private $doctrine;
 
     /** @var EntityRepository */
-    private $pageEleveurRepository;
+    private $branchRepository;
 
     public function __construct(EntityManager $doctrine,
-                                EntityRepository $pageEleveurRepository)
+                                EntityRepository $branchRepository)
     {
         $this->doctrine = $doctrine;
-        $this->pageEleveurRepository = $pageEleveurRepository;
+        $this->branchRepository = $branchRepository;
     }
 
     /**
@@ -58,25 +58,23 @@ class HistoryService
     }
 
     /**
-     * @param $pageEleveurId int
+     * @param $branchId int
      * @param CommitInterface $commit
      * @param User $user
-     * @throws PageEleveurException
+     * @throws HistoryException
      */
-    public function commit($pageEleveurId, CommitInterface $commit, User $user)
+    public function commit($branchId, CommitInterface $commit, User $user)
     {
         /**
          * @var BranchInterface $pageEleveur
          */
-        $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
+        $pageEleveur = $this->branchRepository->find($branchId);
 
         if (!$pageEleveur)
-            throw new PageEleveurException('Page eleveur n\'existe pas ' . $pageEleveurId);
+            throw new HistoryException(HistoryException::BRANCHE_INCONNUE);
 
         if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
-            throw new PageEleveurException('Commit non fast forward : ' .
-                $commit->getParent()->getId() .
-                ', parent à ' . $pageEleveur->getCommit()->getId());
+            throw new HistoryException(HistoryException::NON_FAST_FORWARD);
 
         $this->doctrine->persist($commit);
         $pageEleveur->setCommit($commit);
