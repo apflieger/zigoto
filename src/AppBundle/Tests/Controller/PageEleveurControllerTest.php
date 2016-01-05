@@ -12,6 +12,7 @@ namespace AppBundle\Tests\Controller;
 use AppBundle\Controller\PageEleveurController;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\HistoryService;
+use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -34,13 +35,16 @@ class PageEleveurControllerTest extends WebTestCase
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
 
-        /**
-         * @var HistoryService $pageEleveurService
-         */
-        $pageEleveurService = $client->getContainer()->get('zigoto.history');
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $client->getContainer()->get('zigoto.page_eleveur');
 
-        $commit = new PageEleveurCommit($pageEleveur->getNom(), 'nouvelle description', $pageEleveur->getCommit());
-        $pageEleveurService->commit($pageEleveur->getId(), $commit, $pageEleveur->getOwner());
+        $pageEleveurService->commit(
+            $pageEleveur->getOwner(),
+            $pageEleveur->getId(),
+            $pageEleveur->getCommit()->getId(),
+            $pageEleveur->getNom(),
+            'nouvelle description'
+            );
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
 

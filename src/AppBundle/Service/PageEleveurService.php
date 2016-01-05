@@ -13,23 +13,28 @@ use AppBundle\Entity\ERole;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
+use AppBundle\Repository\PageEleveurRepository;
 use Doctrine\ORM\EntityRepository;
 
 class PageEleveurService
 {
-    /**
-     * @var HistoryService
-     */
+    /** @var HistoryService */
     private $history;
-    /**
-     * @var EntityRepository
-     */
+
+    /** @var PageEleveurRepository */
     private $pageEleveurRepository;
 
-    public function __construct(HistoryService $history, EntityRepository $pageEleveurRepository)
+    /** @var EntityRepository */
+    private $pageEleveurCommitRepository;
+
+    public function __construct(
+        HistoryService $history,
+        PageEleveurRepository $pageEleveurRepository,
+        EntityRepository $pageEleveurCommitRepository)
     {
         $this->history = $history;
         $this->pageEleveurRepository = $pageEleveurRepository;
+        $this->pageEleveurCommitRepository = $pageEleveurCommitRepository;
     }
 
     public function create(string $nom, User $owner)
@@ -77,5 +82,26 @@ class PageEleveurService
 
         // trim
         return trim($ascii, '-');
+    }
+
+    /**
+     * @param User $user
+     * @param int $pageEleveurId
+     * @param int $currentCommitId
+     * @param string $nom
+     * @param string $description
+     * @return PageEleveurCommit
+     * @throws PageEleveurException
+     */
+    public function commit(User $user, int $pageEleveurId, int $currentCommitId, string $nom, string $description)
+    {
+        /** @var PageEleveurCommit $pageEleveur */
+        $pageEleveurCommit = $this->pageEleveurCommitRepository->find($currentCommitId);
+
+        $commit = new PageEleveurCommit($nom, $description, $pageEleveurCommit);
+
+        $this->history->commit($pageEleveurId, $commit, $user);
+
+        return $commit;
     }
 }

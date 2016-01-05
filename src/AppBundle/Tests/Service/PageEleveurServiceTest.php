@@ -29,7 +29,7 @@ class PageEleveurServiceTest extends KernelTestCase
     private $entityManager;
 
     /**
-     * @var HistoryService $pageEleveurService
+     * @var PageEleveurService $pageEleveurService
      */
     private $pageEleveurService;
 
@@ -43,6 +43,11 @@ class PageEleveurServiceTest extends KernelTestCase
      */
     private $historyService;
 
+    /**
+     * @var EntityRepository
+     */
+    private $pageEleveurCommitRepository;
+
 
     /**
      * @before
@@ -52,6 +57,11 @@ class PageEleveurServiceTest extends KernelTestCase
         static::bootKernel(array());
 
         $this->pageEleveurRepository = $this
+            ->getMockBuilder('AppBundle\Repository\PageEleveurRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->pageEleveurCommitRepository = $this
             ->getMockBuilder('\Doctrine\ORM\EntityRepository')
             ->disableOriginalConstructor()
             ->getMock();
@@ -61,13 +71,16 @@ class PageEleveurServiceTest extends KernelTestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->entityManager->expects($this->any())
+        $this->entityManager
             ->method('getRepository')
             ->will($this->returnValueMap([
                 ['AppBundle:PageEleveur',$this->pageEleveurRepository]]));
 
         $this->historyService = new HistoryService($this->entityManager, $this->pageEleveurRepository);
-        $this->pageEleveurService = new PageEleveurService($this->historyService, $this->pageEleveurRepository);
+        $this->pageEleveurService = new PageEleveurService(
+            $this->historyService,
+            $this->pageEleveurRepository,
+            $this->pageEleveurCommitRepository);
     }
 
     /**
@@ -83,10 +96,10 @@ class PageEleveurServiceTest extends KernelTestCase
      */
     public function testPageInexistante()
     {
-        $this->pageEleveurRepository->expects($this->any())
+        $this->pageEleveurRepository
             ->method('find')->withAnyParameters()->willReturn(null);
 
-        $this->historyService->commit('', new PageEleveurCommit('', '', null), new User());
+        $this->pageEleveurService->commit(new User(), 0, 0, '','');
     }
 
     private function newCommit($id, $parent = null)
@@ -102,18 +115,28 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur(null, $user);
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setId(1);
         $pageEleveur->setOwner($user);
 
-        $this->pageEleveurRepository->expects($this->any())
+        $this->pageEleveurRepository
             ->method('find')->withAnyParameters()->willReturn($pageEleveur);
 
         $commit1 = $this->newCommit(1);
+
+        $this->pageEleveurCommitRepository
+            ->method('find')->withAnyParameters()->willReturn($commit1);
+
         $pageEleveur->setCommit($commit1);
 
-        $commit2 = $this->newCommit(2, $commit1);
+        $this->pageEleveurService->commit(
+            $user,
+            $pageEleveur->getId(),
+            $commit1->getId(),
+            '',
+            '');
 
-        $this->historyService->commit('', $commit2, $user);
+        // pas d'exception
     }
 
     /**
@@ -123,10 +146,11 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur(null, $user);
+        $pageEleveur = new PageEleveur();
         $pageEleveur->setOwner($user);
+        $pageEleveur->setId(1);
 
-        $this->pageEleveurRepository->expects($this->any())
+        $this->pageEleveurRepository
             ->method('find')->withAnyParameters()->willReturn($pageEleveur);
 
         // commit1 est l'avant dernier etat de la page
@@ -136,11 +160,11 @@ class PageEleveurServiceTest extends KernelTestCase
         $commit2 = $this->newCommit(2, $commit1);
         $pageEleveur->setCommit($commit2);
 
-        // commit3 descend de commit1
-        $commit3 = $this->newCommit(3, $commit1);
+        $this->pageEleveurCommitRepository
+            ->method('find')->willReturn($commit1);
 
         // le commit sur commit3 doit échouer car il n'est pas fastforward depuis commit2
-        $this->historyService->commit('', $commit3, $user);
+        $this->pageEleveurService->commit($user, $pageEleveur->getId(), $commit1->getId(), '', '');
     }
 
     /**

@@ -14,6 +14,7 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageEleveurRepository;
 use AppBundle\Service\HistoryService;
+use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -109,12 +110,10 @@ class PageEleveurController extends Controller
 
         $description = $clientPageEleveur->commit->description;
 
-        $newCommit = new PageEleveurCommit($nom, $description, $commit);
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
-        /** @var HistoryService $pageEleveurService */
-        $pageEleveurService = $this->container->get('zigoto.history');
-
-        $pageEleveurService->commit($clientPageEleveur->id, $newCommit, $user);
+        $newCommit = $pageEleveurService->commit($user, $clientPageEleveur->id, $commit->getId(), $nom, $description);
 
         return new Response($newCommit->getId());
     }

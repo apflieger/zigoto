@@ -49,6 +49,11 @@ class PageEleveur implements BranchInterface
         return $this->id;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     /**
      * @inheritdoc
      */
@@ -106,4 +111,5 @@ class PageEleveur implements BranchInterface
     {
         return $this->getCommit()->getDescription();
     }
+
 }

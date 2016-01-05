@@ -18,3 +18,4 @@ services:
         arguments:
             - @zigoto.history
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurCommit')

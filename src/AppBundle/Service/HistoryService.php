@@ -11,13 +11,11 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\BranchInterface;
 use AppBundle\Entity\CommitInterface;
-use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Exception;
-use Symfony\Bridge\Monolog\Logger;
 
 
 class HistoryService
@@ -58,9 +56,6 @@ class HistoryService
 
         return $branch;
     }
-
-
-
 
     /**
      * @param $pageEleveurId int
