@@ -124,4 +124,59 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->assertNotContains('owner', $crawler->html());
     }
+
+    public function testCommitBrancheInconnue()
+    {
+        $client = static::createClient();
+        $user = UserUtils::create($client, $this);
+
+        $client->request('POST', '/commit-page-eleveur',
+            array(), array(), array(),
+            json_encode(array(
+                'id' => -1,
+                'commit' => array(
+                    'id' => -1,
+                    'nom' => '',
+                    'description' => ''
+                )
+            )));
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+    }
+
+    public function testCommitNonFastForward()
+    {
+        $client = static::createClient();
+        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+
+        $parentCommitId = $pageEleveur->getCommit()->getId();
+
+        // 1er commit
+        $client->request('POST', '/commit-page-eleveur',
+            array(), array(), array(),
+            json_encode(array(
+                'id' => $pageEleveur->getId(),
+                'commit' => array(
+                    'id' => $parentCommitId,
+                    'nom' => '',
+                    'description' => ''
+                )
+            )));
+
+        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+
+        // 2eme commit avec le meme parent que le 1er commit
+        $client->request('POST', '/commit-page-eleveur',
+            array(), array(), array(),
+            json_encode(array(
+                'id' => $pageEleveur->getId(),
+                'commit' => array(
+                    'id' => $parentCommitId,
+                    'nom' => '',
+                    'description' => ''
+                )
+            )));
+
+        $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
+    }
 }

@@ -36,19 +36,9 @@ class HistoryService
     /**
      * @param BranchInterface $branch
      * @return BranchInterface
-     * @throws Exception
      */
     public function create(BranchInterface $branch)
     {
-        if (!$branch->getCommit())
-            throw new Exception('Commit null');
-
-        if (!$branch->getOwner())
-            throw new Exception('Owner null');
-
-        if (empty($branch->getUrl()))
-            throw new Exception('Slug null');
-
         $this->doctrine->persist($branch);
         $this->doctrine->persist($branch->getCommit());
 
@@ -63,7 +53,7 @@ class HistoryService
      * @param User $user
      * @throws HistoryException
      */
-    public function commit($branchId, CommitInterface $commit, User $user)
+    public function commit($branchId, CommitInterface $commit)
     {
         /**
          * @var BranchInterface $pageEleveur

@@ -99,7 +99,7 @@ class PageEleveurService
      * @return PageEleveurCommit
      * @throws HistoryException
      */
-    public function commit(User $user, int $pageEleveurId, int $currentCommitId, string $nom, string $description)
+    public function commit(User $user, $pageEleveurId, $currentCommitId, $nom, $description)
     {
         /** @var PageEleveurCommit $pageEleveur */
         $pageEleveurCommit = $this->pageEleveurCommitRepository->find($currentCommitId);

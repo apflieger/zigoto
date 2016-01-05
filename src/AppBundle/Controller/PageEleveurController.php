@@ -97,6 +97,9 @@ class PageEleveurController extends Controller
 
         $pageEleveur = $pageEleveurRepository->find($clientPageEleveur->id);
 
+        if (!$pageEleveur)
+            return new Response('Votre page a été supprimée.', Response::HTTP_NOT_FOUND);
+
         if ($pageEleveur->getOwner()->getId() !== $user->getId())
             return new Response('Vous n\'avez pas les droit de modifier la page', Response::HTTP_FORBIDDEN);
 
@@ -117,16 +120,14 @@ class PageEleveurController extends Controller
             $newCommit = $pageEleveurService->commit($user, $clientPageEleveur->id, $commit->getId(), $nom, $description);
             return new Response($newCommit->getId());
         } catch (HistoryException $e) {
-            $message = '';
             switch ($e->getType()) {
-                case HistoryException::BRANCHE_INCONNUE:
-                    $message = 'Votre page a été supprimée.';
-                    break;
                 case HistoryException::NON_FAST_FORWARD:
-                    $message = 'Plusieurs édition de la page sont en cours, veuillez rafraichir.';
+                    return new Response(
+                        'Plusieurs édition de la page sont en cours, veuillez rafraichir.',
+                        Response::HTTP_CONFLICT);
                     break;
             }
-            return new Response($message, Response::HTTP_CONFLICT);
+            throw $e;
         }
     }
 }
