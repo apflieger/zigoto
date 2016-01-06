@@ -68,11 +68,9 @@ class PageEleveurController extends Controller
     {
         return json_encode(array(
             'id' => $pageEleveur->getId(),
-            'commit' => array(
-                'id' => $pageEleveur->getCommit()->getId(),
-                'nom' => $pageEleveur->getCommit()->getNom(),
-                'description' => $pageEleveur->getCommit()->getDescription()
-            )
+            'commitId' => $pageEleveur->getCommit()->getId(),
+            'nom' => $pageEleveur->getCommit()->getNom(),
+            'description' => $pageEleveur->getCommit()->getDescription()
         ));
     }
 
@@ -84,7 +82,7 @@ class PageEleveurController extends Controller
      */
     public function commitAction(Request $request)
     {
-        $clientPageEleveur = json_decode($request->getContent());
+        $jsonPageEleveur = json_decode($request->getContent());
 
         /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
@@ -95,7 +93,7 @@ class PageEleveurController extends Controller
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
         $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
 
-        $pageEleveur = $pageEleveurRepository->find($clientPageEleveur->id);
+        $pageEleveur = $pageEleveurRepository->find($jsonPageEleveur->id);
 
         if (!$pageEleveur)
             return new Response('Votre page a été supprimée.', Response::HTTP_NOT_FOUND);
@@ -103,21 +101,16 @@ class PageEleveurController extends Controller
         if ($pageEleveur->getOwner()->getId() !== $user->getId())
             return new Response('Vous n\'avez pas les droit de modifier la page', Response::HTTP_FORBIDDEN);
 
-        /** @var EntityManager $entityManager */
-        $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        /** @var EntityRepository $pageEleveurCommitRepository */
-        $pageEleveurCommitRepository = $entityManager->getRepository('AppBundle:PageEleveurCommit');
-        $commit = $pageEleveurCommitRepository->find($clientPageEleveur->commit->id);
-
-        $nom = $clientPageEleveur->commit->nom;
-
-        $description = $clientPageEleveur->commit->description;
-
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
         try {
-            $newCommit = $pageEleveurService->commit($user, $clientPageEleveur->id, $commit->getId(), $nom, $description);
+            $newCommit = $pageEleveurService->commit(
+                $user,
+                $jsonPageEleveur->id,
+                $jsonPageEleveur->commitId,
+                $jsonPageEleveur->nom,
+                $jsonPageEleveur->description);
             return new Response($newCommit->getId());
         } catch (HistoryException $e) {
             switch ($e->getType()) {

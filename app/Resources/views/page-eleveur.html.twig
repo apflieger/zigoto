@@ -4,10 +4,10 @@
 {% block body %}
     <div ng-app="zigoto">
         <div ng-controller="PageEleveurCtrl">
-            <h1>{{ pageEleveur.commit.nom }}</h1>
+            <h1>{{ pageEleveur.nom }}</h1>
 
-            <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.commit.description" e-rows="10" e-cols="100">
-                <pre id="description" ng-bind="pageEleveur.commit.description">{{ pageEleveur.commit.description }}</pre>
+            <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" e-rows="10" e-cols="100">
+                <pre id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</pre>
             </a>
         </div>
     </div>

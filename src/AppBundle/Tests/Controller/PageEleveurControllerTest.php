@@ -71,11 +71,9 @@ class PageEleveurControllerTest extends WebTestCase
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
-                'commit' => array(
-                    'id' => $pageEleveur->getCommit()->getId(),
-                    'nom' => 'nouveau nom',
-                    'description' => 'description non nulle'
-                )
+                'commitId' => $pageEleveur->getCommit()->getId(),
+                'nom' => 'nouveau nom',
+                'description' => 'description non nulle'
             )));
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
@@ -134,11 +132,9 @@ class PageEleveurControllerTest extends WebTestCase
             array(), array(), array(),
             json_encode(array(
                 'id' => -1,
-                'commit' => array(
-                    'id' => -1,
-                    'nom' => '',
-                    'description' => ''
-                )
+                'commitId' => -1,
+                'nom' => '',
+                'description' => ''
             )));
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
@@ -156,11 +152,9 @@ class PageEleveurControllerTest extends WebTestCase
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
-                'commit' => array(
-                    'id' => $parentCommitId,
-                    'nom' => '',
-                    'description' => ''
-                )
+                'commitId' => $parentCommitId,
+                'nom' => '',
+                'description' => ''
             )));
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
@@ -170,11 +164,9 @@ class PageEleveurControllerTest extends WebTestCase
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
-                'commit' => array(
-                    'id' => $parentCommitId,
-                    'nom' => '',
-                    'description' => ''
-                )
+                'commitId' => $parentCommitId,
+                'nom' => '',
+                'description' => ''
             )));
 
         $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
