@@ -3,7 +3,7 @@ Installation
 
 PHP
 ---
-* projet en 5.6. Les unix ont souvent un php deja installé, le virer ou le mettre à la bonne version.
+* projet en 7.0. Les unix ont souvent un php deja installé, le virer ou le mettre à la bonne version.
 * installer composer
 * installer un debugger genre xdebug
 
@@ -28,6 +28,7 @@ setup
 Usage
 -----
 * pour lancer les tests : `./bin/phpunit -c app`
+* pour faire un test coverage : `./bin/phpunit -c app --coverage-html app/coverage`
 * pour lancer le serveur : `php app/console server:run`
 * pour rebuilder le front : `gulp`
 * pour watch le js : `gulp watch`
