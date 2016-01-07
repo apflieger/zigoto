@@ -55,12 +55,12 @@ class PageEleveurService
         $pageEleveur = new PageEleveur();
         $pageEleveur->setCommit($commit);
         $pageEleveur->setOwner($owner);
-        $pageEleveur->setUrl(self::slug($nom));
+        $pageEleveur->setSlug(self::slug($nom));
 
-        if (empty($pageEleveur->getUrl()))
+        if (empty($pageEleveur->getSlug()))
             throw new DisplayableException('Le nom n\'"'.$nom.'"est pas valide');
 
-        if (count($this->pageEleveurRepository->findBy(['url' => $pageEleveur->getUrl()])) > 0)
+        if (count($this->pageEleveurRepository->findBy(['slug' => $pageEleveur->getSlug()])) > 0)
             throw new DisplayableException('Une page eleveur du meme nom existe deja');
 
         $pageEleveur = $this->history->create($pageEleveur);

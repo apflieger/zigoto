@@ -40,7 +40,7 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         // L'eleveur a un lien vers sa page
-        $this->assertContains($pageEleveur->getUrl(), $crawler->filter('a#page-eleveur')->attr('href'));
+        $this->assertContains($pageEleveur->getSlug(), $crawler->filter('a#page-eleveur')->attr('href'));
     }
 
     public function testCreationPageEleveur()
@@ -76,7 +76,7 @@ class DefaultControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $user = UserUtils::create($client, $this);
+        UserUtils::create($client, $this);
         $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
 
         UserUtils::logout($client);

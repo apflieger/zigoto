@@ -60,12 +60,12 @@ class DefaultController extends Controller
                 $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
                 try {
-                    $url = $pageEleveurService->create($form->getData()['nom'], $user)->getUrl();
+                    $slug = $pageEleveurService->create($form->getData()['nom'], $user)->getSlug();
                 } catch (DisplayableException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 }
 
-                return $this->redirectToRoute('getPageEleveur', ['eleveurURL' => $url]);
+                return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
             }
 
             return $this->render('index-new-eleveur.html.twig', [

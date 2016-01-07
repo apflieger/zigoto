@@ -26,7 +26,7 @@ class PageEleveur implements BranchInterface
     /**
      * @ORM\Column(type="string", length=120, unique=true)
      */
-    private $url;
+    private $slug;
 
     /**
      * Il ne peut y avoir qu'une page eleveur par utilisateur
@@ -57,17 +57,17 @@ class PageEleveur implements BranchInterface
     /**
      * @inheritdoc
      */
-    public function getUrl()
+    public function getSlug()
     {
-        return $this->url;
+        return $this->slug;
     }
 
     /**
      * @inheritdoc
      */
-    public function setUrl($url)
+    public function setSlug($slug)
     {
-        $this->url = $url;
+        $this->slug = $slug;
     }
 
     /**

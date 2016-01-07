@@ -28,10 +28,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class PageEleveurController extends Controller
 {
     /**
-     * @Route("/{eleveurURL}", name="getPageEleveur")
+     * @Route("/{pageEleveurSlug}", name="getPageEleveur")
      * @Method("GET")
      */
-    public function getAction($eleveurURL)
+    public function getAction($pageEleveurSlug)
     {
         /** @var EntityManager $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
@@ -39,7 +39,7 @@ class PageEleveurController extends Controller
         $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
 
         /** @var PageEleveur $pageEleveur */
-        $pageEleveur = $pageEleveurRepository->findByUrl($eleveurURL);
+        $pageEleveur = $pageEleveurRepository->findBySlug($pageEleveurSlug);
 
         if (!$pageEleveur)
             throw $this->createNotFoundException();
@@ -69,7 +69,7 @@ class PageEleveurController extends Controller
         return json_encode(array(
             'id' => $pageEleveur->getId(),
             'commitId' => $pageEleveur->getCommit()->getId(),
-            'nom' => $pageEleveur->getCommit()->getNom(),
+            'slug' => $pageEleveur->getCommit()->getNom(),
             'description' => $pageEleveur->getCommit()->getDescription()
         ));
     }
@@ -109,7 +109,7 @@ class PageEleveurController extends Controller
                 $user,
                 $jsonPageEleveur->id,
                 $jsonPageEleveur->commitId,
-                $jsonPageEleveur->nom,
+                $jsonPageEleveur->slug,
                 $jsonPageEleveur->description);
             return new Response($newCommit->getId());
         } catch (HistoryException $e) {

@@ -6,15 +6,15 @@ use Doctrine\ORM\EntityRepository;
 class PageEleveurRepository extends EntityRepository
 {
     /**
-     * @param $url string
+     * @param $slug string
      * @return PageEleveur
      */
-    public function findByUrl($url)
+    public function findBySlug($slug)
     {
         /**
          * @var PageEleveur $pageEleveur
          */
-        $pageEleveur = $this->findOneBy(['url' => $url]);
+        $pageEleveur = $this->findOneBy(['slug' => $slug]);
 
         return $pageEleveur;
     }

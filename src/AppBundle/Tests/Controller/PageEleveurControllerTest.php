@@ -46,7 +46,7 @@ class PageEleveurControllerTest extends WebTestCase
             'nouvelle description'
             );
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
@@ -72,7 +72,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => $pageEleveur->getId(),
                 'commitId' => $pageEleveur->getCommit()->getId(),
-                'nom' => 'nouveau nom',
+                'slug' => 'nouveau nom',
                 'description' => 'description non nulle'
             )));
 
@@ -81,7 +81,7 @@ class PageEleveurControllerTest extends WebTestCase
         // La réponse du POST retourne l'identifiant du commit créé dans le contenu
         $client->getResponse()->getContent();
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
         $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
     }
@@ -106,7 +106,7 @@ class PageEleveurControllerTest extends WebTestCase
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertContains('owner', $crawler->html());
     }
@@ -118,22 +118,22 @@ class PageEleveurControllerTest extends WebTestCase
 
         UserUtils::logout($client);
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getUrl());
+        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertNotContains('owner', $crawler->html());
+        $this->assertNotContains('owner', $crawler->html(), 'ca marche pas !');
     }
 
     public function testCommitBrancheInconnue()
     {
         $client = static::createClient();
-        $user = UserUtils::create($client, $this);
+        UserUtils::create($client, $this);
 
         $client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
             json_encode(array(
                 'id' => -1,
                 'commitId' => -1,
-                'nom' => '',
+                'slug' => '',
                 'description' => ''
             )));
 
@@ -153,7 +153,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => $pageEleveur->getId(),
                 'commitId' => $parentCommitId,
-                'nom' => '',
+                'slug' => '',
                 'description' => ''
             )));
 
@@ -165,7 +165,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => $pageEleveur->getId(),
                 'commitId' => $parentCommitId,
-                'nom' => '',
+                'slug' => '',
                 'description' => ''
             )));
 

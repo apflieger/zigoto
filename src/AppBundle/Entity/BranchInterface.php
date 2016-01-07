@@ -14,13 +14,13 @@ interface BranchInterface
     /**
      * @return string
      */
-    public function getUrl();
+    public function getSlug();
 
     /**
-     * @param string $url
+     * @param string $slug
      * @return null
      */
-    public function setUrl($url);
+    public function setSlug($slug);
 
     /**
      * @return User
