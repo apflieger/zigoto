@@ -19,6 +19,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $this->assertContains('Créez votre page éleveur', $crawler->filter('h1')->text());
         $this->assertEquals(1, $crawler->filter('a[href="/login"]')->count());
+        $this->assertEquals(1, $crawler->filter('a[href="/register"]')->count());
     }
 
     public function testIndexNewEleveur()
@@ -30,6 +31,7 @@ class DefaultControllerTest extends WebTestCase
 
         // Quand l'utilisateur est connecté, on lui propose de créer sa page directement depuis la home
         $this->assertCount(1, $crawler->filter('form[name="creation-page-eleveur"]'));
+        $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
     }
 
     public function testIndexEleveur()
@@ -40,7 +42,8 @@ class DefaultControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/');
 
         // L'eleveur a un lien vers sa page
-        $this->assertContains($pageEleveur->getSlug(), $crawler->filter('a#page-eleveur')->attr('href'));
+        $this->assertEquals(1, $crawler->filter('a[href="/' . $pageEleveur->getSlug() . '"]')->count());
+        $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
     }
 
     public function testCreationPageEleveur()

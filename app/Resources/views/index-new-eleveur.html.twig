@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Bonjour {{ username }}</h1>
+    <h1>Bonjour {{ username }}</h1>  <a href="/logout">Déconnexion</a>
     <h2>Créez votre page éleveur</h2>
     {{ form_start(creationPageEleveur) }}
         {{ form_widget(creationPageEleveur) }}
