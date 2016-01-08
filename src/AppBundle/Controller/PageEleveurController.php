@@ -103,12 +103,12 @@ class PageEleveurController extends Controller
             switch ($e->getType()) {
                 case HistoryException::NON_FAST_FORWARD:
                     return new Response(
-                        'Plusieurs édition de la page sont en cours, veuillez rafraichir.',
+                        'Plusieurs éditions sont en cours, veuillez rafraichir la page.',
                         Response::HTTP_CONFLICT);
                     break;
                 case HistoryException::DROIT_REFUSE:
                     return new Response(
-                        'Vous n\'avez pas les droit de modifier la page',
+                        'Vous ne pouvez pas modifier cette page. Vérifiez que vous êtes bien connecté.',
                         Response::HTTP_FORBIDDEN);
                     break;
                 case HistoryException::BRANCHE_INCONNUE:
