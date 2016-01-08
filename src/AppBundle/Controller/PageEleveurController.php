@@ -10,14 +10,11 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\PageEleveur;
-use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageEleveurRepository;
 use AppBundle\Service\HistoryException;
-use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,6 +76,7 @@ class PageEleveurController extends Controller
      * @Method("POST")
      * @param Request $request
      * @return Response
+     * @throws HistoryException
      */
     public function commitAction(Request $request)
     {
@@ -86,17 +84,9 @@ class PageEleveurController extends Controller
 
         /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
+
         /** @var User $user */
         $user = $tokenStorage->getToken()->getUser();
-
-        /** @var EntityManager $entityManager */
-        $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
-
-        $pageEleveur = $pageEleveurRepository->find($jsonPageEleveur->id);
-
-        if (!$pageEleveur)
-            return new Response('Votre page a été supprimée.', Response::HTTP_NOT_FOUND);
 
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
@@ -120,6 +110,11 @@ class PageEleveurController extends Controller
                     return new Response(
                         'Vous n\'avez pas les droit de modifier la page',
                         Response::HTTP_FORBIDDEN);
+                    break;
+                case HistoryException::BRANCHE_INCONNUE:
+                    return new Response(
+                        'Votre page a été supprimée.',
+                        Response::HTTP_NOT_FOUND);
                     break;
             }
             throw $e;
