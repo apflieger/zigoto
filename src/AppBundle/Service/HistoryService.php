@@ -53,7 +53,7 @@ class HistoryService
      * @param User $user
      * @throws HistoryException
      */
-    public function commit($branchId, CommitInterface $commit)
+    public function commit($branchId, CommitInterface $commit, User $user)
     {
         /**
          * @var BranchInterface $pageEleveur
@@ -62,6 +62,9 @@ class HistoryService
 
         if (!$pageEleveur)
             throw new HistoryException(HistoryException::BRANCHE_INCONNUE);
+
+        if ($pageEleveur->getOwner()->getId() !== $user->getId())
+            throw new HistoryException(HistoryException::DROIT_REFUSE);
 
         if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
             throw new HistoryException(HistoryException::NON_FAST_FORWARD);

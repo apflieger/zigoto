@@ -16,7 +16,8 @@ use Exception;
 class HistoryException extends Exception
 {
     const BRANCHE_INCONNUE = 1;
-    const NON_FAST_FORWARD = 2;
+    const DROIT_REFUSE = 2;
+    const NON_FAST_FORWARD = 3;
 
     /**
      * @var string

@@ -98,9 +98,6 @@ class PageEleveurController extends Controller
         if (!$pageEleveur)
             return new Response('Votre page a été supprimée.', Response::HTTP_NOT_FOUND);
 
-        if ($pageEleveur->getOwner()->getId() !== $user->getId())
-            return new Response('Vous n\'avez pas les droit de modifier la page', Response::HTTP_FORBIDDEN);
-
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
@@ -118,6 +115,11 @@ class PageEleveurController extends Controller
                     return new Response(
                         'Plusieurs édition de la page sont en cours, veuillez rafraichir.',
                         Response::HTTP_CONFLICT);
+                    break;
+                case HistoryException::DROIT_REFUSE:
+                    return new Response(
+                        'Vous n\'avez pas les droit de modifier la page',
+                        Response::HTTP_FORBIDDEN);
                     break;
             }
             throw $e;
