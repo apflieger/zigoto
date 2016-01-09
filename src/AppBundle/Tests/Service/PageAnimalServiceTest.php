@@ -27,12 +27,12 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      */
-    public function testCreateNomVide()
+    public function testCreate_NomVide()
     {
         $this->pageAnimalService->create('', new User());
     }
 
-    public function testCreateSuccess()
+    public function testCreate_Success()
     {
         /** @var PageAnimal $pageAnimal */
         $pageAnimal = $this->pageAnimalService->create('Boule de neige', new User());

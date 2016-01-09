@@ -75,12 +75,31 @@ class HistoryService
         $this->doctrine->flush();
     }
 
-    public static function slug($nom)
+    /**
+     * @param $str string
+     * @return string
+     * @throws HistoryException
+     */
+    public static function slug($str)
     {
-        try {
-            return PageEleveurService::slug($nom);
-        } catch (\InvalidArgumentException $e) {
+        // conversion de tous les caractères spéciaux vers de l'ascii
+        $ascii = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+
+        // suppression de tous les caractères qui ne sont pas des chiffres, lettres, ou "_+- "
+        $ascii = preg_replace('/[^a-zA-Z0-9\/_+ -]/', '', $ascii);
+
+        // lowercase
+        $ascii = strtolower($ascii);
+
+        // remplacement de tout ce qui n'est pas chiffres ou lettres par le séparateur '-'
+        $ascii = preg_replace('/[\/_+ -]+/', '-', $ascii);
+
+        // trim
+        $ascii = trim($ascii, '-');
+
+        if (empty($ascii))
             throw new HistoryException(HistoryException::NOM_INVALIDE);
-        }
+
+        return $ascii;
     }
 }

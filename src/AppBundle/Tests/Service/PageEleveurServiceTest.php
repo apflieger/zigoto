@@ -10,16 +10,13 @@ namespace AppBundle\Tests\Service;
 
 
 use AppBundle\Entity\PageEleveur;
-use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit_Framework_TestCase;
-use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 
 class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -184,31 +181,5 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->willReturn(new PageEleveur(null, $user));
 
         $this->pageEleveurService->create('page2', $user);
-    }
-
-    public function testSlug()
-    {
-        // conservation des caractères de base
-        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::slug('azertyuiopqsdfghjklmwxcvbn1234567890'));
-
-        // trim
-        $this->assertEquals('aaa', PageEleveurService::slug(' aaa '));
-
-        // to lowercase
-        $this->assertEquals('aaa', PageEleveurService::slug('AaA'));
-
-        // remplacement des caractères convertibles
-        $this->assertEquals('eureace', PageEleveurService::slug('€éàçè&'));
-
-        // espaces convertis en dash
-        $this->assertEquals('un-deux-trois', PageEleveurService::slug('un deux trois'));
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSlugVide()
-    {
-        PageEleveurService::slug('!?,.<>=&');
     }
 }
