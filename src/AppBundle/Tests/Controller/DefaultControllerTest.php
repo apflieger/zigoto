@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndexAnonyme()
+    public function testIndex_Anonyme()
     {
         $client = static::createClient();
 
@@ -22,7 +22,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('a[href="/register"]')->count());
     }
 
-    public function testIndexNewEleveur()
+    public function testIndex_User()
     {
         $client = static::createClient();
         UserUtils::create($client, $this);
@@ -34,7 +34,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
     }
 
-    public function testIndexEleveur()
+    public function testIndex_Eleveur()
     {
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
@@ -46,7 +46,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
     }
 
-    public function testCreationPageEleveur()
+    public function testCreationPageEleveur_Success()
     {
         $client = static::createClient();
         $user = UserUtils::create($client, $this);
@@ -75,7 +75,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals('Bonjour '.$user->getUsername(), $client->request('GET', '/')->filter('h1')->text());
     }
 
-    public function testCreationPageEleveurDeconnecte()
+    public function testCreationPageEleveur_Deconnecte()
     {
         $client = static::createClient();
 
@@ -90,7 +90,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $client->getResponse()->getStatusCode());
     }
 
-    public function testDeuxUserMemePage()
+    public function testCreationPageEleveur_DeuxUserMemePage()
     {
         $client = static::createClient();
         $pageEleveur1 = UserUtils::createNewEleveur($client, $this);
