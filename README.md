@@ -20,8 +20,7 @@ node
 
 setup
 -----
-* `composer install`
-* renseigner les bdd et users précédement créés, on peut laisser les valeurs par défaut pour le reste
+* `composer install`, le prompt initialise la conf, renseigner les bdd et users précédement créés, on peut laisser les valeurs par défaut pour le reste
 * créer le schema de la base de dev : `php app/console doctrine:schema:create`
 * créer le schema de la base de test : `php app/console doctrine:schema:create --env="test"`
 
