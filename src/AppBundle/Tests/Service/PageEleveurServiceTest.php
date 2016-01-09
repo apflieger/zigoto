@@ -48,10 +48,6 @@ class PageEleveurServiceTest extends KernelTestCase
      */
     private $pageEleveurCommitRepository;
 
-
-    /**
-     * @before
-     */
     public function setup()
     {
         static::bootKernel(array());
@@ -174,8 +170,8 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $this->pageEleveurRepository
-            ->method('findBy')
-            ->willReturn(array(), new PageEleveur(null, $user));
+            ->method('findByOwner')
+            ->willReturn(new PageEleveur(null, $user));
         $this->pageEleveurService->create('page2', $user);
     }
 
@@ -186,7 +182,7 @@ class PageEleveurServiceTest extends KernelTestCase
     {
         $user = new User();
         $this->pageEleveurRepository
-            ->method('findBy')
+            ->method('findBySlug')
             ->willReturn(new PageEleveur(null, $user));
 
         $this->pageEleveurService->create('page2', $user);

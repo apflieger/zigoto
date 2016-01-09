@@ -47,7 +47,7 @@ class PageEleveurService
      */
     public function create(string $nom, User $owner)
     {
-        if (count($this->pageEleveurRepository->findBy(['owner' => $owner])) > 0)
+        if ($this->pageEleveurRepository->findByOwner($owner))
             throw new DisplayableException('user ' . $owner->getId() . ' a deja une page eleveur');
 
 
@@ -60,7 +60,7 @@ class PageEleveurService
         if (empty($pageEleveur->getSlug()))
             throw new DisplayableException('Le nom n\'"'.$nom.'"est pas valide');
 
-        if (count($this->pageEleveurRepository->findBy(['slug' => $pageEleveur->getSlug()])) > 0)
+        if ($this->pageEleveurRepository->findBySlug($pageEleveur->getSlug()))
             throw new DisplayableException('Une page eleveur du meme nom existe deja');
 
         $pageEleveur = $this->history->create($pageEleveur);
