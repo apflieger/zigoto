@@ -18,10 +18,10 @@ use AppBundle\Service\PageEleveurService;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use PHPUnit_Framework_TestCase;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class PageEleveurServiceTest extends KernelTestCase
+class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var ObjectManager $entityManager
@@ -50,8 +50,6 @@ class PageEleveurServiceTest extends KernelTestCase
 
     public function setup()
     {
-        static::bootKernel(array());
-
         $this->pageEleveurRepository = $this
             ->getMockBuilder('AppBundle\Repository\PageEleveurRepository')
             ->disableOriginalConstructor()
