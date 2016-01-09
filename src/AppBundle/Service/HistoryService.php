@@ -74,4 +74,13 @@ class HistoryService
 
         $this->doctrine->flush();
     }
+
+    public static function slug($nom)
+    {
+        try {
+            return PageEleveurService::slug($nom);
+        } catch (\InvalidArgumentException $e) {
+            throw new HistoryException(HistoryException::NOM_INVALIDE);
+        }
+    }
 }

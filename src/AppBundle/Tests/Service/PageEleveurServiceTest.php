@@ -186,7 +186,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurService->create('page2', $user);
     }
 
-    public function testConvertionUrl()
+    public function testSlug()
     {
         // conservation des caractères de base
         $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::slug('azertyuiopqsdfghjklmwxcvbn1234567890'));
@@ -197,13 +197,18 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         // to lowercase
         $this->assertEquals('aaa', PageEleveurService::slug('AaA'));
 
-        // suppression des caractères spéciaux
-        $this->assertEquals('', PageEleveurService::slug('!?,.<>=&'));
-
         // remplacement des caractères convertibles
         $this->assertEquals('eureace', PageEleveurService::slug('€éàçè&'));
 
         // espaces convertis en dash
         $this->assertEquals('un-deux-trois', PageEleveurService::slug('un deux trois'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testSlugVide()
+    {
+        PageEleveurService::slug('!?,.<>=&');
     }
 }

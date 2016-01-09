@@ -50,15 +50,11 @@ class PageEleveurService
         if ($this->pageEleveurRepository->findByOwner($owner))
             throw new DisplayableException('user ' . $owner->getId() . ' a deja une page eleveur');
 
-
         $commit = new PageEleveurCommit($nom, '', null);
         $pageEleveur = new PageEleveur();
         $pageEleveur->setCommit($commit);
         $pageEleveur->setOwner($owner);
-        $pageEleveur->setSlug(self::slug($nom));
-
-        if (empty($pageEleveur->getSlug()))
-            throw new DisplayableException('Le nom n\'"'.$nom.'"est pas valide');
+        $pageEleveur->setSlug(HistoryService::slug($nom));
 
         if ($this->pageEleveurRepository->findBySlug($pageEleveur->getSlug()))
             throw new DisplayableException('Une page eleveur du meme nom existe deja');
@@ -87,7 +83,12 @@ class PageEleveurService
         $ascii = preg_replace('/[\/_+ -]+/', '-', $ascii);
 
         // trim
-        return trim($ascii, '-');
+        $ascii = trim($ascii, '-');
+
+        if (empty($ascii))
+            throw new \InvalidArgumentException($str);
+
+        return $ascii;
     }
 
     /**

@@ -18,6 +18,7 @@ class HistoryException extends Exception
     const BRANCHE_INCONNUE = 1;
     const DROIT_REFUSE = 2;
     const NON_FAST_FORWARD = 3;
+    const NOM_INVALIDE = 4;
 
     /**
      * @var string

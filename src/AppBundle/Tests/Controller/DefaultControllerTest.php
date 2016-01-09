@@ -106,4 +106,18 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
         $this->assertEquals('Une page eleveur du meme nom existe deja', $client->getResponse()->getContent());
     }
+
+    public function testCreationPageEleveur_NomInvalide()
+    {
+        $client = static::createClient();
+
+        // connexion avec un nouvel user
+        UserUtils::create($client, $this);
+
+        $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+        $pageEleveurForm['creation-page-eleveur[nom]'] = '--';
+        $client->submit($pageEleveurForm);
+
+        $this->assertEquals(Response::HTTP_NOT_ACCEPTABLE, $client->getResponse()->getStatusCode());
+    }
 }

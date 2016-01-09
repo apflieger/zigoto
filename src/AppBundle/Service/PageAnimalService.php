@@ -18,11 +18,8 @@ class PageAnimalService
 
     public function create($nom, User $owner)
     {
-        if (empty($nom))
-            throw new DisplayableException('Le nom n\'"'.$nom.'"est pas valide');
-
         $pageAnimal = new PageAnimal();
-        $pageAnimal->setSlug(PageEleveurService::slug($nom));
+        $pageAnimal->setSlug(HistoryService::slug($nom));
         return $pageAnimal;
     }
 }

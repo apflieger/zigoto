@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageEleveurRepository;
+use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageEleveurService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -59,10 +60,17 @@ class DefaultController extends Controller
                  */
                 $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
+                $nom = $form->getData()['nom'];
                 try {
-                    $slug = $pageEleveurService->create($form->getData()['nom'], $user)->getSlug();
+                    $slug = $pageEleveurService->create($nom, $user)->getSlug();
                 } catch (DisplayableException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
+                } catch (HistoryException $e) {
+                    switch ($e->getType()) {
+                        case HistoryException::NOM_INVALIDE:
+                            return new Response('Le nom n\'"'.$nom.'"est pas valide', Response::HTTP_NOT_ACCEPTABLE);
+                        break;
+                    }
                 }
 
                 return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
