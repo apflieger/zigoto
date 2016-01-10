@@ -7,9 +7,7 @@ namespace AppBundle\Tests\Command;
 use AppBundle\Command\PageEleveurCommand;
 use AppBundle\Tests\UserUtils;
 use Doctrine\ORM\EntityManager;
-use PHPUnit_Framework_TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -27,7 +25,7 @@ class PageEleveurCommandTest extends WebTestCase
 
         // utilisation de la commande pour supprimer la page eleveur
         $commandTester = new CommandTester($command);
-        $statusCode = $commandTester->execute(array(
+        $commandTester->execute(array(
             'command' => $command->getName(),
             'id' => -1
         ));

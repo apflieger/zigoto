@@ -26,7 +26,7 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
 
     public function setup()
     {
-        $this->pageAnimalRepository = $this->getMockBuilder('AppBundle\Repository\PageAnimalRepository')
+        $this->pageAnimalRepository = $this->getMockBuilder(PageAnimalRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->pageAnimalService = new PageAnimalService($this->pageAnimalRepository);

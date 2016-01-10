@@ -32,7 +32,7 @@ class PageAnimalService
      * @return PageAnimal
      * @throws HistoryException
      */
-    public function create(string $nom, User $owner)
+    public function create($nom, User $owner)
     {
         $pageAnimal = new PageAnimal();
         $pageAnimal->setSlug(HistoryService::slug($nom));

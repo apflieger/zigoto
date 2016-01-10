@@ -10,62 +10,58 @@ namespace AppBundle\Tests\Service;
 
 
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
-use AppBundle\Service\HistoryException;
+use AppBundle\Repository\PageEleveurRepository;
 use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit_Framework_TestCase;
 
 class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var ObjectManager $entityManager
+     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
      */
     private $entityManager;
 
     /**
-     * @var PageEleveurService $pageEleveurService
-     */
-    private $pageEleveurService;
-
-    /**
-     * @var EntityRepository $pageEleveurRepository
+     * @var PageEleveurRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pageEleveurRepository;
 
     /**
-     * @var HistoryService $historyService
+     * @var HistoryService|\PHPUnit_Framework_MockObject_MockObject
      */
     private $historyService;
 
     /**
-     * @var EntityRepository
+     * @var EntityRepository|\PHPUnit_Framework_MockObject_MockObject
      */
     private $pageEleveurCommitRepository;
+
+    /**
+     * @var PageEleveurService
+     */
+    private $pageEleveurService;
 
     public function setup()
     {
         $this->pageEleveurRepository = $this
-            ->getMockBuilder('AppBundle\Repository\PageEleveurRepository')
+            ->getMockBuilder(PageEleveurRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->pageEleveurCommitRepository = $this
-            ->getMockBuilder('\Doctrine\ORM\EntityRepository')
+            ->getMockBuilder(EntityRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $this->entityManager = $this
-            ->getMockBuilder('\Doctrine\ORM\EntityManager')
+            ->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
-
-        $this->entityManager
-            ->method('getRepository')
-            ->will($this->returnValueMap([
-                ['AppBundle:PageEleveur',$this->pageEleveurRepository]]));
 
         $this->historyService = new HistoryService($this->entityManager, $this->pageEleveurRepository);
         $this->pageEleveurService = new PageEleveurService(
@@ -93,9 +89,14 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurService->commit(new User(), 0, 0, '','');
     }
 
+    /**
+     * @param $id
+     * @param null $parent
+     * @return PageEleveurCommit|\PHPUnit_Framework_MockObject_MockObject
+     */
     private function newCommit($id, $parent = null)
     {
-        $commit= $this->getMockBuilder('\AppBundle\Entity\PageEleveurCommit')
+        $commit= $this->getMockBuilder(PageEleveurCommit::class)
             ->disableOriginalConstructor()->getMock();
         $commit->method('getId')->willReturn($id);
         $commit->method('getParent')->willReturn($parent);

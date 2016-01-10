@@ -10,8 +10,6 @@ namespace AppBundle\Tests\Controller;
 
 
 use AppBundle\Controller\PageEleveurController;
-use AppBundle\Entity\PageEleveurCommit;
-use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

@@ -25,26 +25,18 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        /**
-         * @var TokenStorage $tokenStorage
-         */
+        /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
 
-        /**
-         * @var AnonymousToken
-         */
+        /** @var AnonymousToken $token */
         $token = $tokenStorage->getToken();
 
-        /**
-         * @var User
-         */
+        /** @var User $user */
         $user = $token->getUser();
         if ($user == 'anon.')
             return $this->render('index.html.twig');
         else if (!$user->hasRole(ERole::ELEVEUR)){
-            /**
-             * @var FormFactory $formFactory
-             */
+            /** @var FormFactory $formFactory */
             $formFactory = $this->get('form.factory');
 
             $form = $formFactory->createNamedBuilder('creation-page-eleveur')
@@ -55,25 +47,21 @@ class DefaultController extends Controller
             $form->handleRequest($request);
 
             if ($form->isSubmitted() && $form->isValid()) {
-                /**
-                 * @var PageEleveurService $pageEleveurService
-                 */
+                /** @var PageEleveurService $pageEleveurService */
                 $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
                 $nom = $form->getData()['nom'];
                 try {
                     $slug = $pageEleveurService->create($nom, $user)->getSlug();
+                    return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
                 } catch (DisplayableException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 } catch (HistoryException $e) {
                     switch ($e->getType()) {
                         case HistoryException::NOM_INVALIDE:
                             return new Response('Le nom n\'"'.$nom.'"est pas valide', Response::HTTP_NOT_ACCEPTABLE);
-                        break;
                     }
                 }
-
-                return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
             }
 
             return $this->render('index-new-eleveur.html.twig', [

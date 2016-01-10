@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -41,14 +42,14 @@ class PageEleveurController extends Controller
         if (!$pageEleveur)
             throw $this->createNotFoundException();
 
-        /**
-         * @var TokenStorage $tokenStorage
-         */
+        /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
-        /**
-         * @var User $user
-         */
-        $user = $tokenStorage->getToken()->getUser();
+
+        /** @var AnonymousToken $token */
+        $token = $tokenStorage->getToken();
+
+        /** @var User $user */
+        $user = $token->getUser();
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
 
         return $this->render('page-eleveur.html.twig', array(
