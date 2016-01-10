@@ -73,15 +73,40 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      */
-    public function testUrlVide()
+    public function testCreate_NomVide()
     {
         $this->pageEleveurService->create('', new User());
     }
 
     /**
+     * @expectedException \Exception
+     */
+    public function testCreate_UnUserDeuxPages()
+    {
+        $user = new User();
+        $this->pageEleveurRepository
+            ->method('findByOwner')
+            ->willReturn(new PageEleveur(null, $user));
+        $this->pageEleveurService->create('page2', $user);
+    }
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testCreate_DeuxUserMemePage()
+    {
+        $user = new User();
+        $this->pageEleveurRepository
+            ->method('findBySlug')
+            ->willReturn(new PageEleveur(null, $user));
+
+        $this->pageEleveurService->create('page2', $user);
+    }
+
+    /**
      * @expectedException \AppBundle\Service\HistoryException
      */
-    public function testPageInexistante()
+    public function testCommit_PageInexistante()
     {
         $this->pageEleveurRepository
             ->method('find')->withAnyParameters()->willReturn(null);
@@ -103,7 +128,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         return $commit;
     }
 
-    public function testCommitFastForward()
+    public function testCommit_FastForward()
     {
         $user = new User();
         $user->setId(1);
@@ -134,7 +159,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     /**
      * @expectedException \AppBundle\Service\HistoryException
      */
-    public function testCommitNonFastForward()
+    public function testCommit_NonFastForward()
     {
         $user = new User();
         $user->setId(1);
@@ -157,30 +182,5 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
         // le commit sur commit3 doit échouer car il n'est pas fastforward depuis commit2
         $this->pageEleveurService->commit($user, $pageEleveur->getId(), $commit1->getId(), '', '');
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testUnUserDeuxPages()
-    {
-        $user = new User();
-        $this->pageEleveurRepository
-            ->method('findByOwner')
-            ->willReturn(new PageEleveur(null, $user));
-        $this->pageEleveurService->create('page2', $user);
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testDeuxUserMemePage()
-    {
-        $user = new User();
-        $this->pageEleveurRepository
-            ->method('findBySlug')
-            ->willReturn(new PageEleveur(null, $user));
-
-        $this->pageEleveurService->create('page2', $user);
     }
 }
