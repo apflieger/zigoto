@@ -25,6 +25,7 @@ class PageEleveur implements BranchInterface
 
     /**
      * @ORM\Column(type="string", length=120, unique=true)
+     * @var string
      */
     private $slug;
 

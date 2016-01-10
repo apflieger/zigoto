@@ -9,10 +9,30 @@
 namespace AppBundle\Entity;
 
 
+/**
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PageAnimalRepository")
+ * @ORM\Table(name="page_animal")
+ */
 class PageAnimal implements BranchInterface
 {
-    /** @var string */
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=120, unique=true)
+     * @var string
+     */
     private $slug;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @var User
+     */
+    private $owner;
 
     /**
      * @return string
@@ -36,7 +56,7 @@ class PageAnimal implements BranchInterface
      */
     public function getOwner()
     {
-        // TODO: Implement getOwner() method.
+        return $this->owner;
     }
 
     /**
@@ -45,7 +65,7 @@ class PageAnimal implements BranchInterface
      */
     public function setOwner(User $owner)
     {
-        // TODO: Implement setOwner() method.
+        $this->owner = $owner;
     }
 
     /**

@@ -9,17 +9,34 @@
 namespace AppBundle\Service;
 
 
-use AppBundle\Controller\DisplayableException;
 use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\User;
+use AppBundle\Repository\PageAnimalRepository;
 
 class PageAnimalService
 {
 
-    public function create($nom, User $owner)
+    /**
+     * @var PageAnimalRepository
+     */
+    private $pageAnimalRepository;
+
+    public function __construct(PageAnimalRepository $pageAnimalRepository)
+    {
+        $this->pageAnimalRepository = $pageAnimalRepository;
+    }
+
+    /**
+     * @param $nom
+     * @param User $owner
+     * @return PageAnimal
+     * @throws HistoryException
+     */
+    public function create(string $nom, User $owner)
     {
         $pageAnimal = new PageAnimal();
         $pageAnimal->setSlug(HistoryService::slug($nom));
+        $pageAnimal->setOwner($owner);
         return $pageAnimal;
     }
 }
