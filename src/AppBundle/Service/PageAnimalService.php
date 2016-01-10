@@ -37,6 +37,10 @@ class PageAnimalService
         $pageAnimal = new PageAnimal();
         $pageAnimal->setSlug(HistoryService::slug($nom));
         $pageAnimal->setOwner($owner);
+
+        if ($this->pageAnimalRepository->findByOwnerAndSlug($pageAnimal->getOwner(), $pageAnimal->getSlug()))
+            throw new HistoryException(HistoryException::SLUG_DEJA_EXISTANT);
+
         return $pageAnimal;
     }
 }

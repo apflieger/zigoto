@@ -57,7 +57,7 @@ class DefaultController extends Controller
                 } catch (DisplayableException $e) {
                     return new Response($e->getMessage(), Response::HTTP_CONFLICT);
                 } catch (HistoryException $e) {
-                    switch ($e->getType()) {
+                    switch ($e->getCode()) {
                         case HistoryException::NOM_INVALIDE:
                             return new Response('Le nom n\'"'.$nom.'"est pas valide', Response::HTTP_NOT_ACCEPTABLE);
                     }

@@ -62,9 +62,7 @@ class DefaultControllerTest extends WebTestCase
         $creationPageEleveurForm['creation-page-eleveur[nom]'] = $nomElevage;
         $client->submit($creationPageEleveurForm);
 
-        /**
-         * @var TokenStorage $tokenStorage
-         */
+        /** @var TokenStorage $tokenStorage */
         $tokenStorage = $client->getContainer()->get('security.token_storage');
         $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole(ERole::ELEVEUR));
 

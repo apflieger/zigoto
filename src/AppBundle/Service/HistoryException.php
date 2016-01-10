@@ -9,8 +9,6 @@
 namespace AppBundle\Service;
 
 
-use AppBundle\Entity\BranchInterface;
-use AppBundle\Entity\CommitInterface;
 use Exception;
 
 class HistoryException extends Exception
@@ -19,23 +17,11 @@ class HistoryException extends Exception
     const DROIT_REFUSE = 2;
     const NON_FAST_FORWARD = 3;
     const NOM_INVALIDE = 4;
+    const SLUG_DEJA_EXISTANT = 5;
 
-    /**
-     * @var string
-     */
-    private $type;
-
-    public function __construct($type)
+    public function __construct($code)
     {
-        parent::__construct();
-        $this->type = $type;
+        parent::__construct('', $code);
     }
 
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 }

@@ -101,7 +101,7 @@ class PageEleveurController extends Controller
                 $jsonPageEleveur->description);
             return new Response($newCommit->getId());
         } catch (HistoryException $e) {
-            switch ($e->getType()) {
+            switch ($e->getCode()) {
                 case HistoryException::NON_FAST_FORWARD:
                     return new Response(
                         'Plusieurs éditions sont en cours, veuillez rafraichir la page.',

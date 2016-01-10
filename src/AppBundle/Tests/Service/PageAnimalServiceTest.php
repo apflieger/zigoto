@@ -33,7 +33,8 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::NOM_INVALIDE
      */
     public function testCreate_NomVide()
     {
@@ -53,6 +54,16 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
     public function testCreate_PlusieursAnimaux()
     {
         $this->pageAnimalRepository->method('findByOwner')->willReturn([new PageEleveur()]);
+        $this->pageAnimalService->create('test', new User());
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::SLUG_DEJA_EXISTANT
+     */
+    public function testCreate_DeuxAnimauxMemeNom()
+    {
+        $this->pageAnimalRepository->method('findByOwnerAndSlug')->willReturn(new PageAnimal());
         $this->pageAnimalService->create('test', new User());
     }
 }

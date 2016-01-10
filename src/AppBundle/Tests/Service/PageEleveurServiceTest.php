@@ -71,7 +71,8 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::NOM_INVALIDE
      */
     public function testCreate_NomVide()
     {
@@ -79,7 +80,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \AppBundle\Controller\DisplayableException
      */
     public function testCreate_UnUserDeuxPages()
     {
@@ -91,7 +92,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \AppBundle\Controller\DisplayableException
      */
     public function testCreate_DeuxUserMemePage()
     {
@@ -105,6 +106,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::BRANCHE_INCONNUE
      */
     public function testCommit_PageInexistante()
     {
@@ -116,10 +118,10 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @param $id
-     * @param null $parent
+     * @param null|PageEleveurCommit $parent
      * @return PageEleveurCommit|\PHPUnit_Framework_MockObject_MockObject
      */
-    private function newCommit($id, $parent = null)
+    private function newCommit($id, PageEleveurCommit $parent = null)
     {
         $commit= $this->getMockBuilder(PageEleveurCommit::class)
             ->disableOriginalConstructor()->getMock();
@@ -158,6 +160,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::NON_FAST_FORWARD
      */
     public function testCommit_NonFastForward()
     {
