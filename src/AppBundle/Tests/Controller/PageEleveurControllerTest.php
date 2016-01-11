@@ -77,7 +77,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 
         // La réponse du POST retourne l'identifiant du commit créé dans le contenu
-        $client->getResponse()->getContent();
+        $this->assertEquals($pageEleveur->getCommit()->getId(), $client->getResponse()->getContent());
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
