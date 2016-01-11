@@ -70,7 +70,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => $pageEleveur->getId(),
                 'commitId' => $pageEleveur->getCommit()->getId(),
-                'slug' => 'nouveau nom',
+                'nom' => 'nouveau nom',
                 'description' => 'description non nulle'
             )));
 
@@ -131,7 +131,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => -1,
                 'commitId' => -1,
-                'slug' => '',
+                'nom' => '',
                 'description' => ''
             )));
 
@@ -151,7 +151,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => $pageEleveur->getId(),
                 'commitId' => $parentCommitId,
-                'slug' => '',
+                'nom' => '',
                 'description' => ''
             )));
 
@@ -163,7 +163,7 @@ class PageEleveurControllerTest extends WebTestCase
             json_encode(array(
                 'id' => $pageEleveur->getId(),
                 'commitId' => $parentCommitId,
-                'slug' => '',
+                'nom' => '',
                 'description' => ''
             )));
 

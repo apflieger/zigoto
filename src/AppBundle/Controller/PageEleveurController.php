@@ -67,7 +67,7 @@ class PageEleveurController extends Controller
         return json_encode(array(
             'id' => $pageEleveur->getId(),
             'commitId' => $pageEleveur->getCommit()->getId(),
-            'slug' => $pageEleveur->getCommit()->getNom(),
+            'nom' => $pageEleveur->getCommit()->getNom(),
             'description' => $pageEleveur->getCommit()->getDescription()
         ));
     }
@@ -97,7 +97,7 @@ class PageEleveurController extends Controller
                 $user,
                 $jsonPageEleveur->id,
                 $jsonPageEleveur->commitId,
-                $jsonPageEleveur->slug,
+                $jsonPageEleveur->nom,
                 $jsonPageEleveur->description);
             return new Response($newCommit->getId());
         } catch (HistoryException $e) {
