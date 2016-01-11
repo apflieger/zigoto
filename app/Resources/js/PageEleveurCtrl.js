@@ -11,7 +11,7 @@ zigoto.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $http
             url: '/commit-page-eleveur',
             data: $scope.pageEleveur
         }).then(function successCallback(response) {
-            $scope.pageEleveur.commitId = response.data;
+            $scope.pageEleveur = response.data;
         }, function errorCallback(response) {
             console.debug(response);
         });

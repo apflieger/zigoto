@@ -93,13 +93,13 @@ class PageEleveurController extends Controller
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
         try {
-            $newCommit = $pageEleveurService->commit(
+            $pageEleveur = $pageEleveurService->commit(
                 $user,
                 $jsonPageEleveur->id,
                 $jsonPageEleveur->commitId,
                 $jsonPageEleveur->nom,
                 $jsonPageEleveur->description);
-            return new Response($newCommit->getId());
+            return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
             switch ($e->getCode()) {
                 case HistoryException::NON_FAST_FORWARD:

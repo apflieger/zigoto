@@ -70,7 +70,7 @@ class PageEleveurService
      * @param int $currentCommitId
      * @param string $nom
      * @param string $description
-     * @return PageEleveurCommit
+     * @return PageEleveur
      * @throws HistoryException
      */
     public function commit(User $user, $pageEleveurId, $currentCommitId, $nom, $description)
@@ -82,6 +82,9 @@ class PageEleveurService
 
         $this->history->commit($pageEleveurId, $commit, $user);
 
-        return $commit;
+        /** @var PageEleveur $pageEleveur */
+        $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
+
+        return $pageEleveur;
     }
 }
