@@ -80,3 +80,8 @@ fos_user:
     db_driver: orm
     firewall_name: fos
     user_class: AppBundle\Entity\User
+
+monolog:
+    handlers:
+        main:
+            level: warning

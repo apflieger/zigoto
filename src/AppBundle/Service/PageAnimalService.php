@@ -12,18 +12,21 @@ namespace AppBundle\Service;
 use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 
 class PageAnimalService
 {
-
-    /**
-     * @var PageAnimalRepository
-     */
+    /** @var PageAnimalRepository */
     private $pageAnimalRepository;
 
-    public function __construct(PageAnimalRepository $pageAnimalRepository)
+    /** @var HistoryService */
+    private $historyService;
+
+    public function __construct(PageAnimalRepository $pageAnimalRepository, HistoryService $historyService)
     {
         $this->pageAnimalRepository = $pageAnimalRepository;
+        $this->historyService = $historyService;
     }
 
     /**

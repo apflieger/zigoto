@@ -28,12 +28,17 @@ class PageEleveurService
     /** @var EntityRepository */
     private $pageEleveurCommitRepository;
 
+    /** @var PageAnimalService */
+    private $pageAnimalService;
+
     public function __construct(
         HistoryService $history,
+        PageAnimalService $pageAnimalService,
         PageEleveurRepository $pageEleveurRepository,
-        EntityRepository $pageEleveurCommitRepository)
-    {
+        EntityRepository $pageEleveurCommitRepository
+    ) {
         $this->history = $history;
+        $this->pageAnimalService = $pageAnimalService;
         $this->pageEleveurRepository = $pageEleveurRepository;
         $this->pageEleveurCommitRepository = $pageEleveurCommitRepository;
     }
@@ -50,7 +55,7 @@ class PageEleveurService
         if ($this->pageEleveurRepository->findByOwner($owner))
             throw new DisplayableException('user ' . $owner->getId() . ' a deja une page eleveur');
 
-        $commit = new PageEleveurCommit($nom, '', null);
+        $commit = new PageEleveurCommit($nom, '', null, null);
         $pageEleveur = new PageEleveur();
         $pageEleveur->setCommit($commit);
         $pageEleveur->setOwner($owner);
@@ -75,10 +80,35 @@ class PageEleveurService
      */
     public function commit(User $user, $pageEleveurId, $currentCommitId, $nom, $description)
     {
-        /** @var PageEleveurCommit $pageEleveur */
+        /** @var PageEleveurCommit $pageEleveurCommit */
         $pageEleveurCommit = $this->pageEleveurCommitRepository->find($currentCommitId);
 
-        $commit = new PageEleveurCommit($nom, $description, $pageEleveurCommit);
+        if (!$pageEleveurCommit)
+            throw new HistoryException(HistoryException::BRANCHE_INCONNUE);
+
+        $commit = new PageEleveurCommit($nom, $description, $pageEleveurCommit->getAnimaux(), $pageEleveurCommit);
+
+        $this->history->commit($pageEleveurId, $commit, $user);
+
+        /** @var PageEleveur $pageEleveur */
+        $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
+
+        return $pageEleveur;
+    }
+
+    public function addAnimal($user, $pageEleveurId, $currentCommitId, $nomAnimal)
+    {
+        /** @var PageEleveurCommit $pageEleveurCommit */
+        $pageEleveurCommit = $this->pageEleveurCommitRepository->find($currentCommitId);
+
+        $animaux = $pageEleveurCommit->getAnimaux() ?? [];
+        $animaux[] = $this->pageAnimalService->create($nomAnimal, $user);
+
+        $commit = new PageEleveurCommit(
+            $pageEleveurCommit->getNom(),
+            $pageEleveurCommit->getDescription(),
+            $animaux,
+            $pageEleveurCommit);
 
         $this->history->commit($pageEleveurId, $commit, $user);
 

@@ -98,7 +98,8 @@ class PageEleveurController extends Controller
                 $jsonPageEleveur->id,
                 $jsonPageEleveur->commitId,
                 $jsonPageEleveur->nom,
-                $jsonPageEleveur->description);
+                $jsonPageEleveur->description
+            );
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
             switch ($e->getCode()) {
@@ -120,5 +121,34 @@ class PageEleveurController extends Controller
             }
             throw $e;
         }
+    }
+
+    /**
+     * @Route("/add-animal", name="addAnimal")
+     * @Method("POST")
+     * @param Request $request
+     * @return Response
+     * @throws HistoryException
+     */
+    public function addAnimalAction(Request $request)
+    {
+        $json = json_decode($request->getContent());
+
+        /** @var TokenStorage $tokenStorage */
+        $tokenStorage = $this->container->get('security.token_storage');
+
+        /** @var User $user */
+        $user = $tokenStorage->getToken()->getUser();
+
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->container->get('zigoto.page_eleveur');
+
+        $pageEleveurService->addAnimal(
+            $user,
+            $json->id,
+            $json->commitId,
+            $json->nom
+        );
+        return new Response();
     }
 }

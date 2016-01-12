@@ -1,12 +1,8 @@
 # Learn more about services, parameters and containers at
 # http://symfony.com/doc/current/book/service_container.html
 parameters:
-#    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
     zigoto.history:
         class: AppBundle\Service\HistoryService
         arguments :
@@ -17,5 +13,12 @@ services:
         class: AppBundle\Service\PageEleveurService
         arguments:
             - @zigoto.history
+            - @zigoto.page_animal
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurCommit')
+
+    zigoto.page_animal:
+        class: AppBundle\Service\PageAnimalService
+        arguments:
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimal')
+            - @zigoto.history

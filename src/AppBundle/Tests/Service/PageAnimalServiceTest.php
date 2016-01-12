@@ -13,15 +13,17 @@ use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalRepository;
+use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageAnimalService;
+use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
-class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
+class PageAnimalServiceTes extends PHPUnit_Framework_TestCase
 {
     /** @var PageAnimalService */
     private $pageAnimalService;
 
-    /** @var PageAnimalRepository|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var PageAnimalRepository|PHPUnit_Framework_MockObject_MockObject */
     private $pageAnimalRepository;
 
     public function setup()
@@ -29,7 +31,13 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
         $this->pageAnimalRepository = $this->getMockBuilder(PageAnimalRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->pageAnimalService = new PageAnimalService($this->pageAnimalRepository);
+
+        /** @var HistoryService|PHPUnit_Framework_MockObject_MockObject $historyService */
+        $historyService = $this->getMockBuilder(HistoryService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->pageAnimalService = new PageAnimalService($this->pageAnimalRepository, $historyService);
     }
 
     /**

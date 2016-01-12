@@ -41,15 +41,22 @@ class PageEleveurCommit implements CommitInterface
     private $parent;
 
     /**
+     * @var PageAnimal[]
+     */
+    private $animaux;
+
+    /**
      * @param string $nom
      * @param string $description
+     * @param PageAnimal[]|null $animaux
      * @param PageEleveurCommit|null $parent
      */
-    public function __construct($nom, $description, PageEleveurCommit $parent = null)
+    public function __construct($nom, $description, $animaux = null, PageEleveurCommit $parent = null)
     {
         $this->nom = $nom;
         $this->description = $description;
         $this->parent = $parent;
+        $this->animaux = $animaux;
     }
 
     /**
@@ -79,5 +86,13 @@ class PageEleveurCommit implements CommitInterface
     public function getParent()
     {
         return $this->parent;
+    }
+
+    /**
+     * @return PageAnimal[]
+     */
+    public function getAnimaux()
+    {
+        return $this->animaux;
     }
 }

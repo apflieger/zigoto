@@ -12,8 +12,10 @@ namespace AppBundle\Tests\Service;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
+use AppBundle\Repository\PageAnimalRepository;
 use AppBundle\Repository\PageEleveurRepository;
 use AppBundle\Service\HistoryService;
+use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -21,30 +23,23 @@ use PHPUnit_Framework_TestCase;
 
 class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var EntityManager|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var EntityManager|\PHPUnit_Framework_MockObject_MockObject */
     private $entityManager;
 
-    /**
-     * @var PageEleveurRepository|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var PageEleveurRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $pageEleveurRepository;
 
-    /**
-     * @var HistoryService|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var HistoryService|\PHPUnit_Framework_MockObject_MockObject */
     private $historyService;
 
-    /**
-     * @var EntityRepository|\PHPUnit_Framework_MockObject_MockObject
-     */
+    /** @var EntityRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $pageEleveurCommitRepository;
 
-    /**
-     * @var PageEleveurService
-     */
+    /** @var PageEleveurService */
     private $pageEleveurService;
+
+    /** @var PageAnimalRepository|\PHPUnit_Framework_MockObject_MockObject */
+    private $pageAnimalRepository;
 
     public function setup()
     {
@@ -58,6 +53,11 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->pageAnimalRepository = $this
+            ->getMockBuilder(PageAnimalRepository::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->entityManager = $this
             ->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
@@ -66,6 +66,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->historyService = new HistoryService($this->entityManager, $this->pageEleveurRepository);
         $this->pageEleveurService = new PageEleveurService(
             $this->historyService,
+            new PageAnimalService($this->pageAnimalRepository, $this->historyService),
             $this->pageEleveurRepository,
             $this->pageEleveurCommitRepository);
     }
@@ -102,6 +103,15 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->willReturn(new PageEleveur(null, $user));
 
         $this->pageEleveurService->create('page2', $user);
+    }
+
+    public function testCreate_Success()
+    {
+        $user = new User();
+        $pageEleveur = $this->pageEleveurService->create('Les Chartreux de Tatouine', $user);
+
+        $this->assertEquals($user, $pageEleveur->getOwner());
+        $this->assertEquals('les-chartreux-de-tatouine', $pageEleveur->getSlug());
     }
 
     /**
