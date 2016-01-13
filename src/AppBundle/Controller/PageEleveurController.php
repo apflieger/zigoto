@@ -146,8 +146,7 @@ class PageEleveurController extends Controller
         $pageEleveurService->addAnimal(
             $user,
             $json->id,
-            $json->commitId,
-            $json->nom
+            $json->commitId
         );
         return new Response();
     }

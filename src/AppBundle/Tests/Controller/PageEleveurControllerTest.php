@@ -10,7 +10,6 @@ namespace AppBundle\Tests\Controller;
 
 
 use AppBundle\Controller\PageEleveurController;
-use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\UserUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -176,22 +175,17 @@ class PageEleveurControllerTest extends WebTestCase
         $client = static::createClient();
         $pageEleveur = UserUtils::createNewEleveur($client, $this);
 
-        $nomAnimal = 'animal_' . $pageEleveur->getOwner()->getUsername();
-
         $client->request('POST', '/add-animal',
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
-                'commitId' => $pageEleveur->getCommit()->getId(),
-                'nom' => $nomAnimal
+                'commitId' => $pageEleveur->getCommit()->getId()
             ))
         );
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        $animalSlug = HistoryService::slug($nomAnimal);
-        $this->assertEquals($animalSlug, $pageEleveur->getCommit()->getAnimaux()[0]->getSlug());
 
-        $client->request('GET', '/animal/' . $animalSlug);
+        $client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
     }
 }

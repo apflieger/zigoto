@@ -10,6 +10,7 @@ namespace AppBundle\Tests\Service;
 
 
 use AppBundle\Entity\PageAnimal;
+use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalRepository;
@@ -18,7 +19,7 @@ use AppBundle\Service\PageAnimalService;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
-class PageAnimalServiceTes extends PHPUnit_Framework_TestCase
+class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
 {
     /** @var PageAnimalService */
     private $pageAnimalService;
@@ -40,38 +41,18 @@ class PageAnimalServiceTes extends PHPUnit_Framework_TestCase
         $this->pageAnimalService = new PageAnimalService($this->pageAnimalRepository, $historyService);
     }
 
-    /**
-     * @expectedException \AppBundle\Service\HistoryException
-     * @expectedExceptionCode \AppBundle\Service\HistoryException::NOM_INVALIDE
-     */
-    public function testCreate_NomVide()
-    {
-        $this->pageAnimalService->create('', new User());
-    }
-
     public function testCreate_Success()
     {
         $owner = new User();
         /** @var PageAnimal $pageAnimal */
-        $pageAnimal = $this->pageAnimalService->create('Boule de neige', $owner);
+        $pageAnimal = $this->pageAnimalService->create($owner);
 
-        $this->assertEquals('boule-de-neige', $pageAnimal->getSlug());
         $this->assertEquals($owner, $pageAnimal->getOwner());
     }
 
     public function testCreate_PlusieursAnimaux()
     {
         $this->pageAnimalRepository->method('findByOwner')->willReturn([new PageEleveur()]);
-        $this->pageAnimalService->create('test', new User());
-    }
-
-    /**
-     * @expectedException \AppBundle\Service\HistoryException
-     * @expectedExceptionCode \AppBundle\Service\HistoryException::SLUG_DEJA_EXISTANT
-     */
-    public function testCreate_DeuxAnimauxMemeNom()
-    {
-        $this->pageAnimalRepository->method('findByOwnerAndSlug')->willReturn(new PageAnimal());
-        $this->pageAnimalService->create('test', new User());
+        $this->pageAnimalService->create(new User());
     }
 }

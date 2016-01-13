@@ -10,6 +10,7 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\PageAnimal;
+use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalRepository;
 use Doctrine\ORM\EntityManager;
@@ -30,19 +31,18 @@ class PageAnimalService
     }
 
     /**
-     * @param $nom
      * @param User $owner
      * @return PageAnimal
      * @throws HistoryException
      */
-    public function create($nom, User $owner)
+    public function create(User $owner)
     {
         $pageAnimal = new PageAnimal();
-        $pageAnimal->setSlug(HistoryService::slug($nom));
         $pageAnimal->setOwner($owner);
+        //mettre un generateur de nom marrant
+        $pageAnimal->setCommit(new PageAnimalCommit(null, 'tmp'));
 
-        if ($this->pageAnimalRepository->findByOwnerAndSlug($pageAnimal->getOwner(), $pageAnimal->getSlug()))
-            throw new HistoryException(HistoryException::SLUG_DEJA_EXISTANT);
+        $this->historyService->create($pageAnimal);
 
         return $pageAnimal;
     }

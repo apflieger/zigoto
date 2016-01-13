@@ -12,17 +12,6 @@ namespace AppBundle\Entity;
 interface BranchInterface
 {
     /**
-     * @return string
-     */
-    public function getSlug();
-
-    /**
-     * @param string $slug
-     * @return null
-     */
-    public function setSlug($slug);
-
-    /**
      * @return User
      */
     public function getOwner();

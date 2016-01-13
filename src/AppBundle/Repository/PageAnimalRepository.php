@@ -15,15 +15,4 @@ use Doctrine\ORM\EntityRepository;
 
 class PageAnimalRepository extends EntityRepository
 {
-
-    public function findByOwnerAndSlug(User $user, $slug)
-    {
-        /** @var PageAnimal $pageAnimal */
-        $pageAnimal = $this->findOneBy([
-            'owner' => $user,
-            'slug' => $slug
-        ]);
-
-        return $pageAnimal;
-    }
 }

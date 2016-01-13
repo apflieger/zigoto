@@ -15,7 +15,6 @@ use AppBundle\Entity\User;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Exception;
 
 
 class HistoryService

@@ -26,17 +26,20 @@ class PageEleveurCommit implements CommitInterface
 
     /**
      * @ORM\Column(type="string", length=120)
+     * @var string
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=1000, nullable=true)
+     * @var string
      */
     private $description;
 
     /**
      * @ORM\OneToOne(targetEntity="PageEleveurCommit")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
+     * @var PageEleveurCommit
      **/
     private $parent;
 

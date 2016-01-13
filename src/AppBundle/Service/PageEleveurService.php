@@ -48,7 +48,6 @@ class PageEleveurService
      * @param User $owner
      * @return \AppBundle\Entity\BranchInterface|PageEleveur
      * @throws DisplayableException
-     * @throws \Exception
      */
     public function create(string $nom, User $owner)
     {
@@ -96,13 +95,14 @@ class PageEleveurService
         return $pageEleveur;
     }
 
-    public function addAnimal($user, $pageEleveurId, $currentCommitId, $nomAnimal)
+    public function addAnimal($user, $pageEleveurId, $currentCommitId)
     {
         /** @var PageEleveurCommit $pageEleveurCommit */
         $pageEleveurCommit = $this->pageEleveurCommitRepository->find($currentCommitId);
 
         $animaux = $pageEleveurCommit->getAnimaux() ?? [];
-        $animaux[] = $this->pageAnimalService->create($nomAnimal, $user);
+
+        $animaux[] = $this->pageAnimalService->create($user);
 
         $commit = new PageEleveurCommit(
             $pageEleveurCommit->getNom(),

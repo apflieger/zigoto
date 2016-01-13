@@ -24,33 +24,16 @@ class PageAnimal implements BranchInterface
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=120, unique=true)
-     * @var string
-     */
-    private $slug;
-
-    /**
      * @ORM\ManyToOne(targetEntity="User")
      * @var User
      */
     private $owner;
 
     /**
-     * @return string
+     * @ORM\OneToOne(targetEntity="PageAnimalCommit")
+     * @var PageAnimalCommit
      */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-
-    /**
-     * @param string $slug
-     * @return null
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-    }
+    private $commit;
 
     /**
      * @return User
@@ -74,7 +57,7 @@ class PageAnimal implements BranchInterface
      */
     public function getCommit()
     {
-        // TODO: Implement getCommit() method.
+        return $this->commit;
     }
 
     /**
@@ -83,6 +66,11 @@ class PageAnimal implements BranchInterface
      */
     public function setCommit(CommitInterface $commit)
     {
-        // TODO: Implement setCommit() method.
+        $this->commit = $commit;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }
