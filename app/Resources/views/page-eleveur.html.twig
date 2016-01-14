@@ -9,6 +9,13 @@
             <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" e-rows="10" e-cols="100">
                 <pre id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</pre>
             </a>
+            <div class="animaux">
+                <ul>
+                    {% for animal in pageEleveur.commit.animaux %}
+                        <li>{{ animal.nom }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

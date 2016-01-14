@@ -189,4 +189,14 @@ class PageEleveurControllerTest extends WebTestCase
         $this->client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
+
+    public function testAnimal_thumbnail()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur();
+        $animal = $pageEleveur->getCommit()->getAnimaux()[0];
+
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+
+        $this->assertEquals($animal->getNom(), $crawler->filter('.animaux ul > li')->text());
+    }
 }
