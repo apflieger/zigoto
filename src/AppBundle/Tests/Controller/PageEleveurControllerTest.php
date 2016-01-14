@@ -12,29 +12,37 @@ namespace AppBundle\Tests\Controller;
 use AppBundle\Controller\PageEleveurController;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\TestUtils;
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
 
 class PageEleveurControllerTest extends WebTestCase
 {
+    /** @var Client */
+    private $client;
+    /** @var TestUtils */
+    private $testUtils;
+
+    protected function setUp()
+    {
+        $this->client = static::createClient();
+        $this->testUtils = new TestUtils($this->client, $this);
+    }
 
     public function test404()
     {
-        $client = static::createClient();
+        $this->client->request('GET', '/nonexisting-eleveur');
 
-        $client->request('GET', '/nonexisting-eleveur');
-
-        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
 
     public function testContent()
     {
-        $client = static::createClient();
-        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $client->getContainer()->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
 
         $pageEleveurService->commit(
             $pageEleveur->getOwner(),
@@ -44,7 +52,7 @@ class PageEleveurControllerTest extends WebTestCase
             'nouvelle description'
             );
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
@@ -61,11 +69,10 @@ class PageEleveurControllerTest extends WebTestCase
 
     public function testCommit()
     {
-        $client = static::createClient();
-        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         // Modification du nom et de la description de la page
-        $client->request('POST', '/commit-page-eleveur',
+        $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
@@ -74,60 +81,55 @@ class PageEleveurControllerTest extends WebTestCase
                 'description' => 'description non nulle'
             )));
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // La réponse du POST retourne l'identifiant du commit créé dans le contenu
-        $this->assertEquals(PageEleveurController::jsonPageEleveur($pageEleveur), $client->getResponse()->getContent());
+        $this->assertEquals(PageEleveurController::jsonPageEleveur($pageEleveur), $this->client->getResponse()->getContent());
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
         $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
     }
 
     public function testDroitCommitRefuse()
     {
-        $client = static::createClient();
-        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         // Connexion avec un autre user
-        (new TestUtils($client, $this))->createUser();
+        $this->testUtils->createUser();
 
-        $client->request('POST', '/commit-page-eleveur',
+        $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
             PageEleveurController::jsonPageEleveur($pageEleveur));
 
-        $this->assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAccesOwner()
     {
-        $client = static::createClient();
-        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertContains('owner', $crawler->html());
     }
 
     public function testAccesAnonyme()
     {
-        $client = static::createClient();
-        $testUtils = new TestUtils($client, $this);
-        $pageEleveur = $testUtils->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $testUtils->logout();
+        $this->testUtils->logout();
 
-        $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertNotContains('owner', $crawler->html(), 'ca marche pas !');
     }
 
     public function testCommitBrancheInconnue()
     {
-        $client = static::createClient();
-        (new TestUtils($client, $this))->createUser();
+        $this->testUtils->createUser();
 
-        $client->request('POST', '/commit-page-eleveur',
+        $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
             json_encode(array(
                 'id' => -1,
@@ -136,18 +138,17 @@ class PageEleveurControllerTest extends WebTestCase
                 'description' => ''
             )));
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
     public function testCommitNonFastForward()
     {
-        $client = static::createClient();
-        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         $parentCommitId = $pageEleveur->getCommit()->getId();
 
         // 1er commit
-        $client->request('POST', '/commit-page-eleveur',
+        $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
@@ -156,10 +157,10 @@ class PageEleveurControllerTest extends WebTestCase
                 'description' => ''
             )));
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // 2eme commit avec le meme parent que le 1er commit
-        $client->request('POST', '/commit-page-eleveur',
+        $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
@@ -168,15 +169,14 @@ class PageEleveurControllerTest extends WebTestCase
                 'description' => ''
             )));
 
-        $this->assertEquals(Response::HTTP_CONFLICT, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_CONFLICT, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAddAnimal()
     {
-        $client = static::createClient();
-        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $client->request('POST', '/add-animal',
+        $this->client->request('POST', '/add-animal',
             array(), array(), array(),
             json_encode(array(
                 'id' => $pageEleveur->getId(),
@@ -184,9 +184,9 @@ class PageEleveurControllerTest extends WebTestCase
             ))
         );
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        $client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 }
