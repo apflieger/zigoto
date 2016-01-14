@@ -198,5 +198,6 @@ class PageEleveurControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($animal->getNom(), $crawler->filter('.animaux ul > li')->text());
+        $this->assertEquals('Ajouter un animal', $crawler->filter('.animaux button')->text());
     }
 }
