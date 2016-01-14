@@ -5,7 +5,7 @@ namespace AppBundle\Tests\Command;
 
 
 use AppBundle\Command\PageEleveurCommand;
-use AppBundle\Tests\UserUtils;
+use AppBundle\Tests\TestUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -35,7 +35,7 @@ class PageEleveurCommandTest extends WebTestCase
     {
         // création d'un nouvel utilisateur avec une page eleveur
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         $application = new Application($client->getKernel());
         $command = new PageEleveurCommand();

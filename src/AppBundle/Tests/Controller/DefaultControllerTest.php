@@ -3,7 +3,7 @@
 namespace AppBundle\Tests\Controller;
 
 use AppBundle\Entity\ERole;
-use AppBundle\Tests\UserUtils;
+use AppBundle\Tests\TestUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -25,7 +25,7 @@ class DefaultControllerTest extends WebTestCase
     public function testIndex_User()
     {
         $client = static::createClient();
-        UserUtils::create($client, $this);
+        (new TestUtils($client, $this))->createUser();
 
         $crawler = $client->request('GET', '/');
 
@@ -37,7 +37,7 @@ class DefaultControllerTest extends WebTestCase
     public function testIndex_Eleveur()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         $crawler = $client->request('GET', '/');
 
@@ -49,7 +49,7 @@ class DefaultControllerTest extends WebTestCase
     public function testCreationPageEleveur_Success()
     {
         $client = static::createClient();
-        $user = UserUtils::create($client, $this);
+        $user = (new TestUtils($client, $this))->createUser()->getUser();
 
         // tant qu'il n'a pas créé sa page eleveur il n'a pas le ROLE_ELEVEUR
         $this->assertFalse($user->hasRole(ERole::ELEVEUR));
@@ -77,10 +77,11 @@ class DefaultControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        UserUtils::create($client, $this);
+        $testUtils = new TestUtils($client, $this);
+        $testUtils->createUser();
         $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
 
-        UserUtils::logout($client);
+        $testUtils->logout();
 
         $pageEleveurForm['creation-page-eleveur[nom]'] = $this->getName() . rand();
         $client->submit($pageEleveurForm);
@@ -91,10 +92,10 @@ class DefaultControllerTest extends WebTestCase
     public function testCreationPageEleveur_DeuxUserMemePage()
     {
         $client = static::createClient();
-        $pageEleveur1 = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur1 = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         // connexion avec un nouvel user
-        UserUtils::create($client, $this);
+        (new TestUtils($client, $this))->createUser();
 
         //le 2eme user utilise le meme nom que pageEleveur1
         $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
@@ -110,7 +111,7 @@ class DefaultControllerTest extends WebTestCase
         $client = static::createClient();
 
         // connexion avec un nouvel user
-        UserUtils::create($client, $this);
+        (new TestUtils($client, $this))->createUser();
 
         $pageEleveurForm = $client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
         $pageEleveurForm['creation-page-eleveur[nom]'] = '--';

@@ -11,7 +11,7 @@ namespace AppBundle\Tests\Controller;
 
 use AppBundle\Controller\PageEleveurController;
 use AppBundle\Service\PageEleveurService;
-use AppBundle\Tests\UserUtils;
+use AppBundle\Tests\TestUtils;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +31,7 @@ class PageEleveurControllerTest extends WebTestCase
     public function testContent()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $client->getContainer()->get('zigoto.page_eleveur');
@@ -62,7 +62,7 @@ class PageEleveurControllerTest extends WebTestCase
     public function testCommit()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         // Modification du nom et de la description de la page
         $client->request('POST', '/commit-page-eleveur',
@@ -87,10 +87,10 @@ class PageEleveurControllerTest extends WebTestCase
     public function testDroitCommitRefuse()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         // Connexion avec un autre user
-        UserUtils::create($client, $this);
+        (new TestUtils($client, $this))->createUser();
 
         $client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
@@ -102,7 +102,7 @@ class PageEleveurControllerTest extends WebTestCase
     public function testAccesOwner()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
 
@@ -112,9 +112,10 @@ class PageEleveurControllerTest extends WebTestCase
     public function testAccesAnonyme()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $testUtils = new TestUtils($client, $this);
+        $pageEleveur = $testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        UserUtils::logout($client);
+        $testUtils->logout();
 
         $crawler = $client->request('GET', '/' . $pageEleveur->getSlug());
 
@@ -124,7 +125,7 @@ class PageEleveurControllerTest extends WebTestCase
     public function testCommitBrancheInconnue()
     {
         $client = static::createClient();
-        UserUtils::create($client, $this);
+        (new TestUtils($client, $this))->createUser();
 
         $client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
@@ -141,7 +142,7 @@ class PageEleveurControllerTest extends WebTestCase
     public function testCommitNonFastForward()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         $parentCommitId = $pageEleveur->getCommit()->getId();
 
@@ -173,7 +174,7 @@ class PageEleveurControllerTest extends WebTestCase
     public function testAddAnimal()
     {
         $client = static::createClient();
-        $pageEleveur = UserUtils::createNewEleveur($client, $this);
+        $pageEleveur = (new TestUtils($client, $this))->createUser()->toEleveur()->getPageEleveur();
 
         $client->request('POST', '/add-animal',
             array(), array(), array(),
