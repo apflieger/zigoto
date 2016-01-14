@@ -50,6 +50,7 @@ class HistoryService
      * @param $branchId int
      * @param CommitInterface $commit
      * @param User $user
+     * @return BranchInterface
      * @throws HistoryException
      */
     public function commit($branchId, CommitInterface $commit, User $user)
@@ -72,6 +73,8 @@ class HistoryService
         $pageEleveur->setCommit($commit);
 
         $this->doctrine->flush();
+
+        return $pageEleveur;
     }
 
     /**

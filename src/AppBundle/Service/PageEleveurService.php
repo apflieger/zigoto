@@ -87,12 +87,7 @@ class PageEleveurService
 
         $commit = new PageEleveurCommit($nom, $description, $pageEleveurCommit->getAnimaux(), $pageEleveurCommit);
 
-        $this->history->commit($pageEleveurId, $commit, $user);
-
-        /** @var PageEleveur $pageEleveur */
-        $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
-
-        return $pageEleveur;
+        return $this->history->commit($pageEleveurId, $commit, $user);
     }
 
     public function addAnimal($user, $pageEleveurId, $currentCommitId)
@@ -110,11 +105,6 @@ class PageEleveurService
             $animaux,
             $pageEleveurCommit);
 
-        $this->history->commit($pageEleveurId, $commit, $user);
-
-        /** @var PageEleveur $pageEleveur */
-        $pageEleveur = $this->pageEleveurRepository->find($pageEleveurId);
-
-        return $pageEleveur;
+        return $this->history->commit($pageEleveurId, $commit, $user);
     }
 }

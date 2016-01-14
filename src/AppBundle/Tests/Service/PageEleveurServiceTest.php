@@ -112,6 +112,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($user, $pageEleveur->getOwner());
         $this->assertEquals('les-chartreux-de-tatouine', $pageEleveur->getSlug());
+        $this->assertEquals('Les Chartreux de Tatouine', $pageEleveur->getNom());
     }
 
     /**
@@ -120,7 +121,26 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
      */
     public function testCommit_PageInexistante()
     {
+        $commit1 = $this->newCommit(1);
+
+        $this->pageEleveurCommitRepository
+            ->method('find')->withAnyParameters()->willReturn($commit1);
+
+        // cet appel ne sert à rien, c'est juste pour comprendre ce qu'on teste
         $this->pageEleveurRepository
+            ->method('find')->withAnyParameters()->willReturn(null);
+
+        $this->pageEleveurService->commit(new User(), 0, 0, '','');
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::BRANCHE_INCONNUE
+     */
+    public function testCommit_ParentInexistant()
+    {
+        // cet appel ne sert à rien, c'est juste pour comprendre ce qu'on teste
+        $this->pageEleveurCommitRepository
             ->method('find')->withAnyParameters()->willReturn(null);
 
         $this->pageEleveurService->commit(new User(), 0, 0, '','');
