@@ -44,6 +44,22 @@ class TestUtils
     }
 
     /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return PageEleveur
+     */
+    public function getPageEleveur()
+    {
+        return $this->pageEleveur;
+    }
+
+    /**
      * Créé et authentifie un nouveau user
      * @return $this
      */
@@ -72,6 +88,14 @@ class TestUtils
         return $this;
     }
 
+    public function logout()
+    {
+        $this->client->setServerParameters(array());
+        $this->client->getCookieJar()->clear();
+        $this->user = null;
+        $this->pageEleveur = null;
+    }
+
     /**
      * Créé une page eleveur à l'utilisateur connecté
      * @return $this
@@ -88,27 +112,16 @@ class TestUtils
         return $this;
     }
 
-    public function logout()
+    public function addAnimal()
     {
-        $this->client->setServerParameters(array());
-        $this->client->getCookieJar()->clear();
-        $this->user = null;
-        $this->pageEleveur = null;
-    }
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
+        $pageEleveurService->addAnimal(
+            $this->user,
+            $this->pageEleveur->getId(),
+            $this->pageEleveur->getCommit()->getId()
+        );
 
-    /**
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @return PageEleveur
-     */
-    public function getPageEleveur()
-    {
-        return $this->pageEleveur;
+        return $this;
     }
 }

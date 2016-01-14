@@ -19,19 +19,23 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class PageAnimalController extends Controller
 {
     /**
-     * @Route("/animal/{pageAnimalSlug}", name="getPageAnimal")
+     * @Route("/animal/{pageAnimalId}", name="getPageAnimal")
      * @Method("GET")
      */
-    public function getAction($pageAnimalSlug)
+    public function getAction($pageAnimalId)
     {
         /** @var EntityManager $entityManager */
         $entityManager = $this->container->get('doctrine.orm.entity_manager');
         /** @var PageAnimalRepository $pageAnimalRepository */
         $pageAnimalRepository = $entityManager->getRepository('AppBundle:PageAnimal');
 
-        if (!$pageAnimalRepository->find($pageAnimalSlug))
+        $pageAnimal = $pageAnimalRepository->find($pageAnimalId);
+
+        if (!$pageAnimal)
             throw $this->createNotFoundException();
 
-        return new Response();
+        return $this->render('page-animal.html.twig', [
+            'pageAnimal' => $pageAnimal
+        ]);
     }
 }
