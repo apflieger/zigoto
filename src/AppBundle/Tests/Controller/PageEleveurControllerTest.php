@@ -185,6 +185,7 @@ class PageEleveurControllerTest extends WebTestCase
         );
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(PageEleveurController::jsonPageEleveur($pageEleveur), $this->client->getResponse()->getContent());
 
         $this->client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());

@@ -143,11 +143,11 @@ class PageEleveurController extends Controller
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
-        $pageEleveurService->addAnimal(
+        $pageEleveur = $pageEleveurService->addAnimal(
             $user,
             $json->id,
             $json->commitId
         );
-        return new Response();
+        return new Response(self::jsonPageEleveur($pageEleveur));
     }
 }
