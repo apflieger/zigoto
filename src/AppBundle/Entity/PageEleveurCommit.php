@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -44,7 +45,12 @@ class PageEleveurCommit implements CommitInterface
     private $parent;
 
     /**
-     * @var PageAnimal[]
+     * @ORM\ManyToMany(targetEntity="PageAnimal")
+     * @ORM\JoinTable(name="page_eleveur_commit_page_animal",
+     *      joinColumns={@ORM\JoinColumn(name="page_eleveur_commit_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="page_animal_id", referencedColumnName="id")}
+     *      )
+     * @var ArrayCollection
      */
     private $animaux;
 
@@ -59,7 +65,7 @@ class PageEleveurCommit implements CommitInterface
         $this->nom = $nom;
         $this->description = $description;
         $this->parent = $parent;
-        $this->animaux = $animaux;
+        $this->animaux = new ArrayCollection($animaux ?? []);
     }
 
     /**
@@ -96,6 +102,6 @@ class PageEleveurCommit implements CommitInterface
      */
     public function getAnimaux()
     {
-        return $this->animaux;
+        return $this->animaux->toArray();
     }
 }
