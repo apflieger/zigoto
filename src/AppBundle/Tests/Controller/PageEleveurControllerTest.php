@@ -10,8 +10,11 @@ namespace AppBundle\Tests\Controller;
 
 
 use AppBundle\Controller\PageEleveurController;
+use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\TestUtils;
+use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -19,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PageEleveurControllerTest extends WebTestCase
 {
+    /** @var Serializer */
+    private $serializer;
     /** @var Client */
     private $client;
     /** @var TestUtils */
@@ -28,6 +33,7 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $this->testUtils = new TestUtils($this->client, $this);
+        $this->serializer = $this->client->getContainer()->get('serializer');
     }
 
     public function test404()
@@ -64,27 +70,27 @@ class PageEleveurControllerTest extends WebTestCase
         });
         $this->assertEquals(1, $script->count());
 
-        $this->assertContains(PageEleveurController::jsonPageEleveur($pageEleveur), $script->text());
+        $this->assertContains($this->serializer->serialize($pageEleveur, 'json'), $script->text());
     }
 
     public function testCommit()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
+        $commit = new PageEleveurCommit('nouveau nom', 'description non nulle', null, null);
+        $commit->setId($pageEleveur->getCommit()->getId());
+        $pageEleveur->setCommit($commit);
+
         // Modification du nom et de la description de la page
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            json_encode(array(
-                'id' => $pageEleveur->getId(),
-                'commitId' => $pageEleveur->getCommit()->getId(),
-                'nom' => 'nouveau nom',
-                'description' => 'description non nulle'
-            )));
+            $this->serializer->serialize($pageEleveur, 'json')
+        );
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // La réponse du POST retourne l'identifiant du commit créé dans le contenu
-        $this->assertEquals(PageEleveurController::jsonPageEleveur($pageEleveur), $this->client->getResponse()->getContent());
+        $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
@@ -100,7 +106,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            PageEleveurController::jsonPageEleveur($pageEleveur));
+            $this->serializer->serialize($pageEleveur, 'json'));
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
@@ -129,14 +135,16 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $this->testUtils->createUser();
 
+        $fakePageEleveur = new PageEleveur();
+        $fakePageEleveur->setId(-1);
+        $fakeCommit = new PageEleveurCommit('', '');
+        $fakeCommit->setId(-1);
+        $fakePageEleveur->setCommit($fakeCommit);
+
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            json_encode(array(
-                'id' => -1,
-                'commitId' => -1,
-                'nom' => '',
-                'description' => ''
-            )));
+            $this->serializer->serialize($fakePageEleveur, 'json')
+        );
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
@@ -145,29 +153,32 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $parentCommitId = $pageEleveur->getCommit()->getId();
+        $currentPageEleveurCommitId = $pageEleveur->getCommit()->getId();
+
+        $commit1 = new PageEleveurCommit('','',null, null);
+        $commit1->setId($currentPageEleveurCommitId);
+        $pageEleveur1 = new PageEleveur();
+        $pageEleveur1->setId($pageEleveur->getId());
+        $pageEleveur1->setCommit($commit1);
 
         // 1er commit
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            json_encode(array(
-                'id' => $pageEleveur->getId(),
-                'commitId' => $parentCommitId,
-                'nom' => '',
-                'description' => ''
-            )));
+            $this->serializer->serialize($pageEleveur1, 'json')
+        );
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         // 2eme commit avec le meme parent que le 1er commit
+        $commit2 = new PageEleveurCommit('','',null, null);
+        $commit2->setId($currentPageEleveurCommitId);
+        $pageEleveur2 = new PageEleveur();
+        $pageEleveur2->setId($pageEleveur->getId());
+        $pageEleveur2->setCommit($commit2);
+
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            json_encode(array(
-                'id' => $pageEleveur->getId(),
-                'commitId' => $parentCommitId,
-                'nom' => '',
-                'description' => ''
-            )));
+            $this->serializer->serialize($pageEleveur2, 'json'));
 
         $this->assertEquals(Response::HTTP_CONFLICT, $this->client->getResponse()->getStatusCode());
     }
@@ -178,14 +189,11 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->client->request('POST', '/add-animal',
             array(), array(), array(),
-            json_encode(array(
-                'id' => $pageEleveur->getId(),
-                'commitId' => $pageEleveur->getCommit()->getId()
-            ))
+            $this->serializer->serialize($pageEleveur, 'json')
         );
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals(PageEleveurController::jsonPageEleveur($pageEleveur), $this->client->getResponse()->getContent());
+        $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
         $this->client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
@@ -196,6 +204,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur();
         $animal = $pageEleveur->getCommit()->getAnimaux()[0];
 
+        $this->testUtils->logout();
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($animal->getNom(), $crawler->filter('.animaux ul > li')->text());

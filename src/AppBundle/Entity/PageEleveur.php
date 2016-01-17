@@ -9,17 +9,25 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageEleveurRepository")
  * @ORM\Table(name="page_eleveur")
+ *
+ * @ExclusionPolicy("all")
  */
+
 class PageEleveur implements BranchInterface
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @Expose
      */
     private $id;
 
@@ -33,12 +41,16 @@ class PageEleveur implements BranchInterface
      * Il ne peut y avoir qu'une page eleveur par utilisateur
      * @ORM\OneToOne(targetEntity="User")
      * @var User
+     * @Type("AppBundle\Entity\User")
      */
     private $owner;
 
     /**
      * @ORM\OneToOne(targetEntity="PageEleveurCommit")
      * @var PageEleveurCommit
+     * @Type("AppBundle\Entity\PageEleveurCommit")
+     *
+     * @Expose
      */
     private $commit;
 

@@ -11,10 +11,15 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="page_eleveur_commit")
+ *
+ * @ExclusionPolicy("all")
  */
 class PageEleveurCommit implements CommitInterface
 {
@@ -22,18 +27,24 @@ class PageEleveurCommit implements CommitInterface
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @Expose
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=120)
      * @var string
+     *
+     * @Expose
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=1000, nullable=true)
      * @var string
+     *
+     * @Expose
      */
     private $description;
 
@@ -41,6 +52,7 @@ class PageEleveurCommit implements CommitInterface
      * @ORM\OneToOne(targetEntity="PageEleveurCommit")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
      * @var PageEleveurCommit
+     * @Type("AppBundle\Entity\PageEleveurCommit")
      **/
     private $parent;
 
@@ -51,6 +63,8 @@ class PageEleveurCommit implements CommitInterface
      *      inverseJoinColumns={@ORM\JoinColumn(name="page_animal_id", referencedColumnName="id")}
      *      )
      * @var ArrayCollection
+     *
+     * @Expose
      */
     private $animaux;
 
@@ -104,4 +118,10 @@ class PageEleveurCommit implements CommitInterface
     {
         return $this->animaux->toArray();
     }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 }

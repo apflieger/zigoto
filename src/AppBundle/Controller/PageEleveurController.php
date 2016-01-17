@@ -22,6 +22,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Serializer\Serializer;
 
 class PageEleveurController extends Controller
 {
@@ -62,14 +63,11 @@ class PageEleveurController extends Controller
      * @param PageEleveur $pageEleveur
      * @return string
      */
-    public static function jsonPageEleveur(PageEleveur $pageEleveur)
+    private function jsonPageEleveur(PageEleveur $pageEleveur)
     {
-        return json_encode(array(
-            'id' => $pageEleveur->getId(),
-            'commitId' => $pageEleveur->getCommit()->getId(),
-            'nom' => $pageEleveur->getCommit()->getNom(),
-            'description' => $pageEleveur->getCommit()->getDescription()
-        ));
+        /** @var Serializer $serializer */
+        $serializer = $this->container->get('serializer');
+        return $serializer->serialize($pageEleveur, 'json');
     }
 
     /**
@@ -81,7 +79,11 @@ class PageEleveurController extends Controller
      */
     public function commitAction(Request $request)
     {
-        $jsonPageEleveur = json_decode($request->getContent());
+        /** @var Serializer $serializer */
+        $serializer = $this->container->get('serializer');
+
+        /** @var PageEleveur $clientPageEleveur */
+        $clientPageEleveur = $serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
 
         /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
@@ -95,10 +97,10 @@ class PageEleveurController extends Controller
         try {
             $pageEleveur = $pageEleveurService->commit(
                 $user,
-                $jsonPageEleveur->id,
-                $jsonPageEleveur->commitId,
-                $jsonPageEleveur->nom,
-                $jsonPageEleveur->description
+                $clientPageEleveur->getId(),
+                $clientPageEleveur->getCommit()->getId(),
+                $clientPageEleveur->getNom(),
+                $clientPageEleveur->getDescription()
             );
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
@@ -132,7 +134,11 @@ class PageEleveurController extends Controller
      */
     public function addAnimalAction(Request $request)
     {
-        $json = json_decode($request->getContent());
+        /** @var Serializer $serializer */
+        $serializer = $this->container->get('serializer');
+
+        /** @var PageEleveur $clientPageEleveur */
+        $clientPageEleveur = $serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
 
         /** @var TokenStorage $tokenStorage */
         $tokenStorage = $this->container->get('security.token_storage');
@@ -145,8 +151,8 @@ class PageEleveurController extends Controller
 
         $pageEleveur = $pageEleveurService->addAnimal(
             $user,
-            $json->id,
-            $json->commitId
+            $clientPageEleveur->getId(),
+            $clientPageEleveur->getCommit()->getId()
         );
         return new Response(self::jsonPageEleveur($pageEleveur));
     }

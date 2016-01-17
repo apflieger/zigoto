@@ -9,10 +9,15 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageAnimalRepository")
  * @ORM\Table(name="page_animal")
+ *
+ * @ExclusionPolicy("all")
  */
 class PageAnimal implements BranchInterface
 {
@@ -20,18 +25,24 @@ class PageAnimal implements BranchInterface
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
+     *
+     * @Expose
      */
     private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @var User
+     * @Type("AppBundle\Entity\User")
      */
     private $owner;
 
     /**
      * @ORM\OneToOne(targetEntity="PageAnimalCommit")
      * @var PageAnimalCommit
+     * @Type("AppBundle\Entity\PageAnimalCommit")
+     *
+     * @Expose
      */
     private $commit;
 
