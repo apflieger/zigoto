@@ -13,11 +13,13 @@
                 <ul>
                     {% if isOwner %}
                         {% raw %}
-                            <li ng-repeat="animal in pageEleveur.commit.animaux">{{ animal.commit.nom }}</li>
+                            <li ng-repeat="animal in pageEleveur.commit.animaux">
+                                <a href="/animal/{{ animal.id }}">{{ animal.commit.nom }}</a>
+                            </li>
                         {% endraw %}
                     {% else %}
                         {% for animal in pageEleveur.commit.animaux %}
-                            <li>{{ animal.nom }}</li>
+                            <li><a href="/animal/{{ animal.id }}">{{ animal.nom }}</a></li>
                         {% endfor %}
                     {% endif %}
                 </ul>
