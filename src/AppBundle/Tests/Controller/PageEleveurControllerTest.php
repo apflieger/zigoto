@@ -53,7 +53,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveurService->commit(
             $pageEleveur->getOwner(),
             $pageEleveur->getId(),
-            $pageEleveur->getCommit()->getId(),
+            $pageEleveur->getHead(),
             $pageEleveur->getNom(),
             'nouvelle description'
             );
@@ -78,7 +78,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         $commit = new PageEleveurCommit('nouveau nom', 'description non nulle', null, null);
-        $commit->setId($pageEleveur->getCommit()->getId());
+        $commit->setId($pageEleveur->getHead());
         $pageEleveur->setCommit($commit);
 
         // Modification du nom et de la description de la page
@@ -153,7 +153,7 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $currentPageEleveurCommitId = $pageEleveur->getCommit()->getId();
+        $currentPageEleveurCommitId = $pageEleveur->getHead();
 
         $commit1 = new PageEleveurCommit('','',null, null);
         $commit1->setId($currentPageEleveurCommitId);
@@ -195,14 +195,14 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
-        $this->client->request('GET', '/animal/' . $pageEleveur->getCommit()->getAnimaux()[0]->getId());
+        $this->client->request('GET', '/animal/' . $pageEleveur->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAnimal_thumbnail()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur();
-        $animal = $pageEleveur->getCommit()->getAnimaux()[0];
+        $animal = $pageEleveur->getAnimaux()[0];
 
         $this->testUtils->logout();
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());

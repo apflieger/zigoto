@@ -90,6 +90,12 @@ class PageAnimal implements BranchInterface
      */
     public function getNom()
     {
-        return $this->getCommit()->getNom();
+        return $this->commit->getNom();
+    }
+
+
+    public function getHead()
+    {
+        return $this->commit->getId();
     }
 }

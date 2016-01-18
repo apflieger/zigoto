@@ -98,7 +98,7 @@ class PageEleveurController extends Controller
             $pageEleveur = $pageEleveurService->commit(
                 $user,
                 $clientPageEleveur->getId(),
-                $clientPageEleveur->getCommit()->getId(),
+                $clientPageEleveur->getHead(),
                 $clientPageEleveur->getNom(),
                 $clientPageEleveur->getDescription()
             );
@@ -152,7 +152,7 @@ class PageEleveurController extends Controller
         $pageEleveur = $pageEleveurService->addAnimal(
             $user,
             $clientPageEleveur->getId(),
-            $clientPageEleveur->getCommit()->getId()
+            $clientPageEleveur->getHead()
         );
         return new Response(self::jsonPageEleveur($pageEleveur));
     }

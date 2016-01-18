@@ -38,7 +38,7 @@ class PageAnimalControllerTest extends WebTestCase
 
     public function testContent()
     {
-        $animal = $this->testUtils->getPageEleveur()->getCommit()->getAnimaux()[0];
+        $animal = $this->testUtils->getPageEleveur()->getAnimaux()[0];
         $crawler = $this->client->request('GET', '/animal/' . $animal->getId());
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());

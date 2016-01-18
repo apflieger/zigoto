@@ -119,7 +119,7 @@ class TestUtils
         $pageEleveurService->addAnimal(
             $this->user,
             $this->pageEleveur->getId(),
-            $this->pageEleveur->getCommit()->getId()
+            $this->pageEleveur->getHead()
         );
 
         return $this;

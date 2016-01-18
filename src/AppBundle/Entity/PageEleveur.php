@@ -115,14 +115,26 @@ class PageEleveur implements BranchInterface
         $this->commit = $commit;
     }
 
+    public function getHead()
+    {
+        return $this->commit->getId();
+    }
+
     public function getNom()
     {
-        return $this->getCommit()->getNom();
+        return $this->commit->getNom();
     }
 
     public function getDescription()
     {
-        return $this->getCommit()->getDescription();
+        return $this->commit->getDescription();
     }
 
+    /**
+     * @return PageAnimal[]
+     */
+    public function getAnimaux()
+    {
+        return $this->commit->getAnimaux();
+    }
 }

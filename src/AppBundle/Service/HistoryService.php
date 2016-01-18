@@ -19,7 +19,7 @@ use Doctrine\ORM\EntityRepository;
 
 class HistoryService
 {
-    /** @var ObjectManager */
+    /** @var EntityManager */
     private $doctrine;
 
     /** @var EntityRepository */
@@ -66,7 +66,7 @@ class HistoryService
         if ($pageEleveur->getOwner()->getId() !== $user->getId())
             throw new HistoryException(HistoryException::DROIT_REFUSE);
 
-        if ($pageEleveur->getCommit()->getId() !== $commit->getParent()->getId())
+        if ($pageEleveur->getHead() !== $commit->getParent()->getId())
             throw new HistoryException(HistoryException::NON_FAST_FORWARD);
 
         $this->doctrine->persist($commit);

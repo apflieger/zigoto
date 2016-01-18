@@ -32,4 +32,6 @@ interface BranchInterface
      * @return null
      */
     public function setCommit(CommitInterface $commit);
+
+    public function getHead();
 }
