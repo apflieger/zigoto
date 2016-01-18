@@ -58,9 +58,6 @@ class DefaultControllerTest extends WebTestCase
     {
         $user = $this->testUtils->createUser()->getUser();
 
-        // tant qu'il n'a pas créé sa page eleveur il n'a pas le ROLE_ELEVEUR
-        $this->assertFalse($user->hasRole(ERole::ELEVEUR));
-
         // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
         $crawler = $this->client->request('GET', '/');
         $creationPageEleveurForm = $crawler->filter('form[name="creation-page-eleveur"]')->form();
@@ -68,10 +65,6 @@ class DefaultControllerTest extends WebTestCase
         $nomElevage = 'Les Chartreux de Tatouine ' . $rand;
         $creationPageEleveurForm['creation-page-eleveur[nom]'] = $nomElevage;
         $this->client->submit($creationPageEleveurForm);
-
-        /** @var TokenStorage $tokenStorage */
-        $tokenStorage = $this->client->getContainer()->get('security.token_storage');
-        $this->assertTrue($tokenStorage->getToken()->getUser()->hasRole(ERole::ELEVEUR));
 
         // Redirection vers sa page eleveur fraichement créé
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());

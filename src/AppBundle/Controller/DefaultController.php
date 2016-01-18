@@ -33,9 +33,15 @@ class DefaultController extends Controller
 
         /** @var User $user */
         $user = $token->getUser();
+
         if ($user == 'anon.')
             return $this->render('index.html.twig');
-        else if (!$user->hasRole(ERole::ELEVEUR)){
+
+        /** @var PageEleveurRepository $pageEleveurRepository */
+        $pageEleveurRepository = $this->get('doctrine.orm.entity_manager')->getRepository('AppBundle:PageEleveur');
+        $pageEleveur = $pageEleveurRepository->findByOwner($user);
+
+        if (!$pageEleveur){
             /** @var FormFactory $formFactory */
             $formFactory = $this->get('form.factory');
 
@@ -69,16 +75,11 @@ class DefaultController extends Controller
                 'creationPageEleveur' => $form->createView()
             ]);
         }
-        else {
-            /** @var PageEleveurRepository $pageEleveurRepository */
-            $pageEleveurRepository = $this->get('doctrine.orm.entity_manager')->getRepository('AppBundle:PageEleveur');
-            $pageEleveur = $pageEleveurRepository->findOneBy([
-                'owner' => $user
-            ]);
-            return $this->render('index-eleveur.html.twig', [
-                'username' => $user->getUserName(),
-                'pageEleveur' => $pageEleveur
-            ]);
-        }
+
+        return $this->render('index-eleveur.html.twig', [
+            'username' => $user->getUserName(),
+            'pageEleveur' => $pageEleveur
+        ]);
+
     }
 }

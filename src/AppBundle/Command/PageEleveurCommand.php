@@ -44,13 +44,6 @@ class PageEleveurCommand extends ContainerAwareCommand
         if (!$pageEleveur)
             throw new Exception('Page eleveur ' . $input->getArgument('id') . ' n\'exiset pas.');
 
-        $pageEleveur->getOwner()->removeRole(ERole::ELEVEUR);
-        /**
-         * @var \FOS\UserBundle\Doctrine\UserManager $userManager
-         */
-        $userManager = $this->getContainer()->get('fos_user.user_manager');
-        $userManager->updateUser($pageEleveur->getOwner());
-
         /**
          * @var \Doctrine\ORM\EntityManager $doctrine
          */

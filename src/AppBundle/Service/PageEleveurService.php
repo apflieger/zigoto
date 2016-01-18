@@ -63,9 +63,7 @@ class PageEleveurService
         if ($this->pageEleveurRepository->findBySlug($pageEleveur->getSlug()))
             throw new DisplayableException('Une page eleveur du meme nom existe deja');
 
-        $pageEleveur = $this->history->create($pageEleveur);
-        $owner->addRole(ERole::ELEVEUR);
-        return $pageEleveur;
+        return $this->history->create($pageEleveur);
     }
 
     /**
