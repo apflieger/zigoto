@@ -13,6 +13,6 @@ use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
-class PageAnimalRepository extends EntityRepository
+class PageAnimalBranchRepository extends EntityRepository
 {
 }

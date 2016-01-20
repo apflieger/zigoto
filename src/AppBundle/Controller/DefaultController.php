@@ -4,7 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageEleveurRepository;
+use AppBundle\Repository\PageEleveurBranchRepository;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageEleveurService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -37,49 +37,47 @@ class DefaultController extends Controller
         if ($user == 'anon.')
             return $this->render('index.html.twig');
 
-        /** @var PageEleveurRepository $pageEleveurRepository */
-        $pageEleveurRepository = $this->get('doctrine.orm.entity_manager')->getRepository('AppBundle:PageEleveur');
-        $pageEleveur = $pageEleveurRepository->findByOwner($user);
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->get('zigoto.page_eleveur');
+        $pageEleveur = $pageEleveurService->findByOwner($user);
 
-        if (!$pageEleveur){
-            /** @var FormFactory $formFactory */
-            $formFactory = $this->get('form.factory');
-
-            $form = $formFactory->createNamedBuilder('creation-page-eleveur')
-                ->add('nom', 'text')
-                ->add('save', 'submit', array('label' => 'Créer ma page éleveur'))
-                ->getForm();
-
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                /** @var PageEleveurService $pageEleveurService */
-                $pageEleveurService = $this->container->get('zigoto.page_eleveur');
-
-                $nom = $form->getData()['nom'];
-                try {
-                    $slug = $pageEleveurService->create($nom, $user)->getSlug();
-                    return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
-                } catch (DisplayableException $e) {
-                    return new Response($e->getMessage(), Response::HTTP_CONFLICT);
-                } catch (HistoryException $e) {
-                    switch ($e->getCode()) {
-                        case HistoryException::NOM_INVALIDE:
-                            return new Response('Le nom n\'"'.$nom.'"est pas valide', Response::HTTP_NOT_ACCEPTABLE);
-                    }
-                }
-            }
-
-            return $this->render('index-new-eleveur.html.twig', [
+        if ($pageEleveur){
+            return $this->render('index-eleveur.html.twig', [
                 'username' => $user->getUserName(),
-                'creationPageEleveur' => $form->createView()
+                'pageEleveur' => $pageEleveur
             ]);
         }
 
-        return $this->render('index-eleveur.html.twig', [
+        /** @var FormFactory $formFactory */
+        $formFactory = $this->get('form.factory');
+
+        $form = $formFactory->createNamedBuilder('creation-page-eleveur')
+            ->add('nom', 'text')
+            ->add('save', 'submit', array('label' => 'Créer ma page éleveur'))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $nom = $form->getData()['nom'];
+            try {
+                $slug = $pageEleveurService->create($nom, $user)->getSlug();
+                return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
+            } catch (DisplayableException $e) {
+                return new Response($e->getMessage(), Response::HTTP_CONFLICT);
+            } catch (HistoryException $e) {
+                switch ($e->getCode()) {
+                    case HistoryException::NOM_INVALIDE:
+                        return new Response('Le nom n\'"'.$nom.'"est pas valide', Response::HTTP_NOT_ACCEPTABLE);
+                }
+            }
+        }
+
+        return $this->render('index-new-eleveur.html.twig', [
             'username' => $user->getUserName(),
-            'pageEleveur' => $pageEleveur
+            'creationPageEleveur' => $form->createView()
         ]);
+
 
     }
 }

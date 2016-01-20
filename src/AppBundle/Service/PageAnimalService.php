@@ -10,24 +10,43 @@ namespace AppBundle\Service;
 
 
 use AppBundle\Entity\PageAnimal;
+use AppBundle\Entity\PageAnimalBranch;
 use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageAnimalRepository;
+use AppBundle\Repository\PageAnimalBranchRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 class PageAnimalService
 {
-    /** @var PageAnimalRepository */
-    private $pageAnimalRepository;
+    /** @var EntityManager */
+    private $doctrine;
 
-    /** @var HistoryService */
-    private $historyService;
+    /** @var PageAnimalBranchRepository */
+    private $pageAnimalBranchRepository;
 
-    public function __construct(PageAnimalRepository $pageAnimalRepository, HistoryService $historyService)
+    public function __construct(
+        EntityManager $doctrine,
+        PageAnimalBranchRepository $pageAnimalBranchRepository
+    ) {
+        $this->doctrine = $doctrine;
+        $this->pageAnimalBranchRepository = $pageAnimalBranchRepository;
+    }
+
+    public function find($pageAnimalId)
     {
-        $this->pageAnimalRepository = $pageAnimalRepository;
-        $this->historyService = $historyService;
+        /** @var PageAnimalBranch $branch */
+        $branch = $this->pageAnimalBranchRepository->find($pageAnimalId);
+
+        if (!$branch)
+            return null;
+
+        $pageAnimal = new PageAnimal();
+        $pageAnimal->setId($branch->getId());
+        $pageAnimal->setHead($branch->getCommit()->getId());
+        $pageAnimal->setNom($branch->getCommit()->getNom());
+
+        return $pageAnimal;
     }
 
     /**
@@ -37,13 +56,19 @@ class PageAnimalService
      */
     public function create(User $owner)
     {
-        $pageAnimal = new PageAnimal();
-        $pageAnimal->setOwner($owner);
+        $pageAnimalBranch = new PageAnimalBranch();
+        $pageAnimalBranch->setOwner($owner);
         //mettre un generateur de nom marrant
-        $pageAnimal->setCommit(new PageAnimalCommit(null, 'tmp'));
+        $pageAnimalBranch->setCommit(new PageAnimalCommit(null, 'tmp'));
 
-        $this->historyService->create($pageAnimal);
+        $this->doctrine->persist($pageAnimalBranch->getCommit());
+        $this->doctrine->persist($pageAnimalBranch);
+        $this->doctrine->flush([$pageAnimalBranch->getCommit(), $pageAnimalBranch]);
 
+        $pageAnimal = new PageAnimal();
+        $pageAnimal->setId($pageAnimalBranch->getId());
+        $pageAnimal->setHead($pageAnimalBranch->getCommit()->getId());
+        $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
         return $pageAnimal;
     }
 }

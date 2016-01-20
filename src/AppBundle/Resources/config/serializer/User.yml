@@ -1,0 +1,2 @@
+FOS\UserBundle\Model\User:
+    exclusion_policy: ALL # Désactivation de la sérialisation de la classe de base de FosUserBundle

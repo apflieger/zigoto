@@ -13,7 +13,7 @@ use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageAnimalRepository;
+use AppBundle\Repository\PageAnimalBranchRepository;
 use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageAnimalService;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -24,12 +24,12 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
     /** @var PageAnimalService */
     private $pageAnimalService;
 
-    /** @var PageAnimalRepository|PHPUnit_Framework_MockObject_MockObject */
+    /** @var PageAnimalBranchRepository|PHPUnit_Framework_MockObject_MockObject */
     private $pageAnimalRepository;
 
     public function setup()
     {
-        $this->pageAnimalRepository = $this->getMockBuilder(PageAnimalRepository::class)
+        $this->pageAnimalRepository = $this->getMockBuilder(PageAnimalBranchRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 

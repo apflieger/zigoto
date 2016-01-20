@@ -3,22 +3,16 @@
 parameters:
 
 services:
-    zigoto.history:
-        class: AppBundle\Service\HistoryService
-        arguments :
-            - @doctrine.orm.entity_manager
-            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
-
     zigoto.page_eleveur:
         class: AppBundle\Service\PageEleveurService
         arguments:
-            - @zigoto.history
-            - @zigoto.page_animal
-            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveur')
+            - @doctrine.orm.entity_manager
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurBranch')
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurCommit')
 
     zigoto.page_animal:
         class: AppBundle\Service\PageAnimalService
         arguments:
-            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimal')
-            - @zigoto.history
+            - @doctrine.orm.entity_manager
+            - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')

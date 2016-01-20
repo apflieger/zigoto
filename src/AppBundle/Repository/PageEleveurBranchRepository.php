@@ -2,26 +2,31 @@
 
 namespace AppBundle\Repository;
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
-class PageEleveurRepository extends EntityRepository
+class PageEleveurBranchRepository extends EntityRepository
 {
     /**
      * @param $slug string
-     * @return PageEleveur
+     * @return PageEleveurBranch
      */
     public function findBySlug($slug)
     {
-        /** @var PageEleveur $pageEleveur */
+        /** @var PageEleveurBranch $pageEleveur */
         $pageEleveur = $this->findOneBy(['slug' => $slug]);
 
         return $pageEleveur;
     }
 
+    /**
+     * @param User $user
+     * @return PageEleveurBranch
+     */
     public function findByOwner(User $user)
     {
-        /** @var PageEleveur $pageEleveur */
+        /** @var PageEleveurBranch $pageEleveur */
         $pageEleveur = $this->findOneBy(['owner' => $user]);
 
         return $pageEleveur;

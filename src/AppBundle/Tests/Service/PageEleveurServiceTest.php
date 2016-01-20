@@ -12,8 +12,8 @@ namespace AppBundle\Tests\Service;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageAnimalRepository;
-use AppBundle\Repository\PageEleveurRepository;
+use AppBundle\Repository\PageAnimalBranchRepository;
+use AppBundle\Repository\PageEleveurBranchRepository;
 use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
@@ -26,7 +26,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     /** @var EntityManager|\PHPUnit_Framework_MockObject_MockObject */
     private $entityManager;
 
-    /** @var PageEleveurRepository|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var PageEleveurBranchRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $pageEleveurRepository;
 
     /** @var HistoryService|\PHPUnit_Framework_MockObject_MockObject */
@@ -38,13 +38,13 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     /** @var PageEleveurService */
     private $pageEleveurService;
 
-    /** @var PageAnimalRepository|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var PageAnimalBranchRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $pageAnimalRepository;
 
     public function setup()
     {
         $this->pageEleveurRepository = $this
-            ->getMockBuilder(PageEleveurRepository::class)
+            ->getMockBuilder(PageEleveurBranchRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -54,7 +54,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->getMock();
 
         $this->pageAnimalRepository = $this
-            ->getMockBuilder(PageAnimalRepository::class)
+            ->getMockBuilder(PageAnimalBranchRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 

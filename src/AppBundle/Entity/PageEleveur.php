@@ -1,74 +1,74 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: apf
- * Date: 06/11/15
- * Time: 17:05
+ * User: arnaudpflieger
+ * Date: 19/01/2016
+ * Time: 23:37
  */
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\ExclusionPolicy;
-use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Type;
 
-/**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PageEleveurRepository")
- * @ORM\Table(name="page_eleveur")
- *
- * @ExclusionPolicy("all")
- */
 
-class PageEleveur implements BranchInterface
+class PageEleveur extends Commitable
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     *
-     * @Expose
-     */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string", length=120, unique=true)
+     * @Type("string")
      * @var string
      */
     private $slug;
 
     /**
-     * Il ne peut y avoir qu'une page eleveur par utilisateur
-     * @ORM\OneToOne(targetEntity="User")
-     * @var User
      * @Type("AppBundle\Entity\User")
+     * @var User
      */
     private $owner;
 
     /**
-     * @ORM\OneToOne(targetEntity="PageEleveurCommit")
-     * @var PageEleveurCommit
-     * @Type("AppBundle\Entity\PageEleveurCommit")
-     *
-     * @Expose
+     * @Type("string")
+     * @var string
      */
-    private $commit;
+    private $nom;
 
     /**
-     * @return int
+     * @Type("string")
+     * @var string
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    private $description;
 
-    public function setId($id)
+    /**
+     * @Type("array<AppBundle\Entity\PageAnimal>")
+     * @var PageAnimal[]
+     */
+    private $animaux;
+
+    /**
+     * @param string $nom
+     */
+    public function setNom($nom)
     {
-        $this->id = $id;
+        $this->nom = $nom;
     }
 
     /**
-     * @inheritdoc
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @param PageAnimal[] $animaux
+     */
+    public function setAnimaux($animaux)
+    {
+        $this->animaux = $animaux;
+    }
+
+    /**
+     * @return string
      */
     public function getSlug()
     {
@@ -76,7 +76,7 @@ class PageEleveur implements BranchInterface
     }
 
     /**
-     * @inheritdoc
+     * @param string $slug
      */
     public function setSlug($slug)
     {
@@ -84,7 +84,7 @@ class PageEleveur implements BranchInterface
     }
 
     /**
-     * @inheritdoc
+     * @return User
      */
     public function getOwner()
     {
@@ -92,42 +92,27 @@ class PageEleveur implements BranchInterface
     }
 
     /**
-     * @inheritdoc
+     * @param User $owner
      */
-    public function setOwner(User $owner)
+    public function setOwner($owner)
     {
         $this->owner = $owner;
     }
 
     /**
-     * @inheritdoc
+     * @return string
      */
-    public function getCommit()
+    public function getNom()
     {
-        return $this->commit;
+        return $this->nom;
     }
 
     /**
-     * @inheritdoc
+     * @return string
      */
-    public function setCommit(CommitInterface $commit)
-    {
-        $this->commit = $commit;
-    }
-
-    public function getHead()
-    {
-        return $this->commit->getId();
-    }
-
-    public function getNom()
-    {
-        return $this->commit->getNom();
-    }
-
     public function getDescription()
     {
-        return $this->commit->getDescription();
+        return $this->description;
     }
 
     /**
@@ -135,6 +120,6 @@ class PageEleveur implements BranchInterface
      */
     public function getAnimaux()
     {
-        return $this->commit->getAnimaux();
+        return $this->animaux;
     }
 }

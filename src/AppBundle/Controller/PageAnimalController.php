@@ -9,7 +9,8 @@
 namespace AppBundle\Controller;
 
 
-use AppBundle\Repository\PageAnimalRepository;
+use AppBundle\Repository\PageAnimalBranchRepository;
+use AppBundle\Service\PageAnimalService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,12 +25,10 @@ class PageAnimalController extends Controller
      */
     public function getAction($pageAnimalId)
     {
-        /** @var EntityManager $entityManager */
-        $entityManager = $this->container->get('doctrine.orm.entity_manager');
-        /** @var PageAnimalRepository $pageAnimalRepository */
-        $pageAnimalRepository = $entityManager->getRepository('AppBundle:PageAnimal');
+        /** @var PageAnimalService $pageAnimalService */
+        $pageAnimalService = $this->get('zigoto.page_animal');
 
-        $pageAnimal = $pageAnimalRepository->find($pageAnimalId);
+        $pageAnimal = $pageAnimalService->find($pageAnimalId);
 
         if (!$pageAnimal)
             throw $this->createNotFoundException();
