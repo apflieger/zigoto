@@ -11,13 +11,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageEleveurBranchRepository;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -99,24 +96,7 @@ class PageEleveurController extends Controller
             $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
-            switch ($e->getCode()) {
-                case HistoryException::NON_FAST_FORWARD:
-                    return new Response(
-                        'Plusieurs éditions sont en cours, veuillez rafraichir la page.',
-                        Response::HTTP_CONFLICT);
-                    break;
-                case HistoryException::DROIT_REFUSE:
-                    return new Response(
-                        'Vous ne pouvez pas modifier cette page. Vérifiez que vous êtes bien connecté.',
-                        Response::HTTP_FORBIDDEN);
-                    break;
-                case HistoryException::BRANCHE_INCONNUE:
-                    return new Response(
-                        'Votre page a été supprimée.',
-                        Response::HTTP_NOT_FOUND);
-                    break;
-            }
-            throw $e;
+            return $this->createErrorResponse($e);
         }
     }
 
@@ -155,8 +135,38 @@ class PageEleveurController extends Controller
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->container->get('zigoto.page_eleveur');
 
-        $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);
+        try {
+            $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);
+            return new Response(self::jsonPageEleveur($pageEleveur));
+        } catch (HistoryException $e) {
+            return $this->createErrorResponse($e);
+        }
+    }
 
-        return new Response(self::jsonPageEleveur($pageEleveur));
+    /**
+     * @param HistoryException $e
+     * @return Response
+     * @throws HistoryException
+     */
+    private function createErrorResponse(HistoryException $e)
+    {
+        switch ($e->getCode()) {
+            case HistoryException::NON_FAST_FORWARD:
+                return new Response(
+                    'Plusieurs éditions sont en cours, veuillez rafraichir la page.',
+                    Response::HTTP_CONFLICT);
+                break;
+            case HistoryException::DROIT_REFUSE:
+                return new Response(
+                    'Vous ne pouvez pas modifier cette page. Vérifiez que vous êtes bien connecté.',
+                    Response::HTTP_FORBIDDEN);
+                break;
+            case HistoryException::BRANCHE_INCONNUE:
+                return new Response(
+                    'Votre page a été supprimée.',
+                    Response::HTTP_NOT_FOUND);
+                break;
+        }
+        throw $e;
     }
 }

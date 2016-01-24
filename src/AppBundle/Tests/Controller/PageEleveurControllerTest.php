@@ -172,7 +172,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_CONFLICT, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testAddAnimal()
+    public function testAddAnimal_success()
     {
         $pageEleveur0 = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
@@ -183,10 +183,25 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
+        /** @var PageEleveur $pageEleveur1 */
         $pageEleveur1 = $this->serializer->deserialize($this->client->getResponse()->getContent(), PageEleveur::class, 'json');
 
         $this->client->request('GET', '/animal/' . $pageEleveur1->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testAddAnimal_droit_refuse()
+    {
+        $pageEleveur0 = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+
+        $this->testUtils->createUser();
+
+        $this->client->request('POST', '/add-animal',
+            array(), array(), array(),
+            $this->serializer->serialize($pageEleveur0, 'json')
+        );
+
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAnimal_thumbnail()
