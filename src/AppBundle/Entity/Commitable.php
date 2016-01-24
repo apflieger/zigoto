@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Exclude;
 
 
 class Commitable
@@ -24,6 +25,12 @@ class Commitable
      * @var int
      */
     private $head;
+
+    /**
+     * @Exclude
+     * @var User
+     */
+    private $owner;
 
     /**
      * @return int
@@ -55,5 +62,21 @@ class Commitable
     public function setHead($head)
     {
         $this->head = $head;
+    }
+
+    /**
+     * @return User
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param User $owner
+     */
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
     }
 }

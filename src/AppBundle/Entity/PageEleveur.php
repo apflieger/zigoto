@@ -9,7 +9,6 @@
 namespace AppBundle\Entity;
 
 use JMS\Serializer\Annotation\Type;
-use JMS\Serializer\Annotation\Exclude;
 
 
 class PageEleveur extends Commitable
@@ -19,12 +18,6 @@ class PageEleveur extends Commitable
      * @var string
      */
     private $slug;
-
-    /**
-     * @Exclude
-     * @var User
-     */
-    private $owner;
 
     /**
      * @Type("string")
@@ -82,22 +75,6 @@ class PageEleveur extends Commitable
     public function setSlug($slug)
     {
         $this->slug = $slug;
-    }
-
-    /**
-     * @return User
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param User $owner
-     */
-    public function setOwner($owner)
-    {
-        $this->owner = $owner;
     }
 
     /**
