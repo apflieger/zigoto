@@ -35,7 +35,7 @@
         <script type="text/javascript">
             // flag const-js
             {% autoescape false %}
-                var globPageEleveur = {{ jsonPageEleveur }};
+                var globPageEleveur = {{ pageEleveur | serialize }};
             {% endautoescape %}
         </script>
         <script src="build/angular.js"></script>

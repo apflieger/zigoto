@@ -17,6 +17,7 @@ use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -53,7 +54,6 @@ class PageEleveurController extends Controller
 
         return $this->render('page-eleveur.html.twig', array(
             'pageEleveur' => $pageEleveur,
-            'jsonPageEleveur' => self::jsonPageEleveur($pageEleveur),
             'isOwner' => $isOwner));
     }
 
