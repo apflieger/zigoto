@@ -9,10 +9,11 @@
 namespace AppBundle\Tests;
 
 
+use AppBundle\Entity\User;
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use FOS\UserBundle\Doctrine\UserManager;
-use FOS\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -69,6 +70,7 @@ class TestUtils
         $userManager = $this->client->getContainer()->get('fos_user.user_manager');
 
         // Création d'un utilisateur
+        /** @var User $user */
         $user = $userManager->createUser();
 
         // le random permet les exécutions successives des mêmes tests
@@ -114,12 +116,17 @@ class TestUtils
 
     public function addAnimal()
     {
+        /** @var PageAnimalService $pageAnimalService */
+        $pageAnimalService = $this->client->getContainer()->get('zigoto.page_animal');
+
+        $this->pageEleveur->setAnimaux([$pageAnimalService->create($this->user)]);
+
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
-        $pageEleveurService->addAnimal(
+
+        $pageEleveurService->commit(
             $this->user,
-            $this->pageEleveur->getId(),
-            $this->pageEleveur->getHead()
+            $this->pageEleveur
         );
 
         return $this;

@@ -9,6 +9,7 @@
 namespace AppBundle\Entity;
 
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Exclude;
 
 
 class PageEleveur extends Commitable
@@ -20,7 +21,7 @@ class PageEleveur extends Commitable
     private $slug;
 
     /**
-     * @Type("AppBundle\Entity\User")
+     * @Exclude
      * @var User
      */
     private $owner;

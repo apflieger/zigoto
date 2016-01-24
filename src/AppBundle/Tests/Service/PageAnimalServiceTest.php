@@ -14,8 +14,8 @@ use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalBranchRepository;
-use AppBundle\Service\HistoryService;
 use AppBundle\Service\PageAnimalService;
+use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
@@ -33,12 +33,12 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        /** @var HistoryService|PHPUnit_Framework_MockObject_MockObject $historyService */
-        $historyService = $this->getMockBuilder(HistoryService::class)
+        /** @var EntityManager|PHPUnit_Framework_MockObject_MockObject $entityManager */
+        $entityManager = $this->getMockBuilder(EntityManager::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageAnimalService = new PageAnimalService($this->pageAnimalRepository, $historyService);
+        $this->pageAnimalService = new PageAnimalService($entityManager, $this->pageAnimalRepository);
     }
 
     public function testCreate_Success()

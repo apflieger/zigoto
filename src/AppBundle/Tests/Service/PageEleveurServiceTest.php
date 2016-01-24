@@ -10,12 +10,11 @@ namespace AppBundle\Tests\Service;
 
 
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalBranchRepository;
 use AppBundle\Repository\PageEleveurBranchRepository;
-use AppBundle\Service\HistoryService;
-use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -27,10 +26,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     private $entityManager;
 
     /** @var PageEleveurBranchRepository|\PHPUnit_Framework_MockObject_MockObject */
-    private $pageEleveurRepository;
-
-    /** @var HistoryService|\PHPUnit_Framework_MockObject_MockObject */
-    private $historyService;
+    private $pageEleveurBranchRepository;
 
     /** @var EntityRepository|\PHPUnit_Framework_MockObject_MockObject */
     private $pageEleveurCommitRepository;
@@ -39,11 +35,11 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     private $pageEleveurService;
 
     /** @var PageAnimalBranchRepository|\PHPUnit_Framework_MockObject_MockObject */
-    private $pageAnimalRepository;
+    private $pageAnimalBranchRepository;
 
     public function setup()
     {
-        $this->pageEleveurRepository = $this
+        $this->pageEleveurBranchRepository = $this
             ->getMockBuilder(PageEleveurBranchRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -53,7 +49,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageAnimalRepository = $this
+        $this->pageAnimalBranchRepository = $this
             ->getMockBuilder(PageAnimalBranchRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -63,11 +59,10 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->historyService = new HistoryService($this->entityManager, $this->pageEleveurRepository);
         $this->pageEleveurService = new PageEleveurService(
-            $this->historyService,
-            new PageAnimalService($this->pageAnimalRepository, $this->historyService),
-            $this->pageEleveurRepository,
+            $this->entityManager,
+            $this->pageEleveurBranchRepository,
+            $this->pageAnimalBranchRepository,
             $this->pageEleveurCommitRepository);
     }
 
@@ -86,9 +81,11 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     public function testCreate_UnUserDeuxPages()
     {
         $user = new User();
-        $this->pageEleveurRepository
+        $pageEleveur1 = new PageEleveur();
+        $pageEleveur1->setOwner($user);
+        $this->pageEleveurBranchRepository
             ->method('findByOwner')
-            ->willReturn(new PageEleveur(null, $user));
+            ->willReturn($pageEleveur1);
         $this->pageEleveurService->create('page2', $user);
     }
 
@@ -98,9 +95,9 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     public function testCreate_DeuxUserMemePage()
     {
         $user = new User();
-        $this->pageEleveurRepository
+        $this->pageEleveurBranchRepository
             ->method('findBySlug')
-            ->willReturn(new PageEleveur(null, $user));
+            ->willReturn(new PageEleveur());
 
         $this->pageEleveurService->create('page2', $user);
     }
@@ -127,10 +124,12 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->method('find')->withAnyParameters()->willReturn($commit1);
 
         // cet appel ne sert à rien, c'est juste pour comprendre ce qu'on teste
-        $this->pageEleveurRepository
+        $this->pageEleveurBranchRepository
             ->method('find')->withAnyParameters()->willReturn(null);
 
-        $this->pageEleveurService->commit(new User(), 0, 0, '','');
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setId(0);
+        $this->pageEleveurService->commit(new User(), $pageEleveur);
     }
 
     /**
@@ -143,7 +142,10 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurCommitRepository
             ->method('find')->withAnyParameters()->willReturn(null);
 
-        $this->pageEleveurService->commit(new User(), 0, 0, '','');
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setId(0);
+
+        $this->pageEleveurService->commit(new User(), $pageEleveur);
     }
 
     /**
@@ -164,26 +166,25 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur();
-        $pageEleveur->setId(1);
-        $pageEleveur->setOwner($user);
+        $pageEleveurBranch = new PageEleveurBranch();
+        $pageEleveurBranch->setId(1);
+        $pageEleveurBranch->setOwner($user);
 
-        $this->pageEleveurRepository
-            ->method('find')->withAnyParameters()->willReturn($pageEleveur);
+        $this->pageEleveurBranchRepository
+            ->method('find')->withAnyParameters()->willReturn($pageEleveurBranch);
 
         $commit1 = $this->newCommit(1);
+
+        $pageEleveurBranch->setCommit($commit1);
 
         $this->pageEleveurCommitRepository
             ->method('find')->withAnyParameters()->willReturn($commit1);
 
-        $pageEleveur->setCommit($commit1);
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setId($pageEleveurBranch->getId());
+        $pageEleveur->setHead($commit1->getId());
 
-        $this->pageEleveurService->commit(
-            $user,
-            $pageEleveur->getId(),
-            $commit1->getId(),
-            '',
-            '');
+        $this->pageEleveurService->commit($user, $pageEleveur);
 
         // pas d'exception
     }
@@ -196,24 +197,54 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     {
         $user = new User();
         $user->setId(1);
-        $pageEleveur = new PageEleveur();
-        $pageEleveur->setOwner($user);
-        $pageEleveur->setId(1);
+        $pageEleveurBranch = new PageEleveurBranch();
+        $pageEleveurBranch->setId(1);
+        $pageEleveurBranch->setOwner($user);
 
-        $this->pageEleveurRepository
-            ->method('find')->withAnyParameters()->willReturn($pageEleveur);
+        $this->pageEleveurBranchRepository
+            ->method('find')->withAnyParameters()->willReturn($pageEleveurBranch);
 
         // commit1 est l'avant dernier etat de la page
         $commit1 = $this->newCommit(1);
 
         // commit2 est l'état courant de la page, il descend de commit1
         $commit2 = $this->newCommit(2, $commit1);
-        $pageEleveur->setCommit($commit2);
+        $pageEleveurBranch->setCommit($commit2);
 
         $this->pageEleveurCommitRepository
             ->method('find')->willReturn($commit1);
 
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setId($pageEleveurBranch->getId());
+        $pageEleveur->setHead($commit1->getId());
+
         // le commit sur commit3 doit échouer car il n'est pas fastforward depuis commit2
-        $this->pageEleveurService->commit($user, $pageEleveur->getId(), $commit1->getId(), '', '');
+        $this->pageEleveurService->commit($user, $pageEleveur);
+    }
+
+    public function testSlug()
+    {
+        // conservation des caractères de base
+        $this->assertEquals('azertyuiopqsdfghjklmwxcvbn1234567890', PageEleveurService::slug('azertyuiopqsdfghjklmwxcvbn1234567890'));
+
+        // trim
+        $this->assertEquals('aaa', PageEleveurService::slug(' aaa '));
+
+        // to lowercase
+        $this->assertEquals('aaa', PageEleveurService::slug('AaA'));
+
+        // remplacement des caractères convertibles
+        $this->assertEquals('eureace', PageEleveurService::slug('€éàçè&'));
+
+        // espaces convertis en dash
+        $this->assertEquals('un-deux-trois', PageEleveurService::slug('un deux trois'));
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\HistoryException
+     */
+    public function testSlugVide()
+    {
+        PageEleveurService::slug('!?,.<>=&');
     }
 }

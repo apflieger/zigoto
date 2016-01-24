@@ -11,9 +11,11 @@ namespace AppBundle\Tests\Controller;
 
 use AppBundle\Controller\PageEleveurController;
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\TestUtils;
+use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -47,16 +49,15 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
+        $pageEleveur->setDescription('nouvelle description');
+
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
 
         $pageEleveurService->commit(
-            $pageEleveur->getOwner(),
-            $pageEleveur->getId(),
-            $pageEleveur->getHead(),
-            $pageEleveur->getNom(),
-            'nouvelle description'
-            );
+            $this->testUtils->getUser(),
+            $pageEleveur
+        );
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
@@ -77,9 +78,8 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $commit = new PageEleveurCommit('nouveau nom', 'description non nulle', null, null);
-        $commit->setId($pageEleveur->getHead());
-        $pageEleveur->setCommit($commit);
+        $pageEleveur->setNom('nouveau nom');
+        $pageEleveur->setDescription('description non nulle');
 
         // Modification du nom et de la description de la page
         $this->client->request('POST', '/commit-page-eleveur',
@@ -87,9 +87,14 @@ class PageEleveurControllerTest extends WebTestCase
             $this->serializer->serialize($pageEleveur, 'json')
         );
 
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
+
+        // mise à jour de la page eleveur après commit
+        $pageEleveur = $pageEleveurService->findBySlug($pageEleveur->getSlug());
+
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        // La réponse du POST retourne l'identifiant du commit créé dans le contenu
         $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
@@ -137,9 +142,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $fakePageEleveur = new PageEleveur();
         $fakePageEleveur->setId(-1);
-        $fakeCommit = new PageEleveurCommit('', '');
-        $fakeCommit->setId(-1);
-        $fakePageEleveur->setCommit($fakeCommit);
+        $fakePageEleveur->setHead(-1);
 
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
@@ -153,49 +156,36 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $currentPageEleveurCommitId = $pageEleveur->getHead();
-
-        $commit1 = new PageEleveurCommit('','',null, null);
-        $commit1->setId($currentPageEleveurCommitId);
-        $pageEleveur1 = new PageEleveur();
-        $pageEleveur1->setId($pageEleveur->getId());
-        $pageEleveur1->setCommit($commit1);
-
         // 1er commit
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            $this->serializer->serialize($pageEleveur1, 'json')
+            $this->serializer->serialize($pageEleveur, 'json')
         );
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
-        // 2eme commit avec le meme parent que le 1er commit
-        $commit2 = new PageEleveurCommit('','',null, null);
-        $commit2->setId($currentPageEleveurCommitId);
-        $pageEleveur2 = new PageEleveur();
-        $pageEleveur2->setId($pageEleveur->getId());
-        $pageEleveur2->setCommit($commit2);
-
+        // commit à partir du meme head de la page eleveur
         $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            $this->serializer->serialize($pageEleveur2, 'json'));
+            $this->serializer->serialize($pageEleveur, 'json'));
 
         $this->assertEquals(Response::HTTP_CONFLICT, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAddAnimal()
     {
-        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur0 = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         $this->client->request('POST', '/add-animal',
             array(), array(), array(),
-            $this->serializer->serialize($pageEleveur, 'json')
+            $this->serializer->serialize($pageEleveur0, 'json')
         );
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
-        $this->client->request('GET', '/animal/' . $pageEleveur->getAnimaux()[0]->getId());
+        $pageEleveur1 = $this->serializer->deserialize($this->client->getResponse()->getContent(), PageEleveur::class, 'json');
+
+        $this->client->request('GET', '/animal/' . $pageEleveur1->getAnimaux()[0]->getId());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
 

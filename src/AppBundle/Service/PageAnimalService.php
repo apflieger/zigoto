@@ -44,6 +44,7 @@ class PageAnimalService
         $pageAnimal = new PageAnimal();
         $pageAnimal->setId($branch->getId());
         $pageAnimal->setHead($branch->getCommit()->getId());
+        $pageAnimal->setOwner($branch->getOwner());
         $pageAnimal->setNom($branch->getCommit()->getNom());
 
         return $pageAnimal;
@@ -68,6 +69,7 @@ class PageAnimalService
         $pageAnimal = new PageAnimal();
         $pageAnimal->setId($pageAnimalBranch->getId());
         $pageAnimal->setHead($pageAnimalBranch->getCommit()->getId());
+        $pageAnimal->setOwner($pageAnimalBranch->getOwner());
         $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
         return $pageAnimal;
     }

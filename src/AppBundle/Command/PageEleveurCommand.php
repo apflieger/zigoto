@@ -37,11 +37,11 @@ class PageEleveurCommand extends ContainerAwareCommand
     {
         /** @var EntityManager $entityManager */
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
+        $pageEleveurBranchRepository = $entityManager->getRepository('AppBundle:PageEleveurBranch');
 
-        $pageEleveur = $pageEleveurRepository->find($input->getArgument('id'));
+        $pageEleveurBranch = $pageEleveurBranchRepository->find($input->getArgument('id'));
 
-        if (!$pageEleveur)
+        if (!$pageEleveurBranch)
             throw new Exception('Page eleveur ' . $input->getArgument('id') . ' n\'exiset pas.');
 
         /**
@@ -49,7 +49,7 @@ class PageEleveurCommand extends ContainerAwareCommand
          */
         $doctrine = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $doctrine->remove($pageEleveur);
+        $doctrine->remove($pageEleveurBranch);
         $doctrine->flush();
         return 0;
     }

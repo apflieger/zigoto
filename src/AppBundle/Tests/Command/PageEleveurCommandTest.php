@@ -54,7 +54,7 @@ class PageEleveurCommandTest extends WebTestCase
         // verification de la suppression
         /** @var EntityManager $entityManager */
         $entityManager = $client->getContainer()->get('doctrine.orm.entity_manager');
-        $pageEleveurRepository = $entityManager->getRepository('AppBundle:PageEleveur');
-        $this->assertNull($pageEleveurRepository->find($pageEleveurId));
+        $pageEleveurBranchRepository = $entityManager->getRepository('AppBundle:PageEleveurBranch');
+        $this->assertNull($pageEleveurBranchRepository->find($pageEleveurId));
     }
 }

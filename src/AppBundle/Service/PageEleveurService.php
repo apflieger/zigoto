@@ -157,9 +157,13 @@ class PageEleveurService
             $clientHead,
             $commitingPageEleveur->getNom(),
             $commitingPageEleveur->getDescription(),
-            array_map(function(PageAnimal $pageAnimal) {
-                return $this->pageAnimalBranchRepository->find($pageAnimal->getId());
-            }, $commitingPageEleveur->getAnimaux())
+            $commitingPageEleveur->getAnimaux() !== null ?
+                array_map(
+                    function(PageAnimal $pageAnimal) {
+                        return $this->pageAnimalBranchRepository->find($pageAnimal->getId());
+                    }, $commitingPageEleveur->getAnimaux()
+                ) :
+                []
         );
 
         $this->doctrine->persist($newCommit);
