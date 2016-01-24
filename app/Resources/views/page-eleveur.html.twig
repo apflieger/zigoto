@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ pageEleveur.nom }}{% endblock %}
-{% block stylesheets %}<link rel="stylesheet" href="build/xeditable.css">{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="/build/xeditable.css">{% endblock %}
 {% block body %}
     <div ng-app="zigoto">
         <div ng-controller="PageEleveurCtrl">
@@ -38,8 +38,8 @@
                 var globPageEleveur = {{ pageEleveur | serialize }};
             {% endautoescape %}
         </script>
-        <script src="build/angular.js"></script>
-        <script src="build/xeditable.min.js"></script>
-        <script src="build/PageEleveurCtrl.js"></script>
+        <script src="/build/angular.js"></script>
+        <script src="/build/xeditable.min.js"></script>
+        <script src="/build/PageEleveurCtrl.js"></script>
     {% endif %}
 {% endblock %}
