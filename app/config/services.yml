@@ -16,3 +16,4 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
+            - @file_locator

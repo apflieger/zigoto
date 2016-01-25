@@ -15,7 +15,7 @@ use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalBranchRepository;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 
 class PageAnimalService
 {
@@ -25,12 +25,17 @@ class PageAnimalService
     /** @var PageAnimalBranchRepository */
     private $pageAnimalBranchRepository;
 
+    /** @var FileLocator */
+    private $fileLocator;
+
     public function __construct(
         EntityManager $doctrine,
-        PageAnimalBranchRepository $pageAnimalBranchRepository
+        PageAnimalBranchRepository $pageAnimalBranchRepository,
+        FileLocator $fileLocator
     ) {
         $this->doctrine = $doctrine;
         $this->pageAnimalBranchRepository = $pageAnimalBranchRepository;
+        $this->fileLocator = $fileLocator;
     }
 
     public function find($pageAnimalId)
@@ -59,8 +64,11 @@ class PageAnimalService
     {
         $pageAnimalBranch = new PageAnimalBranch();
         $pageAnimalBranch->setOwner($owner);
-        //mettre un generateur de nom marrant
-        $pageAnimalBranch->setCommit(new PageAnimalCommit(null, 'tmp'));
+
+        $noms = file($this->fileLocator->locate('@AppBundle/Resources/noms-animaux/noms.txt'));
+
+        $nom = trim($noms[rand(0, count($noms) - 1)]);
+        $pageAnimalBranch->setCommit(new PageAnimalCommit(null, $nom));
 
         $this->doctrine->persist($pageAnimalBranch->getCommit());
         $this->doctrine->persist($pageAnimalBranch);

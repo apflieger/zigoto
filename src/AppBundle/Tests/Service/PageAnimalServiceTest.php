@@ -18,8 +18,10 @@ use AppBundle\Service\PageAnimalService;
 use Doctrine\ORM\EntityManager;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpKernel\Config\FileLocator;
 
-class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
+class PageAnimalServiceTest extends KernelTestCase
 {
     /** @var PageAnimalService */
     private $pageAnimalService;
@@ -38,7 +40,14 @@ class PageAnimalServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->pageAnimalService = new PageAnimalService($entityManager, $this->pageAnimalRepository);
+        static::bootKernel();
+        /** @var FileLocator $fileLocator */
+        $fileLocator = static::$kernel->getContainer()->get('file_locator');
+        $this->pageAnimalService = new PageAnimalService(
+            $entityManager,
+            $this->pageAnimalRepository,
+            $fileLocator
+        );
     }
 
     public function testCreate_Success()
