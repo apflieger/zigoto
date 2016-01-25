@@ -26,8 +26,8 @@ setup
 
 Usage
 -----
-* pour lancer les tests : `./bin/phpunit -c app`
-* pour faire un test coverage : `./bin/phpunit -c app --coverage-html app/coverage`
+* pour lancer les tests : `bin/phpunit`
+* pour faire un test coverage : `bin/phpunit --coverage-html app/coverage`
 * pour lancer le serveur : `php app/console server:run`
 * pour rebuilder le front : `gulp`
 * pour watch le js : `gulp watch`
