@@ -9,7 +9,6 @@
 namespace AppBundle\Service;
 
 
-use AppBundle\Controller\DisplayableException;
 use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\PageAnimalBranch;
 use AppBundle\Entity\PageEleveur;
@@ -20,6 +19,7 @@ use AppBundle\Repository\PageAnimalBranchRepository;
 use AppBundle\Repository\PageEleveurBranchRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use InvalidArgumentException;
 
 class PageEleveurService
 {
@@ -107,21 +107,25 @@ class PageEleveurService
      * @param string $nom
      * @param User $owner
      * @return PageEleveur
-     * @throws DisplayableException
+     * @throws HistoryException
      */
     public function create($nom, User $owner)
     {
         if ($this->pageEleveurBranchRepository->findByOwner($owner))
-            throw new DisplayableException('user ' . $owner->getId() . ' a deja une page eleveur');
+            throw new HistoryException(HistoryException::DEJA_OWNER);
 
         $commit = new PageEleveurCommit(null, $nom, '', null);
         $pageEleveurBranch = new PageEleveurBranch();
         $pageEleveurBranch->setCommit($commit);
-        $pageEleveurBranch->setSlug(static::slug($nom));
+        try {
+            $pageEleveurBranch->setSlug(static::slug($nom));
+        } catch (InvalidArgumentException $e) {
+            throw new HistoryException(HistoryException::NOM_INVALIDE);
+        }
         $pageEleveurBranch->setOwner($owner);
 
         if ($this->pageEleveurBranchRepository->findBySlug($pageEleveurBranch->getSlug()))
-            throw new DisplayableException('Une page eleveur du meme nom existe deja');
+            throw new HistoryException(HistoryException::SLUG_DEJA_EXISTANT);
 
         $this->doctrine->persist($pageEleveurBranch->getCommit());
         $this->doctrine->persist($pageEleveurBranch);
@@ -198,7 +202,7 @@ class PageEleveurService
         $ascii = trim($ascii, '-');
 
         if (empty($ascii))
-            throw new HistoryException(HistoryException::NOM_INVALIDE);
+            throw new InvalidArgumentException($str);
 
         return $ascii;
     }

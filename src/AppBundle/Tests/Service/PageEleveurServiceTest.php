@@ -76,7 +76,8 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \AppBundle\Controller\DisplayableException
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::DEJA_OWNER
      */
     public function testCreate_UnUserDeuxPages()
     {
@@ -90,7 +91,8 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \AppBundle\Controller\DisplayableException
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::SLUG_DEJA_EXISTANT
      */
     public function testCreate_DeuxUserMemePage()
     {
@@ -241,7 +243,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedException \InvalidArgumentException
      */
     public function testSlugVide()
     {

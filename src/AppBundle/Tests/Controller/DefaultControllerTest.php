@@ -99,7 +99,7 @@ class DefaultControllerTest extends WebTestCase
         $this->client->submit($pageEleveurForm);
 
         $this->assertEquals(Response::HTTP_CONFLICT, $this->client->getResponse()->getStatusCode());
-        $this->assertEquals('Une page eleveur du meme nom existe deja', $this->client->getResponse()->getContent());
+        $this->assertEquals('Une page éleveur du même nom existe déjà.', $this->client->getResponse()->getContent());
     }
 
     public function testCreationPageEleveur_NomInvalide()

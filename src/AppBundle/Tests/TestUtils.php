@@ -11,6 +11,7 @@ namespace AppBundle\Tests;
 
 use AppBundle\Entity\User;
 use AppBundle\Entity\PageEleveur;
+use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use FOS\UserBundle\Doctrine\UserManager;
@@ -101,7 +102,7 @@ class TestUtils
     /**
      * Créé une page eleveur à l'utilisateur connecté
      * @return $this
-     * @throws \AppBundle\Controller\DisplayableException
+     * @throws HistoryException
      */
     public function toEleveur()
     {

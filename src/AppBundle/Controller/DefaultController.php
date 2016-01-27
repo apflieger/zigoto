@@ -63,12 +63,14 @@ class DefaultController extends Controller
             try {
                 $slug = $pageEleveurService->create($nom, $user)->getSlug();
                 return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
-            } catch (DisplayableException $e) {
-                return new Response($e->getMessage(), Response::HTTP_CONFLICT);
             } catch (HistoryException $e) {
                 switch ($e->getCode()) {
                     case HistoryException::NOM_INVALIDE:
-                        return new Response('Le nom n\'"'.$nom.'"est pas valide', Response::HTTP_NOT_ACCEPTABLE);
+                        return new Response('Le nom "'.$nom.'" n\'est pas valide.', Response::HTTP_NOT_ACCEPTABLE);
+                    case HistoryException::SLUG_DEJA_EXISTANT:
+                        return new Response('Une page éleveur du même nom existe déjà.', Response::HTTP_CONFLICT);
+                    case HistoryException::DEJA_OWNER:
+                        return new Response('Vous avez déjà une page éleveur.', Response::HTTP_BAD_REQUEST);
                 }
             }
         }
