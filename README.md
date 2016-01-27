@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/apflieger/zigoto.svg?branch=master)](https://travis-ci.org/apflieger/zigoto)
+
 Installation
 ============
 

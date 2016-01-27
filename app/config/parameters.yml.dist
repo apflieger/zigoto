@@ -8,7 +8,7 @@ parameters:
     dev_database_user: runtime
     dev_database_password: null
     test_database_name: zigoto_unit
-    test_database_user: phpunit
+    test_database_user: root # travis donne l'accès au user root. https://docs.travis-ci.com/user/database-setup/#MySQL
     test_database_password: null
     # You should uncomment this if you want use pdo_sqlite
     # database_path: "%kernel.root_dir%/data.db3"

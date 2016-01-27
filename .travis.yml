@@ -1,0 +1,20 @@
+language: php
+php:
+    - '7.0'
+
+services:
+    - mysql
+
+install:
+    - composer install
+    - php app/console doctrine:database:create --env=test
+    - php app/console doctrine:schema:create --env=test
+
+script:
+    - bin/phpunit
+
+cache:
+    directories:
+        - bin
+        - node_modules
+        - vendor
