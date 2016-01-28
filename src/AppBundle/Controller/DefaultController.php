@@ -8,6 +8,7 @@ use AppBundle\Repository\PageEleveurBranchRepository;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageEleveurService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,13 +42,6 @@ class DefaultController extends Controller
         $pageEleveurService = $this->get('zigoto.page_eleveur');
         $pageEleveur = $pageEleveurService->findByOwner($user);
 
-        if ($pageEleveur){
-            return $this->render('index-eleveur.html.twig', [
-                'username' => $user->getUserName(),
-                'pageEleveur' => $pageEleveur
-            ]);
-        }
-
         /** @var FormFactory $formFactory */
         $formFactory = $this->get('form.factory');
 
@@ -58,7 +52,16 @@ class DefaultController extends Controller
 
         $form->handleRequest($request);
 
+        if (!$form->isSubmitted() && $pageEleveur){
+            // home d'un eleveur ayant une page eleveur
+            return $this->render('index-eleveur.html.twig', [
+                'username' => $user->getUserName(),
+                'pageEleveur' => $pageEleveur
+            ]);
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            // traitement du formulaire de creation de page eleveur
             $nom = $form->getData()['nom'];
             try {
                 $slug = $pageEleveurService->create($nom, $user)->getSlug();
@@ -75,6 +78,7 @@ class DefaultController extends Controller
             }
         }
 
+        // home d'un user connecté mais qui n'a pas de page eleveur
         return $this->render('index-new-eleveur.html.twig', [
             'username' => $user->getUserName(),
             'creationPageEleveur' => $form->createView()

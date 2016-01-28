@@ -84,4 +84,4 @@ fos_user:
 monolog:
     handlers:
         main:
-            level: warning
+            level: notice

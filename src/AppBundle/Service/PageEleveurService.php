@@ -20,6 +20,7 @@ use AppBundle\Repository\PageEleveurBranchRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use InvalidArgumentException;
+use Symfony\Bridge\Monolog\Logger;
 
 class PageEleveurService
 {
@@ -35,16 +36,21 @@ class PageEleveurService
     /** @var EntityRepository */
     private $pageEleveurCommitRepository;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(
         EntityManager $doctrine,
         PageEleveurBranchRepository $pageEleveurBranchRepository,
         PageAnimalBranchRepository $pageAnimalBranchRepository,
-        EntityRepository $pageEleveurCommitRepository
+        EntityRepository $pageEleveurCommitRepository,
+        Logger $logger
     ) {
         $this->doctrine = $doctrine;
         $this->pageEleveurBranchRepository = $pageEleveurBranchRepository;
         $this->pageAnimalBranchRepository = $pageAnimalBranchRepository;
         $this->pageEleveurCommitRepository = $pageEleveurCommitRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -111,8 +117,10 @@ class PageEleveurService
      */
     public function create($nom, User $owner)
     {
-        if ($this->pageEleveurBranchRepository->findByOwner($owner))
+        if ($this->pageEleveurBranchRepository->findByOwner($owner)) {
+            $this->logger->notice('', debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS));
             throw new HistoryException(HistoryException::DEJA_OWNER);
+        }
 
         $commit = new PageEleveurCommit(null, $nom, '', null);
         $pageEleveurBranch = new PageEleveurBranch();

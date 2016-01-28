@@ -19,6 +19,7 @@ use AppBundle\Service\PageEleveurService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit_Framework_TestCase;
+use Symfony\Bridge\Monolog\Logger;
 
 class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 {
@@ -59,11 +60,18 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        $logger = $this
+            ->getMockBuilder(Logger::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
         $this->pageEleveurService = new PageEleveurService(
             $this->entityManager,
             $this->pageEleveurBranchRepository,
             $this->pageAnimalBranchRepository,
-            $this->pageEleveurCommitRepository);
+            $this->pageEleveurCommitRepository,
+            $logger
+        );
     }
 
     /**

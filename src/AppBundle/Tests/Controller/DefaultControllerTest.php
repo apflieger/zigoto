@@ -102,6 +102,26 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals('Une page éleveur du même nom existe déjà.', $this->client->getResponse()->getContent());
     }
 
+
+    public function testCreationPageEleveur_UnUserDeuxPages()
+    {
+        //Ce cas n'est pas sensé se produire. On log ca en notice
+        $this->testUtils->createUser();
+
+        //Affichage de la home avec le formulaire de creation de page eleveur
+        $pageEleveurForm = $this->client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+
+        //Creation d'une page eleveur
+        $this->testUtils->toEleveur();
+
+
+        $pageEleveurForm['creation-page-eleveur[nom]'] = '2eme page eleveur';
+        $this->client->submit($pageEleveurForm);
+
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals('Vous avez déjà une page éleveur.', $this->client->getResponse()->getContent());
+    }
+
     public function testCreationPageEleveur_NomInvalide()
     {
         // connexion avec un nouvel user
