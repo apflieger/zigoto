@@ -22,24 +22,6 @@ class HistoryException extends Exception
 
     public function __construct($code)
     {
-        parent::__construct($this->map($code), $code);
-    }
-
-    private function map($code)
-    {
-        switch ($code) {
-            case static::BRANCHE_INCONNUE:
-                return 'BRANCHE_INCONNUE';
-            case static::DROIT_REFUSE:
-                return 'DROIT_REFUSE';
-            case static::NON_FAST_FORWARD:
-                return 'NON_FAST_FORWARD';
-            case static::NOM_INVALIDE:
-                return 'NOM_INVALIDE';
-            case static::SLUG_DEJA_EXISTANT:
-                return 'SLUG_DEJA_EXISTANT';
-            case static::DEJA_OWNER:
-                return 'DEJA_OWNER';
-        }
+        parent::__construct('', $code);
     }
 }
