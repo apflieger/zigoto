@@ -5,13 +5,19 @@ php:
 services:
     - mysql
 
+before_install:
+    - pip install --user codecov
+
 install:
     - composer install
     - php app/console doctrine:database:create --env=test
     - php app/console doctrine:schema:create --env=test
 
 script:
-    - bin/phpunit
+    - bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+    - codecov
 
 cache:
     directories:
