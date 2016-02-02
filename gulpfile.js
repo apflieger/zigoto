@@ -9,7 +9,6 @@ gulp.task('clean', function(cb) {
 gulp.task('css', ['clean'], function() {
     return gulp.src([
         'node_modules/bootstrap/dist/css/bootstrap.min.css',
-        'node_modules/angular/angular.js',
         'node_modules/angular-xeditable-npm/dist/css/xeditable.css'
     ]).pipe(gulp.dest('web/build'));
 });
@@ -17,6 +16,7 @@ gulp.task('css', ['clean'], function() {
 gulp.task('js', ['clean'], function() {
     return gulp.src([
         'app/Resources/js/*.js',
+        'node_modules/angular/angular.js',
         'node_modules/angular-xeditable-npm/dist/js/xeditable.min.js'
     ]).pipe(gulp.dest('web/build'));
 });
