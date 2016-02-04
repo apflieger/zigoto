@@ -5,6 +5,9 @@ php:
 services:
     - mysql
 
+env:
+    - SYMFONY_USER=travis
+
 before_install:
     - pip install --user codecov
 
