@@ -1,0 +1,10 @@
+# Fichier non utilisé seulement par le cache:clear du composer install
+imports:
+    - { resource: ../config_dev.yml }
+
+parameters:
+    database_host: ~
+    database_port: ~
+    database_user: ~
+    database_password: ~
+    database_name: ~

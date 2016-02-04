@@ -33,6 +33,14 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
+        $configFile = '';
+        $confSuffix = $this->getEnvironment();
+        if ($confSuffix == 'dev' || $confSuffix == 'test') {
+            $confSuffix .= '_' . getenv('SYMFONY_USER');
+            $configFile .= 'user/config_' . $confSuffix . '.yml';
+        } else {
+            $configFile .= 'config_' . $confSuffix . '.yml';
+        }
+        $loader->load($this->getRootDir().'/config/'. $configFile);
     }
 }
