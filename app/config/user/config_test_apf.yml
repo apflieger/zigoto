@@ -1,0 +1,9 @@
+imports:
+    - { resource: ../config_test.yml }
+
+parameters:
+    database_host: brjfg2ylu.mysql.clvrcld.net
+    database_port: 3306
+    database_user: uksm9uqecr06gukc
+    database_password: P0xY4yPnA4M71DxpqlS
+    database_name: brjfg2ylu

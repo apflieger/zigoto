@@ -11,12 +11,6 @@ web_profiler:
     toolbar: true
     intercept_redirects: false
 
-doctrine:
-    dbal:
-        dbname:   "%dev_database_name%"
-        user:     "%dev_database_user%"
-        password: "%dev_database_password%"
-
 monolog:
     handlers:
         main:
