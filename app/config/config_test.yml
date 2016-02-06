@@ -1,19 +1,15 @@
 imports:
-    - { resource: config_dev.yml }
+    - { resource: config.yml }
 
 framework:
-    test: ~
+    test: true
     session:
         storage_id: session.storage.mock_file
-    profiler:
-        collect: false
-
-web_profiler:
-    toolbar: false
-    intercept_redirects: false
+    router:
+        resource: "%kernel.root_dir%/config/routing_dev.yml"
 
 swiftmailer:
-    disable_delivery: true
+    disable_delivery: true # désactive, entre autres, l'envoi du mail de logs d'erreur
 
 security:
     encoders:
@@ -23,3 +19,8 @@ security:
         fos:
             form_login: false
             http_basic: true
+
+jms_serializer:
+    visitors:
+        json:
+            options: JSON_PRETTY_PRINT # indentation du json collé dans le html

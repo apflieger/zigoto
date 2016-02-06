@@ -18,6 +18,21 @@ framework:
         handler_id: ~
     fragments: ~
 
+monolog:
+    handlers:
+        mail:
+            type:         fingers_crossed
+            action_level: ERROR
+            handler:      buffered
+        buffered:
+            type:         buffer
+            handler:      swift
+        swift:
+            type:         swift_mailer
+            from_email:   "logs@zigoto.com"
+            to_email:     ["pflieger.arnaud@gmail.com", "MehdiBelkacemi@gmail.com"]
+            subject:      "Alerte %kernel.environment%"
+            level:        DEBUG
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
