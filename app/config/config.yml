@@ -20,11 +20,15 @@ framework:
 
 monolog:
     handlers:
+        file:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.log"
+            channels: ["!event"]
         mail:
             type:         fingers_crossed
             action_level: ERROR
-            handler:      buffered
-        buffered:
+            handler:      buffer
+        buffer:
             type:         buffer
             handler:      swift
         swift:
@@ -33,6 +37,21 @@ monolog:
             to_email:     ["pflieger.arnaud@gmail.com", "MehdiBelkacemi@gmail.com"]
             subject:      "Alerte %kernel.environment%"
             level:        DEBUG
+        console:
+            type:   console
+            bubble: false
+            verbosity_levels:
+                VERBOSITY_VERBOSE: INFO
+                VERBOSITY_VERY_VERBOSE: DEBUG
+            channels: ["!doctrine"]
+        console_very_verbose:
+            type:   console
+            bubble: false
+            verbosity_levels:
+                VERBOSITY_VERBOSE: NOTICE
+                VERBOSITY_VERY_VERBOSE: NOTICE
+                VERBOSITY_DEBUG: DEBUG
+            channels: ["doctrine"]
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false

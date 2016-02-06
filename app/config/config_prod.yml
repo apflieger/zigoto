@@ -13,6 +13,7 @@ parameters:
 
 monolog:
     handlers:
+        file: ~
         syslog:
             type:  syslog
             level: NOTICE

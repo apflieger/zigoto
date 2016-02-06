@@ -8,8 +8,14 @@ framework:
     router:
         resource: "%kernel.root_dir%/config/routing_dev.yml"
 
+monolog:
+    handlers:
+        file:
+            level:  WARNING
+        swift: ~
+
 swiftmailer:
-    disable_delivery: true # désactive, entre autres, l'envoi du mail de logs d'erreur
+    disable_delivery: true
 
 security:
     encoders:
