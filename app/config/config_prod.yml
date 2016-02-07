@@ -2,14 +2,14 @@ imports:
     - { resource: config.yml }
 
 framework:
-    trusted_hosts: "*.zigoto.*"
+    #trusted_hosts: "*.zigoto.*"
 
 parameters:
-    database_host: ~
-    database_port: ~
-    database_user: ~
-    database_password: ~
-    database_name: ~
+    database_host:     bnv8ka2pf.mysql.clvrcld.net
+    database_port:     3306
+    database_user:     u2afmrzpetvq5lv7
+    database_password: pOsHgxUw0HvmETR3OaH
+    database_name:     bnv8ka2pf
 
 monolog:
     handlers:
