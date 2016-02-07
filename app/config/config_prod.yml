@@ -2,7 +2,7 @@ imports:
     - { resource: config.yml }
 
 framework:
-    #trusted_hosts: "*.zigoto.*"
+    trusted_hosts: "www.zigotoo.com"
 
 parameters:
     database_host:     bnv8ka2pf.mysql.clvrcld.net
