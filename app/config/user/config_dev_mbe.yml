@@ -2,6 +2,7 @@ imports:
     - { resource: ../config_dev.yml }
 
 parameters:
+    email: MehdiBelkacemi@gmail.com
     database_host: bxceyc6zx.mysql.clvrcld.net
     database_port: 3306
     database_user: ujtbevdp9dmenbs8
