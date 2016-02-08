@@ -6,4 +6,4 @@
  * Time: 01:19
  */
 
-$container->setParameter('kernel.user', getenv('SYMFONY_USER'));
+$container->setParameter('kernel.user', getenv('SYMFONY_USER') ? getenv('SYMFONY_USER') : '');
