@@ -1,4 +1,5 @@
 imports:
+    - { resource: environment.php }
     - { resource: security.yml }
     - { resource: services.yml }
     - { resource: serializer.yml }
@@ -35,7 +36,7 @@ monolog:
             type:         swift_mailer
             from_email:   "logs@zigoto.com"
             to_email:     ["pflieger.arnaud@gmail.com", "MehdiBelkacemi@gmail.com"]
-            subject:      "Alerte %kernel.environment%"
+            subject:      "Alerte %kernel.environment% %kernel.user%"
             level:        DEBUG
         console:
             type:   console
@@ -79,11 +80,12 @@ doctrine:
         auto_mapping: true
 
 swiftmailer:
-    transport: smtp
-    host:      127.0.0.1
-    username:  null
-    password:  null
-    spool:     { type: memory }
+    transport:  smtp
+    host:       mail.gandi.net
+    username:   app@zigotoo.com
+    password:   tatouine1
+    encryption: ssl
+    spool:      { type: memory }
 
 fos_user:
     db_driver: orm

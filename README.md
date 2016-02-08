@@ -17,6 +17,7 @@ node
 
 setup
 -----
+* Déclarer une variable d'environnement `SYMFONY_USER=trigramme`
 * `composer install`
 * créer le schema de la base de dev : `php app/console doctrine:schema:create`
 * créer le schema de la base de test : `php app/console doctrine:schema:create --env="test"`
