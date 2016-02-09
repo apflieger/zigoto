@@ -21,16 +21,13 @@ class User extends \FOS\UserBundle\Entity\User
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      *
-     * @Type("integer")
+     * @Type("string")
      */
     protected $id;
 
-    /**
-     * @param mixed $id
-     */
     public function setId($id)
     {
         $this->id = $id;

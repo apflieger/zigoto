@@ -19,8 +19,8 @@ class PageAnimalBranch
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      */
     private $id;
 

@@ -15,14 +15,14 @@ use JMS\Serializer\Annotation\Exclude;
 class Commitable
 {
     /**
-     * @Type("integer")
-     * @var int
+     * @Type("string")
+     * @var string
      */
     private $id;
 
     /**
-     * @Type("integer")
-     * @var int
+     * @Type("string")
+     * @var string
      */
     private $head;
 
@@ -32,33 +32,21 @@ class Commitable
      */
     private $owner;
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param int $id
-     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
     public function getHead()
     {
         return $this->head;
     }
 
-    /**
-     * @param int $head
-     */
     public function setHead($head)
     {
         $this->head = $head;

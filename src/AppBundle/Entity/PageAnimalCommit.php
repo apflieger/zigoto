@@ -18,9 +18,8 @@ class PageAnimalCommit
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @var int
+     * @ORM\Column(type="guid")
+     * @ORM\GeneratedValue(strategy="UUID")
      */
     private $id;
 
@@ -48,9 +47,6 @@ class PageAnimalCommit
         $this->parent = $parent;
     }
 
-    /**
-     * @return int
-     */
     public function getId()
     {
         return $this->id;
