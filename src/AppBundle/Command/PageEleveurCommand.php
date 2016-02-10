@@ -24,7 +24,7 @@ class PageEleveurCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('zigoto:page-eleveur:delete')
+            ->setName('zigotoo:page-eleveur:delete')
             ->addArgument(
                 'id',
                 InputArgument::REQUIRED,

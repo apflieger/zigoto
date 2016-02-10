@@ -34,7 +34,7 @@ monolog:
             handler:      swift
         swift:
             type:         swift_mailer
-            from_email:   "logs@zigoto.com"
+            from_email:   "logs@zigotoo.com"
             to_email:     ["pflieger.arnaud@gmail.com", "MehdiBelkacemi@gmail.com"]
             subject:      "Alerte %kernel.environment% %kernel.user%"
             level:        DEBUG

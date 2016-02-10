@@ -1,9 +1,9 @@
 /**
  * Created by arnaudpflieger on 17/12/2015.
  */
-var zigoto = angular.module('zigoto', ['xeditable']);
+var zigotoo = angular.module('zigotoo', ['xeditable']);
 
-zigoto.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $http) {
+zigotoo.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $http) {
 
     $scope.pageEleveur = globPageEleveur;
 

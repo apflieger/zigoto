@@ -52,7 +52,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur->setDescription('nouvelle description');
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
         $pageEleveurService->commit(
             $this->testUtils->getUser(),
@@ -88,7 +88,7 @@ class PageEleveurControllerTest extends WebTestCase
         );
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
         // mise à jour de la page eleveur après commit
         $pageEleveur = $pageEleveurService->findBySlug($pageEleveur->getSlug());

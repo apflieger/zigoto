@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/apflieger/zigoto.svg?branch=master)](https://travis-ci.org/apflieger/zigoto)
-[![codecov.io](https://codecov.io/github/apflieger/zigoto/coverage.svg?branch=master)](https://codecov.io/github/apflieger/zigoto?branch=master)
+[![Build Status](https://travis-ci.org/apflieger/zigotoo.svg?branch=master)](https://travis-ci.org/apflieger/zigotoo)
+[![codecov.io](https://codecov.io/github/apflieger/zigotoo/coverage.svg?branch=master)](https://codecov.io/github/apflieger/zigotoo?branch=master)
 
 Installation
 ============

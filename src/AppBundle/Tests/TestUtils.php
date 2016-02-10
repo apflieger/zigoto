@@ -107,7 +107,7 @@ class TestUtils
     public function toEleveur()
     {
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
         // l'elevage aussi contiendra le random de par le username
         $this->pageEleveur = $pageEleveurService->create('elevage_' . $this->user->getUsername(), $this->user);
@@ -118,12 +118,12 @@ class TestUtils
     public function addAnimal()
     {
         /** @var PageAnimalService $pageAnimalService */
-        $pageAnimalService = $this->client->getContainer()->get('zigoto.page_animal');
+        $pageAnimalService = $this->client->getContainer()->get('zigotoo.page_animal');
 
         $this->pageEleveur->setAnimaux([$pageAnimalService->create($this->user)]);
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->client->getContainer()->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
         $pageEleveurService->commit(
             $this->user,

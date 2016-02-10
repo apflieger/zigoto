@@ -1,5 +1,5 @@
 services:
-    zigoto.page_eleveur:
+    zigotoo.page_eleveur:
         class: AppBundle\Service\PageEleveurService
         arguments:
             - @doctrine.orm.entity_manager
@@ -8,7 +8,7 @@ services:
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurCommit')
             - @logger
 
-    zigoto.page_animal:
+    zigotoo.page_animal:
         class: AppBundle\Service\PageAnimalService
         arguments:
             - @doctrine.orm.entity_manager

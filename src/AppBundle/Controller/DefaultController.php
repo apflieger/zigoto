@@ -39,7 +39,7 @@ class DefaultController extends Controller
             return $this->render('index.html.twig');
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->get('zigotoo.page_eleveur');
         $pageEleveur = $pageEleveurService->findByOwner($user);
 
         /** @var FormFactory $formFactory */

@@ -32,7 +32,7 @@ class PageEleveurController extends Controller
     public function getAction($pageEleveurSlug)
     {
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->get('zigotoo.page_eleveur');
 
         $pageEleveur = $pageEleveurService->findBySlug($pageEleveurSlug);
 
@@ -90,7 +90,7 @@ class PageEleveurController extends Controller
         $user = $token->getUser();
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->container->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->container->get('zigotoo.page_eleveur');
 
         try {
             $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);
@@ -124,7 +124,7 @@ class PageEleveurController extends Controller
         $user = $token->getUser();
 
         /** @var PageAnimalService $pageAnimalService */
-        $pageAnimalService = $this->container->get('zigoto.page_animal');
+        $pageAnimalService = $this->container->get('zigotoo.page_animal');
 
         $newPageAnimal = $pageAnimalService->create($user);
 
@@ -133,7 +133,7 @@ class PageEleveurController extends Controller
         $pageEleveur->setAnimaux($animaux);
 
         /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->container->get('zigoto.page_eleveur');
+        $pageEleveurService = $this->container->get('zigotoo.page_eleveur');
 
         try {
             $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);

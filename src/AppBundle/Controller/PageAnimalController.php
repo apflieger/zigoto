@@ -26,7 +26,7 @@ class PageAnimalController extends Controller
     public function getAction($pageAnimalId)
     {
         /** @var PageAnimalService $pageAnimalService */
-        $pageAnimalService = $this->get('zigoto.page_animal');
+        $pageAnimalService = $this->get('zigotoo.page_animal');
 
         $pageAnimal = $pageAnimalService->find($pageAnimalId);
 
