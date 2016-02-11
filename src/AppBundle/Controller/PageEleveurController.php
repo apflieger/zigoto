@@ -14,42 +14,75 @@ use AppBundle\Entity\User;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use JMS\Serializer\Serializer;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Serializer\Serializer;
 
-class PageEleveurController extends Controller
+/**
+ * @Route(service="zigotoo.page_eleveur_controller")
+ */
+class PageEleveurController
 {
+    /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+    /**
+     * @var TwigEngine
+     */
+    private $templating;
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+    /**
+     * @var PageEleveurService
+     */
+    private $pageEleveurService;
+    /**
+     * @var PageAnimalService
+     */
+    private $pageAnimalService;
+
+    public function __construct(
+        TokenStorage $tokenStorage,
+        TwigEngine $templating,
+        Serializer $serializer,
+        PageEleveurService $pageEleveurService,
+        PageAnimalService $pageAnimalService
+    ) {
+        $this->tokenStorage = $tokenStorage;
+        $this->templating = $templating;
+        $this->serializer = $serializer;
+        $this->pageEleveurService = $pageEleveurService;
+        $this->pageAnimalService = $pageAnimalService;
+    }
+
     /**
      * @Route("/{pageEleveurSlug}", name="getPageEleveur")
      * @Method("GET")
      */
     public function getAction($pageEleveurSlug)
     {
-        /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->get('zigotoo.page_eleveur');
-
-        $pageEleveur = $pageEleveurService->findBySlug($pageEleveurSlug);
+        $pageEleveur = $this->pageEleveurService->findBySlug($pageEleveurSlug);
 
         if (!$pageEleveur)
-            throw $this->createNotFoundException();
-
-        /** @var TokenStorage $tokenStorage */
-        $tokenStorage = $this->container->get('security.token_storage');
+            throw new NotFoundHttpException(null, null);
 
         /** @var AnonymousToken $token */
-        $token = $tokenStorage->getToken();
+        $token = $this->tokenStorage->getToken();
 
         /** @var User $user */
         $user = $token->getUser();
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
 
-        return $this->render('page-eleveur.html.twig', array(
+        return $this->templating->renderResponse('page-eleveur.html.twig', array(
             'pageEleveur' => $pageEleveur,
             'isOwner' => $isOwner));
     }
@@ -60,9 +93,7 @@ class PageEleveurController extends Controller
      */
     private function jsonPageEleveur(PageEleveur $pageEleveur)
     {
-        /** @var Serializer $serializer */
-        $serializer = $this->container->get('serializer');
-        return $serializer->serialize($pageEleveur, 'json');
+        return $this->serializer->serialize($pageEleveur, 'json');
     }
 
     /**
@@ -74,26 +105,17 @@ class PageEleveurController extends Controller
      */
     public function commitAction(Request $request)
     {
-        /** @var Serializer $serializer */
-        $serializer = $this->container->get('serializer');
-
         /** @var PageEleveur $pageEleveur */
-        $pageEleveur = $serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
-
-        /** @var TokenStorage $tokenStorage */
-        $tokenStorage = $this->container->get('security.token_storage');
+        $pageEleveur = $this->serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
 
         /** @var AnonymousToken $token */
-        $token = $tokenStorage->getToken();
+        $token = $this->tokenStorage->getToken();
 
         /** @var User $user */
         $user = $token->getUser();
 
-        /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->container->get('zigotoo.page_eleveur');
-
         try {
-            $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);
+            $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
             return $this->createErrorResponse($e);
@@ -108,35 +130,23 @@ class PageEleveurController extends Controller
      */
     public function addAnimalAction(Request $request)
     {
-        /** @var Serializer $serializer */
-        $serializer = $this->container->get('serializer');
-
         /** @var PageEleveur $pageEleveur */
-        $pageEleveur = $serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
-
-        /** @var TokenStorage $tokenStorage */
-        $tokenStorage = $this->container->get('security.token_storage');
+        $pageEleveur = $this->serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
 
         /** @var AnonymousToken $token */
-        $token = $tokenStorage->getToken();
+        $token = $this->tokenStorage->getToken();
 
         /** @var User $user */
         $user = $token->getUser();
 
-        /** @var PageAnimalService $pageAnimalService */
-        $pageAnimalService = $this->container->get('zigotoo.page_animal');
-
-        $newPageAnimal = $pageAnimalService->create($user);
+        $newPageAnimal = $this->pageAnimalService->create($user);
 
         $animaux = $pageEleveur->getAnimaux() ?? [];
         $animaux[] = $newPageAnimal;
         $pageEleveur->setAnimaux($animaux);
 
-        /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->container->get('zigotoo.page_eleveur');
-
         try {
-            $pageEleveur = $pageEleveurService->commit($user, $pageEleveur);
+            $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
             return $this->createErrorResponse($e);

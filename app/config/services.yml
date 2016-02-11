@@ -1,4 +1,25 @@
 services:
+    zigotoo.default_controller:
+        class: AppBundle\Controller\DefaultController
+        arguments:
+            - @security.token_storage
+            - @templating
+            - @form.factory
+            - @router
+            - @zigotoo.page_eleveur
+    zigotoo.page_eleveur_controller:
+        class: AppBundle\Controller\PageEleveurController
+        arguments:
+            - @security.token_storage
+            - @templating
+            - @serializer
+            - @zigotoo.page_eleveur
+            - @zigotoo.page_animal
+    zigotoo.page_animal_controller:
+        class: AppBundle\Controller\PageAnimalController
+        arguments:
+            - @templating
+            - @zigotoo.page_animal
     zigotoo.page_eleveur:
         class: AppBundle\Service\PageEleveurService
         arguments:
