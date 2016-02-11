@@ -9,31 +9,47 @@
 namespace AppBundle\Controller;
 
 
-use AppBundle\Repository\PageAnimalBranchRepository;
 use AppBundle\Service\PageAnimalService;
-use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class PageAnimalController extends Controller
+/**
+ * @Route(service="zigotoo.page_animal_controller")
+ */
+class PageAnimalController
 {
+    /**
+     * @var TwigEngine
+     */
+    private $templating;
+    /**
+     * @var PageAnimalService
+     */
+    private $pageAnimalService;
+
+    public function __construct(
+        TwigEngine $templating,
+        PageAnimalService $pageAnimalService
+    ) {
+        $this->templating = $templating;
+        $this->pageAnimalService = $pageAnimalService;
+    }
+
     /**
      * @Route("/animal/{pageAnimalId}", name="getPageAnimal")
      * @Method("GET")
      */
     public function getAction($pageAnimalId)
     {
-        /** @var PageAnimalService $pageAnimalService */
-        $pageAnimalService = $this->get('zigotoo.page_animal');
 
-        $pageAnimal = $pageAnimalService->find($pageAnimalId);
+        $pageAnimal = $this->pageAnimalService->find($pageAnimalId);
 
         if (!$pageAnimal)
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException(null, null);
 
-        return $this->render('page-animal.html.twig', [
+        return $this->templating->renderResponse('page-animal.html.twig', [
             'pageAnimal' => $pageAnimal
         ]);
     }

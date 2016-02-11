@@ -2,22 +2,60 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\ERole;
 use AppBundle\Entity\User;
-use AppBundle\Repository\PageEleveurBranchRepository;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageEleveurService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Monolog\Logger;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
-class DefaultController extends Controller
+/**
+ * @Route(service="zigotoo.default_controller")
+ */
+class DefaultController
 {
+    /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+    /**
+     * @var TwigEngine
+     */
+    private $templating;
+    /**
+     * @var FormFactory
+     */
+    private $formFactory;
+    /**
+     * @var Router
+     */
+    private $router;
+    /**
+     * @var PageEleveurService
+     */
+    private $pageEleveurService;
+
+    public function __construct(
+        TokenStorage $tokenStorage,
+        TwigEngine $templating,
+        FormFactory $formFactory,
+        Router $router,
+        PageEleveurService $pageEleveurService
+    ) {
+        $this->tokenStorage = $tokenStorage;
+        $this->templating = $templating;
+        $this->formFactory = $formFactory;
+        $this->router = $router;
+        $this->pageEleveurService = $pageEleveurService;
+    }
+
     /**
      * @Route("/", name="index")
      * @param Request $request
@@ -26,26 +64,18 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        /** @var TokenStorage $tokenStorage */
-        $tokenStorage = $this->container->get('security.token_storage');
-
         /** @var AnonymousToken $token */
-        $token = $tokenStorage->getToken();
+        $token = $this->tokenStorage->getToken();
 
         /** @var User $user */
         $user = $token->getUser();
 
         if ($user == 'anon.')
-            return $this->render('index.html.twig');
+            return $this->templating->renderResponse('index.html.twig');
 
-        /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->get('zigotoo.page_eleveur');
-        $pageEleveur = $pageEleveurService->findByOwner($user);
+        $pageEleveur = $this->pageEleveurService->findByOwner($user);
 
-        /** @var FormFactory $formFactory */
-        $formFactory = $this->get('form.factory');
-
-        $form = $formFactory->createNamedBuilder('creation-page-eleveur')
+        $form = $this->formFactory->createNamedBuilder('creation-page-eleveur')
             ->add('nom', 'text')
             ->add('save', 'submit', array('label' => 'Créer ma page éleveur'))
             ->getForm();
@@ -54,7 +84,7 @@ class DefaultController extends Controller
 
         if (!$form->isSubmitted() && $pageEleveur){
             // home d'un eleveur ayant une page eleveur
-            return $this->render('index-eleveur.html.twig', [
+            return $this->templating->renderResponse('index-eleveur.html.twig', [
                 'username' => $user->getUserName(),
                 'pageEleveur' => $pageEleveur
             ]);
@@ -64,8 +94,8 @@ class DefaultController extends Controller
             // traitement du formulaire de creation de page eleveur
             $nom = $form->getData()['nom'];
             try {
-                $slug = $pageEleveurService->create($nom, $user)->getSlug();
-                return $this->redirectToRoute('getPageEleveur', ['pageEleveurSlug' => $slug]);
+                $slug = $this->pageEleveurService->create($nom, $user)->getSlug();
+                return new RedirectResponse($this->router->generate('getPageEleveur', ['pageEleveurSlug' => $slug]));
             } catch (HistoryException $e) {
                 switch ($e->getCode()) {
                     case HistoryException::NOM_INVALIDE:
@@ -79,11 +109,9 @@ class DefaultController extends Controller
         }
 
         // home d'un user connecté mais qui n'a pas de page eleveur
-        return $this->render('index-new-eleveur.html.twig', [
+        return $this->templating->renderResponse('index-new-eleveur.html.twig', [
             'username' => $user->getUserName(),
             'creationPageEleveur' => $form->createView()
         ]);
-
-
     }
 }
