@@ -22,7 +22,7 @@ security:
             # Les tests s'exécutent beaucoup plus vide sans le cryptage des mots de passe
             FOS\UserBundle\Model\UserInterface: plaintext
     firewalls:
-        fos:
+        fos_user:
             form_login: false
             http_basic: true
 

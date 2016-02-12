@@ -8,15 +8,14 @@ security:
             id: fos_user.user_provider.username
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
+        # disables authentication for assets and the profiler
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        fos:
-            pattern: ^/
+        fos_user:
             form_login:
                 provider: fos_userbundle
-                csrf_provider: security.csrf.token_manager # Use form.csrf_provider instead for Symfony <2.4
+                csrf_provider: security.csrf.token_manager
             logout:       true
             anonymous:    true
     encoders:
