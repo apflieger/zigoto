@@ -53,6 +53,10 @@ DirectoryIndex app.php
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule .? - [L]
 
+    # Teaser stuff
+    # Toutes les requetes sauf la home sont en 403.
+    RewriteRule ..* - [F]
+
     # Rewrite all other queries to the front controller.
     RewriteRule .? %{ENV:BASE}/app.php [L]
 </IfModule>
