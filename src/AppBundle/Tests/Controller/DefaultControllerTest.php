@@ -24,7 +24,7 @@ class DefaultControllerTest extends WebTestCase
 
     public function testIndex_Anonyme()
     {
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/home');
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Créez votre page éleveur', $crawler->filter('h1')->text());
@@ -36,7 +36,7 @@ class DefaultControllerTest extends WebTestCase
     {
         $this->testUtils->createUser();
 
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/home');
 
         // Quand l'utilisateur est connecté, on lui propose de créer sa page directement depuis la home
         $this->assertCount(1, $crawler->filter('form[name="creation-page-eleveur"]'));
@@ -47,7 +47,7 @@ class DefaultControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/home');
 
         // L'eleveur a un lien vers sa page
         $this->assertEquals(1, $crawler->filter('a[href="/' . $pageEleveur->getSlug() . '"]')->count());
@@ -59,7 +59,7 @@ class DefaultControllerTest extends WebTestCase
         $user = $this->testUtils->createUser()->getUser();
 
         // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
-        $crawler = $this->client->request('GET', '/');
+        $crawler = $this->client->request('GET', '/home');
         $creationPageEleveurForm = $crawler->filter('form[name="creation-page-eleveur"]')->form();
         $rand = rand();
         $nomElevage = 'Les Chartreux de Tatouine ' . $rand;
@@ -70,13 +70,13 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->client->followRedirect();
         $this->assertEquals('/les-chartreux-de-tatouine-' . $rand, $this->client->getRequest()->getRequestUri());
-        $this->assertEquals('Bonjour '.$user->getUsername(), $this->client->request('GET', '/')->filter('h1')->text());
+        $this->assertEquals('Bonjour '.$user->getUsername(), $this->client->request('GET', '/home')->filter('h1')->text());
     }
 
     public function testCreationPageEleveur_Deconnecte()
     {
         $this->testUtils->createUser();
-        $pageEleveurForm = $this->client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+        $pageEleveurForm = $this->client->request('GET', '/home')->filter('form[name="creation-page-eleveur"]')->form();
 
         $this->testUtils->logout();
 
@@ -94,7 +94,7 @@ class DefaultControllerTest extends WebTestCase
         $this->testUtils->createUser();
 
         //le 2eme user utilise le meme nom que pageEleveur1
-        $pageEleveurForm = $this->client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+        $pageEleveurForm = $this->client->request('GET', '/home')->filter('form[name="creation-page-eleveur"]')->form();
         $pageEleveurForm['creation-page-eleveur[nom]'] = $pageEleveur1->getNom();
         $this->client->submit($pageEleveurForm);
 
@@ -109,7 +109,7 @@ class DefaultControllerTest extends WebTestCase
         $this->testUtils->createUser();
 
         //Affichage de la home avec le formulaire de creation de page eleveur
-        $pageEleveurForm = $this->client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+        $pageEleveurForm = $this->client->request('GET', '/home')->filter('form[name="creation-page-eleveur"]')->form();
 
         //Creation d'une page eleveur
         $this->testUtils->toEleveur();
@@ -127,10 +127,16 @@ class DefaultControllerTest extends WebTestCase
         // connexion avec un nouvel user
         $this->testUtils->createUser();
 
-        $pageEleveurForm = $this->client->request('GET', '/')->filter('form[name="creation-page-eleveur"]')->form();
+        $pageEleveurForm = $this->client->request('GET', '/home')->filter('form[name="creation-page-eleveur"]')->form();
         $pageEleveurForm['creation-page-eleveur[nom]'] = '--';
         $this->client->submit($pageEleveurForm);
 
         $this->assertEquals(Response::HTTP_NOT_ACCEPTABLE, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testGetTeaser()
+    {
+        $crawler = $this->client->request('GET', '/');
+        $this->assertEquals('Créez votre page éleveur', $crawler->filter('h1')->text());
     }
 }

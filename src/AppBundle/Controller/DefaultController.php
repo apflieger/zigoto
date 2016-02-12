@@ -57,7 +57,18 @@ class DefaultController
     }
 
     /**
-     * @Route("/", name="index")
+     * @Route("/", name="teaser")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws \Exception
+     */
+    public function teaserAction(Request $request)
+    {
+        return $this->templating->renderResponse('teaser.html.twig');
+    }
+
+    /**
+     * @Route("/home", name="index")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
