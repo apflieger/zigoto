@@ -6,13 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <title>{% inject title %}</title>
         <link rel="stylesheet" href="/build/bootstrap.min.css" />
-        {% inject stylesheets %}
+        {% inject stylesheets optional %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
         <div class="container">
             {% inject content %}
         </div>
-        {% inject javascripts %}
+        {% inject javascripts optional %}
     </body>
 </html>
