@@ -11,7 +11,6 @@ namespace AppBundle\Twig;
 
 use Twig_Error_Syntax;
 use Twig_Node;
-use Twig_Node_Include;
 use Twig_Token;
 use Twig_TokenParser;
 
@@ -28,8 +27,8 @@ class InjectTokenParser extends Twig_TokenParser
      */
     public function parse(Twig_Token $token)
     {
-        $inject = $this->parser->getExpressionParser()->parseExpression();
         $stream = $this->parser->getStream();
+        $inject = $stream->expect(Twig_Token::NAME_TYPE)->getValue();
         $optional = false;
         if ($stream->nextIf(Twig_Token::NAME_TYPE, 'optional')) {
             $optional = true;

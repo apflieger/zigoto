@@ -20,14 +20,20 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
      * Clé du paramètre de template determinant les fragments qui vont être injectés
      */
     const INJECT_PARAMETER = 'inject';
+    /**
+     * @var string
+     */
+    private $expr;
+    /**
+     * @var bool
+     */
+    private $optional;
 
-    public function __construct(Twig_Node_Expression $expr, bool $optional, $lineno, $tag = null)
+    public function __construct(string $expr, bool $optional, $lineno, $tag = null)
     {
-        parent::__construct(
-            array('expr' => $expr, 'variables' => null),
-            array('optional' => $optional, 'only' => false, 'ignore_missing' => false),
-            $lineno,
-            $tag);
+        parent::__construct(array(), array(), $lineno, $tag);
+        $this->expr = $expr;
+        $this->optional = $optional;
     }
 
     /**
@@ -42,9 +48,9 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
         $compiler
             ->write("try {\n")
             ->indent()
-            ->write('$this->loadTemplate(')
-            ->subcompile($this->getNode('expr'))
-            ->raw('. "/" . $context[\'' . static::INJECT_PARAMETER . '\'] . ".html.twig", ')
+            ->write('$this->loadTemplate(\'')
+            ->raw($this->expr)
+            ->raw('\' . "/" . $context[\'' . static::INJECT_PARAMETER . '\'] . ".html.twig", ')
             ->repr($compiler->getFilename())
             ->raw(', ')
             ->repr($this->getLine())
@@ -54,10 +60,15 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
             ->write("} catch (Twig_Error_Loader \$e) {\n")
             ->indent();
 
-        if ($this->getAttribute('optional')) {
-            $compiler->write("// ignore missing template\n");
+        if ($this->optional) {
+            $compiler->write("// Injection déclarée optionnelle \n");
         } else {
-            $compiler->write('throw new Twig_Error_Loader("Injection \\"' . "lol" . '\\" manquante");');
+            $compiler->write('throw new Twig_Error_Loader(\'Injection \\\'');
+            $compiler->raw($this->expr);
+            $compiler->raw('\\\' manquante pour \\\'\' . ');
+            $compiler->raw('$context[\'');
+            $compiler->raw(static::INJECT_PARAMETER);
+            $compiler->raw('\'] . \'\\\'\', -1, null, $e);');
         }
 
         $compiler
