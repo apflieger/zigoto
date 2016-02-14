@@ -1,0 +1,25 @@
+<div ng-app="zigotoo">
+    <div ng-controller="PageEleveurCtrl">
+        <h1>{{ pageEleveur.nom }}</h1>
+
+        <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" e-rows="10" e-cols="100">
+            <pre id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</pre>
+        </a>
+        <div class="animaux">
+            <ul>
+                {% if isOwner %}
+                    {% raw %}
+                        <li ng-repeat="animal in pageEleveur.animaux">
+                            <a href="/animal/{{ animal.id }}">{{ animal.nom }}</a>
+                        </li>
+                    {% endraw %}
+                {% else %}
+                    {% for animal in pageEleveur.animaux %}
+                        <li><a href="/animal/{{ animal.id }}">{{ animal.nom }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            <button ng-click="addAnimal()">Ajouter un animal</button>
+        </div>
+    </div>
+</div>

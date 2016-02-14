@@ -22,32 +22,37 @@ class DefaultControllerTest extends WebTestCase
         $this->testUtils = new TestUtils($this->client, $this);
     }
 
-    public function testIndex_Anonyme()
+    public function testHome_Anonyme()
     {
         $crawler = $this->client->request('GET', '/home');
 
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Créez votre page éleveur', $crawler->filter('h1')->text());
+        $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
         $this->assertEquals(1, $crawler->filter('a[href="/login"]')->count());
         $this->assertEquals(1, $crawler->filter('a[href="/register"]')->count());
     }
 
-    public function testIndex_User()
+    public function testHome_User()
     {
         $this->testUtils->createUser();
 
         $crawler = $this->client->request('GET', '/home');
+
+        $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
 
         // Quand l'utilisateur est connecté, on lui propose de créer sa page directement depuis la home
         $this->assertCount(1, $crawler->filter('form[name="creation-page-eleveur"]'));
         $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
     }
 
-    public function testIndex_Eleveur()
+    public function testHome_Eleveur()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
         $crawler = $this->client->request('GET', '/home');
+
+        $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
 
         // L'eleveur a un lien vers sa page
         $this->assertEquals(1, $crawler->filter('a[href="/' . $pageEleveur->getSlug() . '"]')->count());
@@ -138,5 +143,6 @@ class DefaultControllerTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', '/');
         $this->assertEquals('Créez votre page éleveur', $crawler->filter('h1')->text());
+        $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
     }
 }

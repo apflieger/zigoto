@@ -28,10 +28,13 @@ services:
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurCommit')
             - @logger
-
     zigotoo.page_animal:
         class: AppBundle\Service\PageAnimalService
         arguments:
             - @doctrine.orm.entity_manager
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
             - @file_locator
+    zigotoo.twig_extension:
+        class: AppBundle\Twig\AppExtension
+        tags:
+            - { name: twig.extension }

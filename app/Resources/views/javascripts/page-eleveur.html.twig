@@ -1,0 +1,12 @@
+{% if isOwner %}
+    <!-- flag owner -->
+    <script type="text/javascript">
+        // flag const-js
+        {% autoescape false %}
+        var globPageEleveur = {{ pageEleveur | serialize }};
+        {% endautoescape %}
+    </script>
+    <script src="/build/angular.js"></script>
+    <script src="/build/xeditable.min.js"></script>
+    <script src="/build/PageEleveurCtrl.js"></script>
+{% endif %}

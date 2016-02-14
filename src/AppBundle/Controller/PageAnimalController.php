@@ -49,7 +49,8 @@ class PageAnimalController
         if (!$pageAnimal)
             throw new NotFoundHttpException(null, null);
 
-        return $this->templating->renderResponse('page-animal.html.twig', [
+        return $this->templating->renderResponse('base.html.twig', [
+            'inject' => 'page-animal',
             'pageAnimal' => $pageAnimal
         ]);
     }

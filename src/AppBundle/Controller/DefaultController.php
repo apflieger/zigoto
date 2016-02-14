@@ -64,16 +64,18 @@ class DefaultController
      */
     public function teaserAction(Request $request)
     {
-        return $this->templating->renderResponse('teaser.html.twig');
+        return $this->templating->renderResponse('base.html.twig', [
+            'inject' => 'teaser'
+        ]);
     }
 
     /**
-     * @Route("/home", name="index")
+     * @Route("/home", name="home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
      */
-    public function indexAction(Request $request)
+    public function homeAction(Request $request)
     {
         /** @var AnonymousToken $token */
         $token = $this->tokenStorage->getToken();
@@ -82,7 +84,7 @@ class DefaultController
         $user = $token->getUser();
 
         if ($user == 'anon.')
-            return $this->templating->renderResponse('index.html.twig');
+            return $this->templating->renderResponse('base.html.twig', ['inject' => 'home-anonyme']);
 
         $pageEleveur = $this->pageEleveurService->findByOwner($user);
 
@@ -95,7 +97,8 @@ class DefaultController
 
         if (!$form->isSubmitted() && $pageEleveur){
             // home d'un eleveur ayant une page eleveur
-            return $this->templating->renderResponse('index-eleveur.html.twig', [
+            return $this->templating->renderResponse('base.html.twig', [
+                'inject' => 'home-eleveur',
                 'username' => $user->getUserName(),
                 'pageEleveur' => $pageEleveur
             ]);
@@ -120,7 +123,8 @@ class DefaultController
         }
 
         // home d'un user connecté mais qui n'a pas de page eleveur
-        return $this->templating->renderResponse('index-new-eleveur.html.twig', [
+        return $this->templating->renderResponse('base.html.twig', [
+            'inject' => 'home-user',
             'username' => $user->getUserName(),
             'creationPageEleveur' => $form->createView()
         ]);

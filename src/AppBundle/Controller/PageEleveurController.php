@@ -82,9 +82,11 @@ class PageEleveurController
         $user = $token->getUser();
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
 
-        return $this->templating->renderResponse('page-eleveur.html.twig', array(
+        return $this->templating->renderResponse('base.html.twig', [
+            'inject' => 'page-eleveur',
             'pageEleveur' => $pageEleveur,
-            'isOwner' => $isOwner));
+            'isOwner' => $isOwner
+        ]);
     }
 
     /**
