@@ -21,9 +21,13 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
      */
     const INJECT_PARAMETER = 'inject';
 
-    public function __construct(Twig_Node_Expression $expr, $lineno, $tag = null)
+    public function __construct(Twig_Node_Expression $expr, bool $optional, $lineno, $tag = null)
     {
-        parent::__construct(array('expr' => $expr, 'variables' => null), array('only' => false, 'ignore_missing' => false), $lineno, $tag);
+        parent::__construct(
+            array('expr' => $expr, 'variables' => null),
+            array('optional' => $optional, 'only' => false, 'ignore_missing' => false),
+            $lineno,
+            $tag);
     }
 
     /**
@@ -38,8 +42,6 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
         $compiler
             ->write("try {\n")
             ->indent()
-        ;
-        $compiler
             ->write('$this->loadTemplate(')
             ->subcompile($this->getNode('expr'))
             ->raw('. "/" . $context[\'' . static::INJECT_PARAMETER . '\'] . ".html.twig", ')
@@ -47,17 +49,19 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
             ->raw(', ')
             ->repr($this->getLine())
             ->raw(')')
-        ;
+            ->raw('->display($context);' . "\n")
+            ->outdent()
+            ->write("} catch (Twig_Error_Loader \$e) {\n")
+            ->indent();
 
-        $compiler->raw('->display($context);' . "\n");
+        if ($this->getAttribute('optional')) {
+            $compiler->write("// ignore missing template\n");
+        } else {
+            $compiler->write('throw new Twig_Error_Loader("Injection \\"' . "lol" . '\\" manquante");');
+        }
 
         $compiler
             ->outdent()
-            ->write("} catch (Twig_Error_Loader \$e) {\n")
-            ->indent()
-            ->write("// ignore missing template\n")
-            ->outdent()
-            ->write("}\n\n")
-        ;
+            ->write("}\n\n");
     }
 }

@@ -30,8 +30,12 @@ class InjectTokenParser extends Twig_TokenParser
     {
         $inject = $this->parser->getExpressionParser()->parseExpression();
         $stream = $this->parser->getStream();
+        $optional = false;
+        if ($stream->nextIf(Twig_Token::NAME_TYPE, 'optional')) {
+            $optional = true;
+        }
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
-        return new TwigNodeInject($inject, $token->getLine(), $this->getTag());
+        return new TwigNodeInject($inject, $optional, $token->getLine(), $this->getTag());
     }
 
     /**
