@@ -10,9 +10,10 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <div class="container">
-            {% inject content %}
-        </div>
+        <header>
+            <div class="container">Zigotoo</div>
+        </header>
+        {% inject content %}
         {% inject javascripts optional %}
     </body>
 </html>
