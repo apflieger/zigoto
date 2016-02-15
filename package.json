@@ -1,14 +1,12 @@
 {
   "name": "zigotoo",
-  "version": "1.0.0",
-  "devDependencies": {
-    "del": "2.2.0",
-    "gulp": "3.9.0"
-  },
   "dependencies": {
+    "del": "2.2.0",
+    "gulp": "3.9.0",
+    "gulp-less": "^3.0.5",
     "angular": "1.4.8",
     "angular-xeditable-npm": "0.1.9",
-    "bootstrap": "3.3.5"
+    "bootstrap": "^3.3.5"
   },
   "scripts": {
     "postinstall": "node_modules/gulp/bin/gulp.js default"
