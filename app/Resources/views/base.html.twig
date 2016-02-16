@@ -10,9 +10,11 @@
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        <header>
-            <div class="container">Zigotoo</div>
-        </header>
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-brand">Zigotoo</div>
+            </div>
+        </nav>
         {% inject content %}
         {% inject javascripts optional %}
     </body>

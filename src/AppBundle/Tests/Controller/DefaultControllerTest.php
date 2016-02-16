@@ -142,7 +142,7 @@ class DefaultControllerTest extends WebTestCase
     public function testGetTeaser()
     {
         $crawler = $this->client->request('GET', '/');
-        $this->assertEquals('Créez votre page éleveur', $crawler->filter('h1')->text());
+        $this->assertEquals('Créez votre site d\'éleveur', $crawler->filter('h1')->text());
         $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
     }
 }

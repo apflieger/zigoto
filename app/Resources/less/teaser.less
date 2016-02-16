@@ -1,7 +1,46 @@
 @import "../../../node_modules/bootstrap/less/variables.less";
 
-body {
-    header {
-        font-size: @font-size-h1;
+html, body {
+    height: 100%;
+}
+
+.navbar {
+    background: linear-gradient(#E0E0E0, #D0D0D0);
+
+    .navbar-brand{
+        color: black;
+    }
+}
+
+.layer {
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    height: 75%;
+
+    //pour ne pas passer derrière nav
+    padding: @navbar-height + @navbar-margin-bottom 0;
+}
+
+.layer-arrow {
+    width: 3em;
+    height: 3em;
+    margin: 0 auto;
+    cursor: pointer;
+
+    &:before {
+        content: "";
+        display: block;
+        height: 100%;
+        border-right: 3px solid #D0D0D0;
+        border-bottom: 3px solid #D0D0D0;
+        transform: rotate(45deg);
+    }
+
+    transition: transform 100ms;
+
+    &:hover {
+        transform: scale(1.2);
     }
 }
