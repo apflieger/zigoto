@@ -4,7 +4,7 @@ var less = require('gulp-less');
 
 // clean est synchrone, il doit être déclaré en 1er dans les task qui l'utilisent
 gulp.task('clean', function() {
-    del(['web/build']);
+    del(['web/build/*']);
 });
 
 gulp.task('copy-dependencies', function() {
