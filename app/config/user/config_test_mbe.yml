@@ -2,8 +2,8 @@ imports:
     - { resource: ../config_test.yml }
 
 parameters:
-    database_host: bymltp3xd.mysql.clvrcld.net
-    database_port: 3306
-    database_user: u7tqpkd9rnpsrhnj
-    database_password: a3RsC6ts8Kk7MrWzRFU
-    database_name: bymltp3xd
+    database_host:      be4bmuekx.mysql.clvrcld.net
+    database_port:      3306
+    database_user:      ugdd1nzt7dguucwa
+    database_password:  sbwJOws7aFKJlphIIcb
+    database_name:      be4bmuekx

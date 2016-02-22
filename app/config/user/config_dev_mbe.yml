@@ -3,8 +3,8 @@ imports:
 
 parameters:
     email: MehdiBelkacemi@gmail.com
-    database_host: bxceyc6zx.mysql.clvrcld.net
-    database_port: 3306
-    database_user: ujtbevdp9dmenbs8
-    database_password: l3KE8J7CBdzbtwYRpCE
-    database_name: bxceyc6zx
+    database_host:      bgnvntqpm.mysql.clvrcld.net
+    database_port:      3306
+    database_user:      utlr1temuvkvfk6p
+    database_password:  eho658B69NqxH0XbVW4
+    database_name:      bgnvntqpm
