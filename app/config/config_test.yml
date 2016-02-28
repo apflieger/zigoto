@@ -30,3 +30,7 @@ jms_serializer:
     visitors:
         json:
             options: JSON_PRETTY_PRINT # indentation du json collé dans le html
+
+services:
+    zigotoo.time:
+        class: AppBundle\Tests\TestTimeService

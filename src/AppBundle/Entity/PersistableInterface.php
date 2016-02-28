@@ -9,7 +9,7 @@
 namespace AppBundle\Entity;
 
 
-use DateTime;
+use DateTimeImmutable;
 
 interface PersistableInterface
 {
@@ -24,22 +24,22 @@ interface PersistableInterface
     public function getId();
 
     /**
-     * @return DateTime
+     * @return DateTimeImmutable
      */
     public function getCreatedAt();
 
     /**
-     * @param DateTime $createdAt
+     * @param DateTimeImmutable $createdAt
      */
     public function setCreatedAt($createdAt);
 
     /**
-     * @return DateTime
+     * @return DateTimeImmutable
      */
     public function getModifiedAt();
 
     /**
-     * @param DateTime $modifiedAt
+     * @param DateTimeImmutable $modifiedAt
      */
     public function setModifiedAt($modifiedAt);
 }

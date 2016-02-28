@@ -24,6 +24,7 @@ class TestUtils
      * @var Client
      */
     private $client;
+
     /**
      * @var WebTestCase
      */

@@ -7,6 +7,7 @@ services:
             - @form.factory
             - @router
             - @zigotoo.page_eleveur
+
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController
         arguments:
@@ -15,11 +16,13 @@ services:
             - @serializer
             - @zigotoo.page_eleveur
             - @zigotoo.page_animal
+
     zigotoo.page_animal_controller:
         class: AppBundle\Controller\PageAnimalController
         arguments:
             - @templating
             - @zigotoo.page_animal
+
     zigotoo.page_eleveur:
         class: AppBundle\Service\PageEleveurService
         arguments:
@@ -28,17 +31,25 @@ services:
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurCommit')
             - @logger
+
     zigotoo.page_animal:
         class: AppBundle\Service\PageAnimalService
         arguments:
             - @doctrine.orm.entity_manager
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
             - @file_locator
+
+    zigotoo.time:
+        class: AppBundle\Service\TimeService
+
     zigotoo.twig.extension:
         class: AppBundle\Twig\AppExtension
         tags:
             - { name: twig.extension }
+
     zigotoo.doctrine.id_generation_subscriber:
         class: AppBundle\Entity\PersistableDoctrineEventSubscriber
+        arguments:
+            - @zigotoo.time
         tags:
             - { name: doctrine.event_subscriber }

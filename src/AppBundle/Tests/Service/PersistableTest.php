@@ -10,7 +10,8 @@ namespace AppBundle\Tests\Service;
 
 
 use AppBundle\Entity\PersistableInterface;
-use DateTime;
+use AppBundle\Tests\TestTimeService;
+use DateInterval;
 use FOS\UserBundle\Doctrine\UserManager;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -20,10 +21,15 @@ class PersistableTest extends KernelTestCase
     /** @var UserManager */
     private $userManager;
 
+    /** @var TestTimeService */
+    private $timeService;
+
     public function setup()
     {
         self::bootKernel();
         $this->userManager = self::$kernel->getContainer()->get('fos_user.user_manager');
+
+        $this->timeService = self::$kernel->getContainer()->get('zigotoo.time');
     }
 
     public function testPersistableCreation()
@@ -42,29 +48,34 @@ class PersistableTest extends KernelTestCase
         $this->assertNull($user->getId());
         $this->assertNull($user->getCreatedAt());
 
+        $this->timeService->lockNow();
         $this->userManager->updateUser($user);
 
         $this->assertEquals(16, strlen($user->getId()));
 
-        // Ce test est instable pour le moment
-        $this->assertEquals(new DateTime(), $user->getCreatedAt());
+        $this->assertEquals($this->timeService->now(), $user->getCreatedAt());
     }
 
     public function testModifiedAt()
     {
         $user = $this->createUser();
+
+        $this->timeService->lockNow();
         $this->userManager->updateUser($user);
 
-        // Ce test est instable pour le moment
-        $this->assertEquals(new DateTime(), $user->getModifiedAt());
+        // A la création de l'entité, createdAt et modifiedAt ont la même valeur, 'now'
+        $this->assertEquals($this->timeService->now(), $user->getModifiedAt());
 
-        sleep(1);
-
+        //modification du user
         $user->setPlainPassword('modified');
+
+        //enregistrement du user une seconde plus tard
+        $this->timeService->lockNow($this->timeService->now()->add(new DateInterval('PT1S'))); // Simule un sleep(1)
         $this->userManager->updateUser($user);
 
-        // Ce test est instable pour le moment
-        $this->assertEquals(new DateTime(), $user->getModifiedAt());
+
+        $this->assertEquals($this->timeService->now(), $user->getModifiedAt());
+        $this->assertGreaterThan($user->getCreatedAt(), $user->getModifiedAt());
     }
 
     /**

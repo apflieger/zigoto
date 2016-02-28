@@ -9,13 +9,23 @@
 namespace AppBundle\Entity;
 
 
-use DateTime;
+use AppBundle\Service\TimeService;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 
 class PersistableDoctrineEventSubscriber implements EventSubscriber
 {
+    /**
+     * @var TimeService
+     */
+    private $timeService;
+
+    public function __construct(TimeService $timeService)
+    {
+        $this->timeService = $timeService;
+    }
+
     /**
      * Returns an array of events this subscriber wants to listen to.
      *
@@ -35,7 +45,7 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
 
             $entity->setId(bin2hex(random_bytes(8))); // Ce calcul prend 4 μs sur mon macbook
 
-            $now = new DateTime();
+            $now = $this->timeService->now();
 
             $entity->setCreatedAt($now);
 
@@ -50,7 +60,7 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
         if ($entity instanceof PersistableInterface) {
             /** @var PersistableInterface $entity */
 
-            $entity->setModifiedAt(new DateTime());
+            $entity->setModifiedAt($this->timeService->now());
         }
     }
 }
