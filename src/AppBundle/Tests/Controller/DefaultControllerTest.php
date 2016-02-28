@@ -2,12 +2,10 @@
 
 namespace AppBundle\Tests\Controller;
 
-use AppBundle\Entity\ERole;
 use AppBundle\Tests\TestUtils;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class DefaultControllerTest extends WebTestCase
 {

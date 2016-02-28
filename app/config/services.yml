@@ -38,7 +38,7 @@ services:
         class: AppBundle\Twig\AppExtension
         tags:
             - { name: twig.extension }
-    zigotoo.doctrine.id_generation_listener:
-        class: AppBundle\Entity\IdGenerationListener
+    zigotoo.doctrine.id_generation_subscriber:
+        class: AppBundle\Entity\PersistableDoctrineEventSubscriber
         tags:
-            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_subscriber }
