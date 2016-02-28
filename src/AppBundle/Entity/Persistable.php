@@ -10,7 +10,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-trait HasId
+trait Persistable
 {
     /**
      * @ORM\Id

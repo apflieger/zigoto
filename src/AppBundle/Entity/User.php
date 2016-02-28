@@ -17,9 +17,9 @@ use JMS\Serializer\Annotation\Type;
  * @ORM\Table(name="user")
  *
  */
-class User extends \FOS\UserBundle\Entity\User implements Identifiable
+class User extends \FOS\UserBundle\Entity\User implements PersistableInterface
 {
-    use HasId;
+    use Persistable;
 
     /**
      * @ORM\Id

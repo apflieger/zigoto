@@ -9,7 +9,7 @@
 namespace AppBundle\Entity;
 
 
-interface Identifiable
+interface PersistableInterface
 {
     /**
      * @param string $id

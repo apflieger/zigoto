@@ -16,9 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="page_eleveur_commit")
  */
-class PageEleveurCommit implements Identifiable
+class PageEleveurCommit implements PersistableInterface
 {
-    use HasId;
+    use Persistable;
 
     /**
      * @ORM\OneToOne(targetEntity="PageEleveurCommit")

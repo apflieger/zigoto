@@ -14,9 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="page_animal_commit")
  */
-class PageAnimalCommit implements Identifiable
+class PageAnimalCommit implements PersistableInterface
 {
-    use HasId;
+    use Persistable;
 
     /**
      * @ORM\OneToOne(targetEntity="PageAnimalCommit")

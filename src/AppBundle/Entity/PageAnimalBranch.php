@@ -15,9 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageAnimalBranchRepository")
  * @ORM\Table(name="page_animal")
  */
-class PageAnimalBranch implements Identifiable
+class PageAnimalBranch implements PersistableInterface
 {
-    use HasId;
+    use Persistable;
 
     /**
      * @ORM\OneToOne(targetEntity="PageAnimalCommit")

@@ -15,9 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageEleveurBranchRepository")
  * @ORM\Table(name="page_eleveur")
  */
-class PageEleveurBranch implements Identifiable
+class PageEleveurBranch implements PersistableInterface
 {
-    use HasId;
+    use Persistable;
 
     /**
      * @ORM\OneToOne(targetEntity="PageEleveurCommit")

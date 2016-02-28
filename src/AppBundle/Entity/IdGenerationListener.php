@@ -17,8 +17,8 @@ class IdGenerationListener
     {
         $entity = $event->getEntity();
 
-        if ($entity instanceof Identifiable) {
-            /** @var Identifiable $entity */
+        if ($entity instanceof PersistableInterface) {
+            /** @var PersistableInterface $entity */
             $entity->setId(bin2hex(random_bytes(8)));
         }
     }
