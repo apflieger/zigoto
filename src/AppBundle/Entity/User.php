@@ -14,24 +14,18 @@ use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="fos_user")
+ * @ORM\Table(name="user")
  *
  */
-class User extends \FOS\UserBundle\Entity\User
+class User extends \FOS\UserBundle\Entity\User implements Identifiable
 {
+    use HasId;
+
     /**
      * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
-     *
-     * @Type("string")
+     * @ORM\Column(type="string", length=16)
      */
     protected $id;
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     public function __construct()
     {

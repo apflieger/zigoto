@@ -16,14 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="page_eleveur_commit")
  */
-class PageEleveurCommit
+class PageEleveurCommit implements Identifiable
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
-     */
-    private $id;
+    use HasId;
 
     /**
      * @ORM\OneToOne(targetEntity="PageEleveurCommit")
@@ -66,11 +61,6 @@ class PageEleveurCommit
         $this->nom = $nom;
         $this->description = $description;
         $this->animaux = new ArrayCollection($animaux ?? []);
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**

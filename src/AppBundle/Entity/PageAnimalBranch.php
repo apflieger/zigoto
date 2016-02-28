@@ -15,14 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageAnimalBranchRepository")
  * @ORM\Table(name="page_animal")
  */
-class PageAnimalBranch
+class PageAnimalBranch implements Identifiable
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
-     */
-    private $id;
+    use HasId;
 
     /**
      * @ORM\OneToOne(targetEntity="PageAnimalCommit")
@@ -38,16 +33,6 @@ class PageAnimalBranch
      * @var User
      */
     private $owner;
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
 
     /**
      * @return User

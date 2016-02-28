@@ -34,7 +34,11 @@ services:
             - @doctrine.orm.entity_manager
             - @=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')
             - @file_locator
-    zigotoo.twig_extension:
+    zigotoo.twig.extension:
         class: AppBundle\Twig\AppExtension
         tags:
             - { name: twig.extension }
+    zigotoo.doctrine.id_generation_listener:
+        class: AppBundle\Entity\IdGenerationListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }

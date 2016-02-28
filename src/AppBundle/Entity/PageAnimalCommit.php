@@ -14,14 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="page_animal_commit")
  */
-class PageAnimalCommit
+class PageAnimalCommit implements Identifiable
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
-     */
-    private $id;
+    use HasId;
 
     /**
      * @ORM\OneToOne(targetEntity="PageAnimalCommit")
@@ -45,11 +40,6 @@ class PageAnimalCommit
     {
         $this->nom = $nom;
         $this->parent = $parent;
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
