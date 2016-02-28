@@ -77,7 +77,7 @@ class TestUtils
         // le random permet les exécutions successives des mêmes tests
         $username = $this->test->getName() . rand();
         $user->setUsername($username);
-        $user->setEmail($username . '@gizoto.com');
+        $user->setEmail($username . '@zigotoo.com');
         $user->setPlainPassword('test');
         $user->setEnabled(true);
         $userManager->updateUser($user);
