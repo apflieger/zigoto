@@ -3,8 +3,8 @@ imports:
 
 parameters:
     email: pflieger.arnaud@gmail.com
-    database_host:      bxwpq0tjz.mysql.clvrcld.net
-    database_port:      3306
-    database_user:      ujon1ijwj3cgymbg
-    database_password:  JjaxjLTcC9Q0Lo3glEi
-    database_name:      bxwpq0tjz
+    database_host:      bjepv58pltdf9ck-postgresql.services.clever-cloud.com
+    database_port:      5432
+    database_user:      uuw7v8llzr7kpo7chxef
+    database_password:  dHZOh1k7CSacvWf3juqU
+    database_name:      bjepv58pltdf9ck

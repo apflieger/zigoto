@@ -10,6 +10,7 @@
 
 * projet en 7.0.* Les unix ont souvent un php deja installé, le virer ou le mettre à la bonne version.
 * installer composer
+* installer pdo_pgsql (`brew install php70-pdo-pgsql` ou `apt-get install php7-pgsql`)
 * installer un debugger genre xdebug
 
 ### node

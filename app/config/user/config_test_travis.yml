@@ -4,6 +4,6 @@ imports:
 parameters:
     database_host: 127.0.0.1
     database_port: null
-    database_user: root
-    database_password: null
-    database_name: test_travis
+    database_user: postgres # donné par Travis
+    database_password: null # donné par Travis
+    database_name: test_travis # arbitraire, on construit la base à la main dans le setup de build
