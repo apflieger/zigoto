@@ -4,13 +4,6 @@ imports:
 framework:
     trusted_hosts: "www.zigotoo.com"
 
-parameters:
-    database_host:     b1nhn1azs.mysql.clvrcld.net
-    database_port:     3306
-    database_user:     u6njg5njlg41rw3k
-    database_password: qIrM7LvjDtciKWiJyqc
-    database_name:     b1nhn1azs
-
 monolog:
     handlers:
         syslog:
