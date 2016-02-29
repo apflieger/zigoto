@@ -3,7 +3,7 @@ php:
     - '7.0'
 
 services:
-    - mysql
+    - postgresql
 
 env:
     - SYMFONY_USER=travis

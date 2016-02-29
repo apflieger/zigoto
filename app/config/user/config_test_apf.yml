@@ -2,8 +2,8 @@ imports:
     - { resource: ../config_test.yml }
 
 parameters:
-    database_host:      bosdygayz.mysql.clvrcld.net
-    database_port:      3306
-    database_user:      ukmvrvs2sjgiy8rm
-    database_password:  6ZuWhE3syOgUL7DIKw7
-    database_name:      bosdygayz
+    database_host:      bjxuzrnkxm1vmht-postgresql.services.clever-cloud.com
+    database_port:      5432
+    database_user:      umoz70nh6rpvf2phr8wj
+    database_password:  GnaHigAJt7qWfMXAKKWp
+    database_name:      bjxuzrnkxm1vmht
