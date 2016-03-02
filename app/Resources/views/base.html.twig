@@ -23,12 +23,15 @@
         </script>
     </head>
     <body>
-        <nav class="navbar navbar-default navbar-fixed-top">
+        <nav class="global-header navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-brand">Zigotoo</div>
             </div>
         </nav>
         {% inject content %}
+        <footer class="global-footer container">
+            <a href="/qui-sommes-nous">Qui sommes nous ?</a>
+        </footer>
         {% inject javascripts optional %}
     </body>
 </html>

@@ -20,3 +20,8 @@ fos_user_change_password:
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+
+# Ce controlleur doit passer en dernier si non la route /{pageEleveurSlug} bouffe tout
+page_eleveur:
+    resource: "@AppBundle/Controller/PageEleveurController.php"
+    type:     annotation

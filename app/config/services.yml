@@ -8,6 +8,11 @@ services:
             - @router
             - @zigotoo.page_eleveur
 
+    zigotoo.quisommesnous_controller:
+        class: AppBundle\Controller\QuiSommesNousController
+        arguments:
+            - @templating
+
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController
         arguments:

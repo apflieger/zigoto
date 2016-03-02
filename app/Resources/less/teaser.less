@@ -2,14 +2,25 @@
 
 html, body {
     height: 100%;
+    font-size: 16px;
 }
 
-.navbar {
+.global-header {
     background: linear-gradient(#E0E0E0, #D0D0D0);
 
-    .navbar-brand{
+    .navbar-brand {
         color: black;
     }
+
+    + * {
+        //pour ne pas passer derrière nav
+        padding: @navbar-height + @navbar-margin-bottom 0;
+    }
+}
+
+.global-footer {
+    text-align: center;
+    padding: 2em 0;
 }
 
 .layer {
@@ -18,9 +29,6 @@ html, body {
     text-align: center;
 
     height: 75%;
-
-    //pour ne pas passer derrière nav
-    padding: @navbar-height + @navbar-margin-bottom 0;
 }
 
 .layer-arrow {

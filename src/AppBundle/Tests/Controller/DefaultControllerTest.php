@@ -144,4 +144,12 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals('Zigotoo - Créez votre site d\'éleveur', $crawler->filter('title')->text());
         $this->assertEquals(1, $crawler->filter('meta[name="description"]')->count());
     }
+
+    public function testLinkQuiSommesNous()
+    {
+        $crawler = $this->client->request('GET', '/');
+
+        $this->client->click($crawler->filter('footer a[href="/qui-sommes-nous"]')->link());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
 }
