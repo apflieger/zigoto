@@ -1,0 +1,28 @@
+{#  Ce template surcharge les templates de FOSUserBundle
+    On ne peux pas utiliser l'injection facilement parce qu'on a pas accès
+    aux controlleur (sans dupliquer plein de code) donc on fait comme on peut
+    avec des blocks...
+#}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if app.request.attributes.get('_route') == 'fos_user_security_login' %}
+        <title>Connexion Zigotoo</title>
+        <meta name="description" content="Connectez-vous à votre compte Zigotoo" />
+    {% endif %}
+    {% if app.request.attributes.get('_route') == 'fos_user_registration_register' %}
+        <title>Création de compte Zigotoo</title>
+        <meta name="description" content="Créez votre compte sur Zigotoo" />
+    {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="/build/teaser.css">
+{% endblock %}
+
+{% block content %}
+    {% block fos_user_content %}{% endblock %}
+{% endblock %}
+
+{% block javascripts %}{% endblock %}
