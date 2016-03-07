@@ -1,6 +1,6 @@
-{#  Ce template surcharge les templates de FOSUserBundle
+{#  Ce template surcharge le templates de FOSUserBundle du même nom.
     On ne peux pas utiliser l'injection facilement parce qu'on a pas accès
-    aux controlleur (sans dupliquer plein de code) donc on fait comme on peut
+    aux controlleurs (sans dupliquer plein de code) donc on fait comme on peut
     avec des blocks...
 #}
 
@@ -22,7 +22,13 @@
 {% endblock %}
 
 {% block content %}
-    {% block fos_user_content %}{% endblock %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-4">
+                {% block fos_user_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}{% endblock %}

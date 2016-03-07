@@ -1,4 +1,7 @@
 @import "../../../node_modules/bootstrap/less/variables.less";
+@import "../../../node_modules/bootstrap/less/mixins.less";
+@import "../../../node_modules/bootstrap/less/forms.less";
+@import "../../../node_modules/bootstrap/less/buttons.less";
 
 html, body {
     height: 100%;
@@ -14,7 +17,8 @@ html, body {
 
     + * {
         //pour ne pas passer derrière nav
-        padding: @navbar-height + @navbar-margin-bottom 0;
+        padding-top:    @navbar-height + @navbar-margin-bottom;
+        padding-bottom: @navbar-height + @navbar-margin-bottom;
     }
 }
 
@@ -50,5 +54,22 @@ html, body {
 
     &:hover {
         transform: scale(1.2);
+    }
+}
+
+// On a pas accès aux templates de FOSUserBundle, on envoit les styles comme on peut
+form input {
+    &[type="text"],
+    &[type="email"],
+    &[type="password"] {
+        .form-control();
+        margin-bottom: 1em;
+    }
+
+    &[type="submit"] {
+        .btn() ;
+        .btn-primary();
+        display: block;
+        margin: 1em auto;
     }
 }
