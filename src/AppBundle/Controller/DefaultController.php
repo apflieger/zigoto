@@ -9,6 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -89,8 +91,8 @@ class DefaultController
         $pageEleveur = $this->pageEleveurService->findByOwner($user);
 
         $form = $this->formFactory->createNamedBuilder('creation-page-eleveur')
-            ->add('nom', 'text')
-            ->add('save', 'submit', array('label' => 'Créer ma page éleveur'))
+            ->add('nom', TextType::class)
+            ->add('save', SubmitType::class, array('label' => 'Créer ma page éleveur'))
             ->getForm();
 
         $form->handleRequest($request);

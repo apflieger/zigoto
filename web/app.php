@@ -6,6 +6,7 @@ use Symfony\Component\Debug\Debug;
 $env = getenv('SYMFONY_ENV');
 $debug = getenv('SYMFONY_DEBUG');
 
+require_once __DIR__.'/../app/autoload.php';
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 
 if ($env === 'prod') {

@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="`user`")
  *
  */
-class User extends \FOS\UserBundle\Entity\User implements PersistableInterface
+class User extends \FOS\UserBundle\Model\User implements PersistableInterface
 {
     use Persistable;
 

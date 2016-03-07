@@ -63,6 +63,10 @@ class DefaultControllerTest extends WebTestCase
 
         // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
         $crawler = $this->client->request('GET', '/home');
+
+        $this->assertEquals('Nom', $crawler->filter('form[name="creation-page-eleveur"] label')->text());
+        $this->assertEquals('Créer ma page éleveur', $crawler->filter('form[name="creation-page-eleveur"] [type="submit"]')->text());
+
         $creationPageEleveurForm = $crawler->filter('form[name="creation-page-eleveur"]')->form();
         $rand = rand();
         $nomElevage = 'Les Chartreux de Tatouine ' . $rand;
