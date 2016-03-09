@@ -1,0 +1,7 @@
+security:
+    login:
+        username: 'E-mail'
+        remember_me: 'Rester connecté'
+form:
+    email: 'E-mail'
+    password_confirmation: 'Confirmation du mot de passe'
