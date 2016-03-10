@@ -25,6 +25,13 @@
         <nav class="global-header navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <a href="/" class="navbar-brand">Zigotoo</a>
+                <span class="navbar-text navbar-right">
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        {{ app.user.email }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a href="{{ path('fos_user_security_login') }}">Connexion</a> / <a href="{{ path('fos_user_registration_register') }}">Inscription</a>
+                    {% endif %}
+                </span>
             </div>
         </nav>
         {% block content %}{% inject content %}{% endblock %}

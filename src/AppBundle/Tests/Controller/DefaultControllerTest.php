@@ -27,7 +27,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertContains('Créez votre page éleveur', $crawler->filter('h1')->text());
         $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
-        $this->assertEquals(1, $crawler->filter('a[href="/login"]')->count());
+        $this->assertEquals(2, $crawler->filter('a[href="/login"]')->count());
         $this->assertEquals(1, $crawler->filter('a[href="/register"]')->count());
     }
 
@@ -41,7 +41,7 @@ class DefaultControllerTest extends WebTestCase
 
         // Quand l'utilisateur est connecté, on lui propose de créer sa page directement depuis la home
         $this->assertCount(1, $crawler->filter('form[name="creation-page-eleveur"]'));
-        $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
+        $this->assertEquals(2, $crawler->filter('a[href="/logout"]')->count());
     }
 
     public function testHome_Eleveur()
@@ -54,7 +54,7 @@ class DefaultControllerTest extends WebTestCase
 
         // L'eleveur a un lien vers sa page
         $this->assertEquals(1, $crawler->filter('a[href="/' . $pageEleveur->getSlug() . '"]')->count());
-        $this->assertEquals(1, $crawler->filter('a[href="/logout"]')->count());
+        $this->assertEquals(2, $crawler->filter('a[href="/logout"]')->count());
     }
 
     public function testCreationPageEleveur_Success()
