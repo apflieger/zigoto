@@ -1,10 +1,19 @@
 var gulp = require('gulp');
 var del = require('del');
 var less = require('gulp-less');
+var rename = require('gulp-rename');
 
 // clean est synchrone, il doit être déclaré en 1er dans les task qui l'utilisent
 gulp.task('clean', function() {
     del(['web/build/*']);
+});
+
+// Il semblerait que Clever Cloud ajoute une déclaration de sourcemap
+// au bootstrap.min.css, du coup on met le fichier si non ca claque
+gulp.task('sourcemap', function () {
+    return gulp.src('node_modules/bootstrap/dist/css/bootstrap.css.map')
+        .pipe(rename('bootstrap.min.css.map'))
+        .pipe(gulp.dest('web/build'));
 });
 
 gulp.task('copy-dependencies', function() {
@@ -30,7 +39,7 @@ gulp.task('js', function() {
     ]).pipe(gulp.dest('web/build'));
 });
 
-gulp.task('default', ['clean', 'copy-dependencies', 'less', 'js']);
+gulp.task('default', ['clean', 'sourcemap', 'copy-dependencies', 'less', 'js']);
 
 gulp.task('watch', ['less', 'js'], function(){
     gulp.watch(['app/Resources/js/*.js', 'app/Resources/less/*.less'], ['less', 'js']);
