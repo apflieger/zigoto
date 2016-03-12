@@ -2,10 +2,14 @@
 [![codecov.io](https://codecov.io/github/apflieger/zigotoo/coverage.svg?branch=master)](https://codecov.io/github/apflieger/zigotoo?branch=master)
 
 # Zigotoo
-[prod](http://www.zigotoo.com)
+* [prod](http://www.zigotoo.com)
 
 ## Clever Cloud
-https://console.clever-cloud.com/
+* [Console](https://console.clever-cloud.com)
+
+## Google
+* [Search Console](https://www.google.com/webmasters/tools/home)
+* [Analytics](https://analytics.google.com/analytics/web)
 
 ## La doc
-*[HERE](/doc)*
+* [HERE](/doc)
