@@ -20,6 +20,12 @@ DirectoryIndex app.php
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    RewriteCond %{HTTP_HOST}    ^zigotoo\.com [NC,OR]
+    RewriteCond %{HTTP_HOST}    ^www.zigotoo\.fr [NC,OR]
+    RewriteCond %{HTTP_HOST}    ^zigotoo\.fr [NC] # Pas de OR pour la dernière condition
+    # Attention, Le dernier RewriteCond ne doit pas avoir de flag OR
+    RewriteRule (.*)           http://www.zigotoo.com/$1 [L,R=301]
+
     RewriteRule ^favicon - [END]
 
     # Determine the RewriteBase automatically and set it as environment variable.
