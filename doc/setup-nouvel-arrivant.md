@@ -1,4 +1,5 @@
 # Setup du nouvel arrivant
+L'ordre est important. En particulier pour la conf, à faire avant le `composer install`.
 
 ## PHP
 
@@ -11,15 +12,15 @@
 * installer node
 * `npm install -g gulp-cli`
 
-## Variables d'environnement
+## Configurations
 
-* `SYMFONY_USER=apf`
+* Variable d'environnement `SYMFONY_USER=apf` (pas trouvé comment la mettre globale au systeme et pas juste dans le shell)
+* Conf php `date.timezone = 'Europe/Paris'`
 
 ## build
 
-* cloner ce repo, configurer user.name/email
+* cloner ce repo, configurer name/email git
 * `composer install`
-* `gulp`
 * créer le schema de la base de dev : `app/console doctrine:schema:create`
 * créer le schema de la base de test : `app/console doctrine:schema:create --env="test"`
 
