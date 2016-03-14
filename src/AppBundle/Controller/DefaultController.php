@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\User;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageEleveurService;
+use AppBundle\Twig\TwigNodeInject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -67,7 +68,7 @@ class DefaultController
     public function teaserAction(Request $request)
     {
         return $this->templating->renderResponse('base.html.twig', [
-            'inject' => 'teaser'
+            TwigNodeInject::TEMPLATE_TREE_BRANCH => 'teaser'
         ]);
     }
 
@@ -86,7 +87,7 @@ class DefaultController
         $user = $token->getUser();
 
         if ($user == 'anon.')
-            return $this->templating->renderResponse('base.html.twig', ['inject' => 'home-anonyme']);
+            return $this->templating->renderResponse('base.html.twig', [TwigNodeInject::TEMPLATE_TREE_BRANCH => 'home/anonyme']);
 
         $pageEleveur = $this->pageEleveurService->findByOwner($user);
 
@@ -100,7 +101,7 @@ class DefaultController
         if (!$form->isSubmitted() && $pageEleveur){
             // home d'un eleveur ayant une page eleveur
             return $this->templating->renderResponse('base.html.twig', [
-                'inject' => 'home-eleveur',
+                TwigNodeInject::TEMPLATE_TREE_BRANCH => 'home/eleveur',
                 'username' => $user->getUserName(),
                 'pageEleveur' => $pageEleveur
             ]);
@@ -126,7 +127,7 @@ class DefaultController
 
         // home d'un user connecté mais qui n'a pas de page eleveur
         return $this->templating->renderResponse('base.html.twig', [
-            'inject' => 'home-user',
+            TwigNodeInject::TEMPLATE_TREE_BRANCH => 'home/user',
             'username' => $user->getUserName(),
             'creationPageEleveur' => $form->createView()
         ]);

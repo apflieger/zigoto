@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Service\PageAnimalService;
+use AppBundle\Twig\TwigNodeInject;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -50,7 +51,7 @@ class PageAnimalController
             throw new NotFoundHttpException(null, null);
 
         return $this->templating->renderResponse('base.html.twig', [
-            'inject' => 'page-animal',
+            TwigNodeInject::TEMPLATE_TREE_BRANCH => 'editable/page-animal',
             'pageAnimal' => $pageAnimal
         ]);
     }

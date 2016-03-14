@@ -28,12 +28,17 @@ class InjectTokenParser extends Twig_TokenParser
     public function parse(Twig_Token $token)
     {
         $stream = $this->parser->getStream();
+
+        // Nom de l'injection dans le template
         $inject = $stream->expect(Twig_Token::NAME_TYPE)->getValue();
+
         $optional = false;
         if ($stream->nextIf(Twig_Token::NAME_TYPE, 'optional')) {
             $optional = true;
         }
+
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
+
         return new TwigNodeInject($inject, $optional, $token->getLine(), $this->getTag());
     }
 
@@ -44,6 +49,6 @@ class InjectTokenParser extends Twig_TokenParser
      */
     public function getTag()
     {
-        return 'inject';
+        return TwigNodeInject::TEMPLATE_TREE_BRANCH;
     }
 }
