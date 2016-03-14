@@ -4,6 +4,9 @@
 
 ### Pour php-fpm
 Virtual host qui balance la requete à php-fpm
+> ATTENTION par défaut php-fpm se lance sur le même port que xdebug (9000).
+> Il faut changer le port, ici 9010, si non le debug ne marche plus
+
 ```
 <VirtualHost *:80>
     ServerName fpm.zigotoo.com
@@ -13,7 +16,7 @@ Virtual host qui balance la requete à php-fpm
         Require all granted
     </Directory>
     <FilesMatch \.php>
-        SetHandler proxy:fcgi://127.0.0.1:9000
+        SetHandler proxy:fcgi://127.0.0.1:9010
     </FilesMatch>
 </VirtualHost>
 ```
