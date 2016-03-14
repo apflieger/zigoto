@@ -19,20 +19,20 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
     /**
      * Clé du paramètre de template determinant les fragments qui vont être injectés
      */
-    const INJECT_PARAMETER = 'inject';
+    const TEMPLATE_TREE_BRANCH = 'template_branch';
     /**
      * @var string
      */
-    private $expr;
+    private $injectedSection;
     /**
      * @var bool
      */
     private $optional;
 
-    public function __construct(string $expr, bool $optional, $lineno, $tag = null)
+    public function __construct(string $injectedSection, bool $optional, $lineno, $tag = null)
     {
         parent::__construct(array(), array(), $lineno, $tag);
-        $this->expr = $expr;
+        $this->injectedSection = $injectedSection;
         $this->optional = $optional;
     }
 
@@ -46,33 +46,35 @@ class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
         $compiler->addDebugInfo($this);
 
         $compiler
-            ->write("try {\n")
+            ->write('if (!isset($context[\'' . static::TEMPLATE_TREE_BRANCH . '\']))' . "\n")
             ->indent()
-            ->write('$this->loadTemplate(\'')
-            ->raw($this->expr)
-            ->raw('\' . "/" . $context[\'' . static::INJECT_PARAMETER . '\'] . ".html.twig", ')
+            ->write('throw new Twig_Error_Loader(\'Paramètre ' . static::TEMPLATE_TREE_BRANCH . ' manquant\');' . "\n\n")
+            ->outdent()
+            ->write('$template = ')
             ->repr($compiler->getFilename())
-            ->raw(', ')
-            ->repr($this->getLine())
-            ->raw(')')
-            ->raw('->display($context);' . "\n")
+            ->raw(';' . "\n")
+            ->write('$branch = $context[\'' . static::TEMPLATE_TREE_BRANCH . '\'];' . "\n")
+            ->write('$dir = $branch;' . "\n")
+            ->write('$injectedTemplate = "'. $this->injectedSection .'.html.twig";' . "\n\n")
+            ->write('$slashpos = strlen($dir);' . "\n")
+            ->write('while ($slashpos) {' . "\n")
+            ->indent()
+            ->write('$dir = substr($dir, 0, $slashpos);' . "\n")
+            ->write('try {' . "\n")
+            ->indent()
+            ->write('$this->loadTemplate($dir . DIRECTORY_SEPARATOR . $injectedTemplate , $template, 8)->display($context);' . "\n")
+            ->write('break;' . "\n")
             ->outdent()
-            ->write("} catch (Twig_Error_Loader \$e) {\n")
-            ->indent();
-
-        if ($this->optional) {
-            $compiler->write("// Injection déclarée optionnelle \n");
-        } else {
-            $compiler->write('throw new Twig_Error_Loader(\'Injection \\\'');
-            $compiler->raw($this->expr);
-            $compiler->raw('\\\' manquante pour \\\'\' . ');
-            $compiler->raw('$context[\'');
-            $compiler->raw(static::INJECT_PARAMETER);
-            $compiler->raw('\'] . \'\\\'\', -1, null, $e);');
+            ->write('} catch (Twig_Error_Loader $e) {}' . "\n")
+            ->write('$slashpos = strrpos($dir, DIRECTORY_SEPARATOR);' . "\n")
+            ->outdent()
+            ->write('}' . "\n\n");
+        if (!$this->optional) {
+            $compiler
+                ->write('if (!$slashpos)' . "\n")
+                ->indent()
+                ->write('throw new Twig_Error_Loader($injectedTemplate .\' manquant pour la branche \' . $branch);' . "\n")
+                ->outdent();
         }
-
-        $compiler
-            ->outdent()
-            ->write("}\n\n");
     }
 }

@@ -14,6 +14,7 @@ use AppBundle\Entity\User;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
+use AppBundle\Twig\TwigNodeInject;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,7 +84,7 @@ class PageEleveurController
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
 
         return $this->templating->renderResponse('base.html.twig', [
-            'inject' => 'page-eleveur',
+            TwigNodeInject::TEMPLATE_TREE_BRANCH => 'editable/page-eleveur',
             'pageEleveur' => $pageEleveur,
             'isOwner' => $isOwner
         ]);
