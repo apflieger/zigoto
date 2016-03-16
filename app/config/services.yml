@@ -47,8 +47,8 @@ services:
     zigotoo.time:
         class: AppBundle\Service\TimeService
 
-    zigotoo.twig.extension:
-        class: AppBundle\Twig\AppExtension
+    zigotoo.twig.template_tree_extension:
+        class: AppBundle\Twig\TemplateTreeExtension
         tags:
             - { name: twig.extension }
 

@@ -14,7 +14,7 @@ use Twig_Node;
 use Twig_Token;
 use Twig_TokenParser;
 
-class InjectTokenParser extends Twig_TokenParser
+class TemplateTreeSectionTokenParser extends Twig_TokenParser
 {
     /**
      * Parses a token and returns a node.
@@ -39,7 +39,7 @@ class InjectTokenParser extends Twig_TokenParser
 
         $stream->expect(Twig_Token::BLOCK_END_TYPE);
 
-        return new TwigNodeInject($inject, $optional, $token->getLine(), $this->getTag());
+        return new TwigNodeTemplateTreeSection($inject, $optional, $token->getLine(), $this->getTag());
     }
 
     /**
@@ -49,6 +49,6 @@ class InjectTokenParser extends Twig_TokenParser
      */
     public function getTag()
     {
-        return TwigNodeInject::TEMPLATE_TREE_BRANCH;
+        return 'template_tree_section';
     }
 }

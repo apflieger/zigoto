@@ -14,12 +14,12 @@ use Twig_Node;
 use Twig_Node_Expression;
 use Twig_NodeOutputInterface;
 
-class TwigNodeInject extends Twig_Node implements Twig_NodeOutputInterface
+class TwigNodeTemplateTreeSection extends Twig_Node implements Twig_NodeOutputInterface
 {
     /**
      * Clé du paramètre de template determinant les fragments qui vont être injectés
      */
-    const TEMPLATE_TREE_BRANCH = 'template_branch';
+    const TEMPLATE_TREE_BRANCH = 'template_tree_branch';
     /**
      * @var string
      */

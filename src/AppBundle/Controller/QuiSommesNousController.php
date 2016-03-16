@@ -8,7 +8,7 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Twig\TwigNodeInject;
+use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 
@@ -34,7 +34,7 @@ class QuiSommesNousController
     public function quiSommesNousAction()
     {
         return $this->templating->renderResponse('base.html.twig', [
-            TwigNodeInject::TEMPLATE_TREE_BRANCH => 'qui-sommes-nous'
+            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'qui-sommes-nous'
         ]);
     }
 }
