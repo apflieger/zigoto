@@ -22,10 +22,14 @@ framework:
 
 monolog:
     handlers:
+        syslog: # Sert à ce que le handler de prod se retrouve ici et pas après les logs console (en bubble false)
+            type: "null"
+            level: NOTICE
         file:
             type:   stream
             path:   "%kernel.logs_dir%/%kernel.environment%.log"
             channels: ["!event"]
+            level: DEBUG
         mail:
             type:         fingers_crossed
             action_level: ERROR
@@ -50,7 +54,11 @@ monolog:
         console_debug:
             type:   console
             bubble: false
-            channels: ["event"]
+            # channels: ["event"]
+            # ce channel est sous entendu de par la conf "!event" de console_normal
+            # On ne peut cependant pas le mettre car en environnement SYMFONY_DEBUG=0,
+            # le channel n'existe pas.
+
 assetic:
     debug:          "%kernel.debug%"
     use_controller: false
