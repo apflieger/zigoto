@@ -13,7 +13,7 @@ gulp.task('clean', function() {
 gulp.task('sourcemap', function () {
     return gulp.src('node_modules/bootstrap/dist/css/bootstrap.css.map')
         .pipe(rename('bootstrap.min.css.map'))
-        .pipe(gulp.dest('web/build'));
+        .pipe(gulp.dest('web/build/lib'));
 });
 
 gulp.task('copy-dependencies', function() {
@@ -24,23 +24,24 @@ gulp.task('copy-dependencies', function() {
         'node_modules/jquery.scrollto/jquery.scrollTo.min.js',
         'node_modules/angular/angular.js',
         'node_modules/angular-xeditable-npm/dist/js/xeditable.min.js'
-    ]).pipe(gulp.dest('web/build'));
+    ]).pipe(gulp.dest('web/build/lib'));
 });
 
 gulp.task('less', function () {
-    return gulp.src('app/Resources/less/*.less')
-        .pipe(less())
-        .pipe(gulp.dest('web/build'));
+    return gulp.src([
+        'app/Resources/views/**/imports.less',
+        'app/Resources/FOSUserBundle/views/bootstrap-forms.less'
+    ]).pipe(less()).pipe(gulp.dest('web/build/css'));
 });
 
 gulp.task('js', function() {
     return gulp.src([
         'app/Resources/js/*.js'
-    ]).pipe(gulp.dest('web/build'));
+    ]).pipe(gulp.dest('web/build/js'));
 });
 
 gulp.task('default', ['clean', 'sourcemap', 'copy-dependencies', 'less', 'js']);
 
 gulp.task('watch', ['less', 'js'], function(){
-    gulp.watch(['app/Resources/js/*.js', 'app/Resources/less/*.less'], ['less', 'js']);
+    gulp.watch(['app/Resources/js/*.js', 'app/Resources/**/*.less'], ['less', 'js']);
 });

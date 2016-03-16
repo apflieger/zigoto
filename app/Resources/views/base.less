@@ -1,0 +1,25 @@
+@import "../../../node_modules/bootstrap/less/variables.less";
+@import "../../../node_modules/bootstrap/less/mixins.less";
+
+html {
+    font-size: 16px;
+}
+
+.global-header {
+    background: linear-gradient(#E0E0E0, #D0D0D0);
+
+    .navbar-brand {
+        color: black;
+    }
+
+    + * {
+        //pour ne pas passer derrière nav
+        padding-top:    @navbar-height + @navbar-margin-bottom;
+        padding-bottom: @navbar-height + @navbar-margin-bottom;
+    }
+}
+
+.global-footer {
+    text-align: center;
+    padding: 2em 0;
+}
