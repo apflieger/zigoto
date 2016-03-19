@@ -1,17 +1,18 @@
 {
-  "name": "zigotoo",
+  "private": true,
   "dependencies": {
     "angular": "1.4.8",
     "angular-xeditable-npm": "0.1.9",
     "bootstrap": "^3.3.5",
-    "del": "2.2.0",
-    "gulp": "3.9.0",
-    "gulp-less": "^3.0.5",
-    "gulp-rename": "^1.2.2",
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-less": "^1.2.0",
     "jquery": "^2.2.0",
     "jquery.scrollto": "^2.1.2"
   },
   "scripts": {
-    "postinstall": "node_modules/gulp/bin/gulp.js default"
+    "postinstall": "node_modules/grunt-cli/bin/grunt"
   }
 }
