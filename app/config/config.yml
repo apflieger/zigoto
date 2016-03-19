@@ -30,6 +30,7 @@ monolog:
             path:   "%kernel.logs_dir%/%kernel.environment%.log"
             channels: ["!event"]
             level: DEBUG
+            include_stacktraces: true
         mail:
             type:         fingers_crossed
             action_level: ERROR
@@ -43,15 +44,18 @@ monolog:
             to_email:     ["pflieger.arnaud@gmail.com", "MehdiBelkacemi@gmail.com"]
             subject:      "Alerte %kernel.environment% %kernel.user%"
             level:        DEBUG
+            include_stacktraces: true
         console_normal:
             type:   console
             bubble: false
+            include_stacktraces: true
             verbosity_levels:
                 VERBOSITY_NORMAL:       NOTICE
                 VERBOSITY_VERBOSE:      INFO
                 VERBOSITY_VERY_VERBOSE: DEBUG
             channels: ["!event"]
         console_debug:
+            include_stacktraces: true
             type:   console
             bubble: false
             # channels: ["event"]
