@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
 
     grunt.initConfig({
+        sourceDir: "app/Resources",
+        treeDir: "<%= sourceDir %>/views",
         buildDir: "web/build",
         clean: {
             build: "<%= buildDir %>"
@@ -27,18 +29,27 @@ module.exports = function(grunt) {
             },
             js: {
                 expand: true,
-                cwd: "app/Resources/js",
+                cwd: "<%= sourceDir %>/js",
                 src: ["**/*.js"],
                 dest: "<%= buildDir %>/js/",
+            }
+        },
+        csstree: {
+            views: {
+                options: {
+                    ext: '.less'
+                },
+                src: '<%= treeDir %>'
             }
         },
         less: {
             csstree: {
                 expand: true,
-                cwd: "app/Resources/views",
-                src: ["**/imports.less"],
+                cwd: "<%= treeDir %>",
+                src: ["**/branch.gen.less"],
                 dest: "<%= buildDir %>/css/",
-                ext: ".css"
+                ext: ".css",
+                extDot: 'last'
             },
             fosuserbundle: {
                 src: ["app/Resources/FOSUserBundle/views/bootstrap-forms.less"],
@@ -49,8 +60,9 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-csstree');
     grunt.loadNpmTasks('grunt-contrib-less');
 
-    grunt.registerTask('default', ['clean', 'copy', 'less']);
+    grunt.registerTask('default', ['clean', 'copy', 'csstree', 'less']);
 
 };

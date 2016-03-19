@@ -4,6 +4,7 @@
 /app/config/parameters.yml
 /app/coverage/*
 /app/logs/*
+/app/Resources/**/branch.gen.less
 !app/cache/.gitkeep
 !app/logs/.gitkeep
 /app/phpunit.xml
