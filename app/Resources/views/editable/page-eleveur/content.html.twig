@@ -8,14 +8,14 @@
         <div class="animaux">
             <ul>
                 {% if isOwner %}
-                    {% raw %}
+                    {% verbatim %}
                         <li ng-repeat="animal in pageEleveur.animaux">
                             <a href="/animal/{{ animal.id }}">{{ animal.nom }}</a>
                         </li>
-                    {% endraw %}
+                    {% endverbatim %}
                 {% else %}
                     {% for animal in pageEleveur.animaux %}
-                        <li><a href="/animal/{{ animal.id }}">{{ animal.nom }}</a></li>
+                        <li><a href="{{ path('getPageAnimal_route', {'pageAnimalId': animal.id}) }}">{{ animal.nom }}</a></li>
                     {% endfor %}
                 {% endif %}
             </ul>
