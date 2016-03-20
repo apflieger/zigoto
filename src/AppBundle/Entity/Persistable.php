@@ -11,6 +11,9 @@ namespace AppBundle\Entity;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * Pour que ce trait soit utilisé automatiquement, il faut également implementer PersistableInterface
+ */
 trait Persistable
 {
     /**

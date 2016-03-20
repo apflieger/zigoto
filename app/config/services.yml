@@ -19,6 +19,8 @@ services:
             - "@templating"
             - "@form.factory"
             - "@security.token_storage"
+            - "@doctrine.orm.entity_manager"
+            - "@router"
 
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController
