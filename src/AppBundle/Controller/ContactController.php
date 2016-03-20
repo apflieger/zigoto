@@ -8,7 +8,11 @@ use AppBundle\Entity\User;
 use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Swift_Mailer;
+use Swift_Message;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -40,18 +44,28 @@ class ContactController
     /** @var RouterInterface */
     private $router;
 
+    /** @var Swift_Mailer */
+    private $mailer;
+
+    /** @var Logger */
+    private $logger;
+
     public function __construct(
         TwigEngine $templating,
         FormFactoryInterface $formFactory,
         TokenStorage $tokenStorage,
         EntityManagerInterface $entityManager,
-        RouterInterface $router
+        RouterInterface $router,
+        Swift_Mailer $mailer,
+        Logger $logger
     ) {
         $this->templating = $templating;
         $this->formFactory = $formFactory;
         $this->tokenStorage = $tokenStorage;
         $this->entityManager = $entityManager;
         $this->router = $router;
+        $this->mailer = $mailer;
+        $this->logger = $logger;
     }
 
     /**
@@ -90,10 +104,43 @@ class ContactController
 
         if ($form->isValid()) {
             $this->entityManager->persist($contact);
-            $this->entityManager->flush($contact);
+            $this->entityManager->flush();
+
+            try {
+                $accuseReception = Swift_Message::newInstance()
+                    ->setSubject('Formulaire de contact')
+                    ->setFrom('no-reply@zigotoo.com', 'Zigotoo')
+                    ->setTo($contact->getEmail())
+                    ->setBody(
+                        "Bonjour, \n\n Nous avons bien reçu votre message. " .
+                        "Nous vous répondrons dans les plus brefs délais.\n\n" .
+                        "Cordialement, \nL'équipe Zigotoo.",
+                        'text/plain'
+                    );
+
+                /** @var \Swift_Mime_Message $accuseReception */
+                $this->mailer->send($accuseReception);
+                $this->logger->info('Accusé reception envoyé à ' . $contact->getEmail());
+
+                $messageAdmin = Swift_Message::newInstance()
+                    ->setSubject('Reception formulaire de contact')
+                    ->setFrom($contact->getEmail())
+                    ->setTo(['pflieger.arnaud@gmail.com', 'MehdiBelkacemi@gmail.com'])
+                    ->setBody($contact->getMessage(), 'text/plain');
+
+                /** @var \Swift_Mime_Message $messageAdmin */
+                $this->mailer->send($messageAdmin);
+                $this->logger->info('Message de ' . $contact->getEmail() . ' envoyé à ' . implode(';', array_keys($messageAdmin->getTo())));
+            } catch (Exception $e) {
+                $this->logger->error('Echec d\'envoi de mail du formulaire de contact', [
+                        'email' => $contact->getEmail(),
+                        'message' => $contact->getMessage(),
+                        'exception' => $e
+                    ]
+                );
+            }
             return new RedirectResponse($this->router->generate('teaser_route'));
         }
-
 
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'contact',

@@ -21,6 +21,8 @@ services:
             - "@security.token_storage"
             - "@doctrine.orm.entity_manager"
             - "@router"
+            - "@mailer"
+            - "@logger"
 
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController

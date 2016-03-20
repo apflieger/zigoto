@@ -6,9 +6,11 @@ namespace AppBundle\Tests\Controller;
 use AppBundle\Entity\Contact;
 use AppBundle\Tests\TestUtils;
 use Doctrine\ORM\EntityManager;
+use Swift_Message;
+use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
 
 class ContactControllerTest extends WebTestCase
 {
@@ -63,19 +65,49 @@ class ContactControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/contact');
         $form = $crawler->filter('form')->form();
 
-        $form['form[message]'] = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at ornare lacus. ' .
+        $message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at ornare lacus. ' .
         'Mauris semper lacus a metus malesuada, at malesuada elit condimentum. ' .
         'Proin euismod tellus vitae dolor vestibulum metus.';
 
+        $form['form[message]'] = $message;
+
+        $this->client->enableProfiler(); // permet de profiler les mails qui vont être envoyés
         $this->client->submit($form);
 
         $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
 
-        $contactRepository->clear();
+        $contactRepository->clear(); // permet de s'assurer que les 'find' vont bien chercher en bdd
 
+        // On vérifie que le contact est en bdd
         /** @var Contact[] $contacts */
         $contacts = $contactRepository->findBy(['email' => $user->getEmail()]);
         $this->assertEquals(1, count($contacts));
-        $this->assertStringStartsWith('Lorem', $contacts[0]->getMessage());
+        $this->assertEquals($message, $contacts[0]->getMessage());
+
+        /** @var MessageDataCollector $mailCollector */
+        $mailCollector = $this->client->getProfile()->getCollector('swiftmailer');
+
+        // 2 mails ont du être envoyés
+        $this->assertEquals(2, $mailCollector->getMessageCount());
+
+        $collectedMessages = $mailCollector->getMessages();
+
+        // Le 1er est l'accusé réception à l'utilisateur
+        /** @var Swift_Message $accuseReception */
+        $accuseReception = $collectedMessages[0];
+
+        $this->assertEquals('Formulaire de contact', $accuseReception->getSubject());
+        $this->assertEquals('no-reply@zigotoo.com', key($accuseReception->getFrom()));
+        $this->assertEquals('Zigotoo', current($accuseReception->getFrom()));
+        $this->assertEquals($user->getEmail(), key($accuseReception->getTo()));
+
+        // Le 2eme est une notififaction aux admins
+        /** @var Swift_Message $mailAdmins */
+        $mailAdmins = $collectedMessages[1];
+
+        $this->assertEquals('Reception formulaire de contact', $mailAdmins->getSubject());
+        $this->assertEquals($user->getEmail(), key($mailAdmins->getFrom()));
+        $this->assertEquals($message, $mailAdmins->getBody());
     }
+
 }

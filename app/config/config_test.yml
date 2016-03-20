@@ -5,8 +5,8 @@ framework:
     test: true
     session:
         storage_id: session.storage.mock_file
-    router:
-        resource: "%kernel.root_dir%/config/routing_dev.yml"
+    profiler:
+        enabled: true
 
 swiftmailer:
     disable_delivery: true
