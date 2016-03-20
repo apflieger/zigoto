@@ -10,7 +10,7 @@ L'ordre est important. En particulier pour la conf, à faire avant le `composer 
 ## node
 
 * installer node
-* `npm install -g gulp-cli`
+* `npm install -g grunt-cli`
 
 ## Configurations
 
