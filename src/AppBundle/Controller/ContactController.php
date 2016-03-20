@@ -16,6 +16,7 @@ use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -95,9 +96,14 @@ class ContactController
         }
 
         $form = $this->formFactory->createBuilder(FormType::class, $contact)
-            ->add('email', TextType::class)
-            ->add('message', TextType::class)
-            ->add('submit', SubmitType::class, array('label' => 'Envoyer'))
+            ->add('email', TextType::class, ['attr' => [
+                'placeholder' => 'votre@adresse.email'
+            ]])
+            ->add('message', TextareaType::class, ['attr' => [
+                'maxlength' => 1000,
+                'rows' => 10
+            ]])
+            ->add('submit', SubmitType::class, ['label' => 'Envoyer'])
             ->getForm();
 
         $form->handleRequest($request);
