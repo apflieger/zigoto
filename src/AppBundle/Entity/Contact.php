@@ -27,7 +27,7 @@ class Contact implements PersistableInterface
 
     /**
      *
-     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true)
      *
      * @var User

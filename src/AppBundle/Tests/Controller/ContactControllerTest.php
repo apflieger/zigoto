@@ -83,6 +83,7 @@ class ContactControllerTest extends WebTestCase
         $contacts = $contactRepository->findBy(['email' => $user->getEmail()]);
         $this->assertEquals(1, count($contacts));
         $this->assertEquals($message, $contacts[0]->getMessage());
+        $this->assertEquals($user->getId(), $contacts[0]->getUser()->getId());
 
         /** @var MessageDataCollector $mailCollector */
         $mailCollector = $this->client->getProfile()->getCollector('swiftmailer');
@@ -110,4 +111,20 @@ class ContactControllerTest extends WebTestCase
         $this->assertEquals($message, $mailAdmins->getBody());
     }
 
+    public function testConfirmation()
+    {
+        $user = $this->testUtils->createUser()->getUser();
+
+        $crawler = $this->client->request('GET', '/contact');
+        $form = $crawler->filter('form')->form();
+
+        $form['form[message]'] = 'test';
+        $this->client->submit($form);
+
+        $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
+        $confirmationCrawler = $this->client->followRedirect();
+
+        $this->assertContains('Nous vous répondrons à l\'adresse ' . $user->getEmail(),
+            $confirmationCrawler->filter('#confirmation')->text());
+    }
 }

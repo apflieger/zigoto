@@ -23,6 +23,7 @@ services:
             - "@router"
             - "@mailer"
             - "@logger"
+            - "@session"
 
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController

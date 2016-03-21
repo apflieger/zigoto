@@ -21,6 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -30,6 +31,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
  */
 class ContactController
 {
+    const FLASH_BAG_EMAIL = 'confirmation-contact-email';
+
     /** @var TwigEngine */
     private $templating;
 
@@ -51,6 +54,9 @@ class ContactController
     /** @var Logger */
     private $logger;
 
+    /** @var Session */
+    private $session;
+
     public function __construct(
         TwigEngine $templating,
         FormFactoryInterface $formFactory,
@@ -58,7 +64,8 @@ class ContactController
         EntityManagerInterface $entityManager,
         RouterInterface $router,
         Swift_Mailer $mailer,
-        Logger $logger
+        Logger $logger,
+        Session $session
     ) {
         $this->templating = $templating;
         $this->formFactory = $formFactory;
@@ -67,6 +74,7 @@ class ContactController
         $this->router = $router;
         $this->mailer = $mailer;
         $this->logger = $logger;
+        $this->session = $session;
     }
 
     /**
@@ -118,7 +126,7 @@ class ContactController
                     ->setFrom('no-reply@zigotoo.com', 'Zigotoo')
                     ->setTo($contact->getEmail())
                     ->setBody(
-                        "Bonjour, \n\n Nous avons bien reçu votre message. " .
+                        "Bonjour, \n\nNous avons bien reçu votre message. " .
                         "Nous vous répondrons dans les plus brefs délais.\n\n" .
                         "Cordialement, \nL'équipe Zigotoo.",
                         'text/plain'
@@ -145,12 +153,30 @@ class ContactController
                     ]
                 );
             }
-            return new RedirectResponse($this->router->generate('teaser_route'));
+
+            $this->session->getFlashBag()->add(static::FLASH_BAG_EMAIL, $contact->getEmail());
+            return new RedirectResponse($this->router->generate('confirmation_contact_route'));
         }
 
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'contact',
             'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/contact/confirmation", name="confirmation_contact_route")
+     *
+     * La confirmation sur une URL différente permet à l'utilisateur de 'back'
+     * pour refaire une demande de contact
+     */
+    public function confirmationAction()
+    {
+        $email = $this->session->getFlashBag()->get(static::FLASH_BAG_EMAIL);
+
+        return $this->templating->renderResponse('base.html.twig', [
+            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'contact/confirmation',
+            'email' => $email[0]
         ]);
     }
 }
