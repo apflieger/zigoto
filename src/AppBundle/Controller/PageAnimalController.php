@@ -39,7 +39,7 @@ class PageAnimalController
     }
 
     /**
-     * @Route("/animal/{pageAnimalId}", name="getPageAnimal")
+     * @Route("/animal/{pageAnimalId}", name="getPageAnimal_route")
      * @Method("GET")
      */
     public function getAction($pageAnimalId)

@@ -66,7 +66,7 @@ class PageEleveurController
     }
 
     /**
-     * @Route("/{pageEleveurSlug}", name="getPageEleveur")
+     * @Route("/{pageEleveurSlug}", name="getPageEleveur_route")
      * @Method("GET")
      */
     public function getAction($pageEleveurSlug)
@@ -100,7 +100,7 @@ class PageEleveurController
     }
 
     /**
-     * @Route("/commit-page-eleveur", name="commitPageEleveur")
+     * @Route("/commit-page-eleveur", name="commitPageEleveur_route")
      * @Method("POST")
      * @param Request $request
      * @return Response
@@ -126,7 +126,7 @@ class PageEleveurController
     }
 
     /**
-     * @Route("/add-animal", name="addAnimal")
+     * @Route("/add-animal", name="addAnimal_route")
      * @Method("POST")
      * @param Request $request
      * @return Response

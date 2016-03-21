@@ -60,7 +60,7 @@ class DefaultController
     }
 
     /**
-     * @Route("/", name="teaser")
+     * @Route("/", name="teaser_route")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
@@ -73,7 +73,7 @@ class DefaultController
     }
 
     /**
-     * @Route("/home", name="home")
+     * @Route("/home", name="home_route")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @throws \Exception
@@ -112,7 +112,7 @@ class DefaultController
             $nom = $form->getData()['nom'];
             try {
                 $slug = $this->pageEleveurService->create($nom, $user)->getSlug();
-                return new RedirectResponse($this->router->generate('getPageEleveur', ['pageEleveurSlug' => $slug]));
+                return new RedirectResponse($this->router->generate('getPageEleveur_route', ['pageEleveurSlug' => $slug]));
             } catch (HistoryException $e) {
                 switch ($e->getCode()) {
                     case HistoryException::NOM_INVALIDE:

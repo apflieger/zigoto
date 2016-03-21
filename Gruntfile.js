@@ -12,6 +12,11 @@ module.exports = function(grunt) {
                 expand: true,
                 src:[
                     'node_modules/bootstrap/dist/css/bootstrap.min.css',
+                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
+                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.svg',
+                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf',
+                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff',
+                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2',
                     'node_modules/angular-xeditable-npm/dist/css/xeditable.css',
                     'node_modules/jquery/dist/jquery.min.js',
                     'node_modules/jquery.scrollto/jquery.scrollTo.min.js',

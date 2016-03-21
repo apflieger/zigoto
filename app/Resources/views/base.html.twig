@@ -30,7 +30,7 @@
     <body>
         <nav class="global-header navbar navbar-default navbar-fixed-top">
             <div class="container">
-                <a href="/" class="navbar-brand">Zigotoo</a>
+                <a href="{{ path('teaser_route') }}" class="navbar-brand">Zigotoo</a>
                 <span class="navbar-text navbar-right">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         {{ app.user.email }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
@@ -44,7 +44,8 @@
         {% block content %}{% template_tree_section content %}{% endblock %}
 
         <footer class="global-footer container">
-            <a href="/qui-sommes-nous">Qui sommes nous ?</a>
+            <a href="{{ path('quisommesnous_route') }}">Qui sommes nous ?</a>
+            <a href="{{ path('contact_route') }}">Nous contacter</a>
         </footer>
 
         {% block javascripts %}{% template_tree_section javascripts optional %}{% endblock %}

@@ -29,7 +29,7 @@ class QuiSommesNousController
     }
 
     /**
-     * @Route("/qui-sommes-nous", name="quisommesnous")
+     * @Route("/qui-sommes-nous", name="quisommesnous_route")
      */
     public function quiSommesNousAction()
     {

@@ -13,6 +13,18 @@ services:
         arguments:
             - "@templating"
 
+    zigotoo.contact_controller:
+        class: AppBundle\Controller\ContactController
+        arguments:
+            - "@templating"
+            - "@form.factory"
+            - "@security.token_storage"
+            - "@doctrine.orm.entity_manager"
+            - "@router"
+            - "@mailer"
+            - "@logger"
+            - "@session"
+
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController
         arguments:
