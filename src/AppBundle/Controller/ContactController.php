@@ -21,6 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
@@ -156,12 +157,15 @@ class ContactController
 
             $this->session->getFlashBag()->add(static::FLASH_BAG_EMAIL, $contact->getEmail());
             return new RedirectResponse($this->router->generate('confirmation_contact_route'));
+        } else {
+            return new Response(
+                $this->templating->render('base.html.twig', [
+                    TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'contact',
+                    'form' => $form->createView()
+                ]),
+                $form->isSubmitted() ? Response::HTTP_BAD_REQUEST : Response::HTTP_OK
+            );
         }
-
-        return $this->templating->renderResponse('base.html.twig', [
-            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'contact',
-            'form' => $form->createView()
-        ]);
     }
 
     /**

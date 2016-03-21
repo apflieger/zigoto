@@ -128,4 +128,15 @@ class ContactControllerTest extends WebTestCase
         $this->assertContains('Nous vous répondrons à l\'adresse ' . $user->getEmail(),
             $confirmationCrawler->filter('#confirmation')->text());
     }
+
+    public function testValidationEmail()
+    {
+        $crawler = $this->client->request('GET', '/contact');
+        $form = $crawler->filter('form')->form();
+
+        // L'email est vide
+        $this->client->submit($form);
+
+        $this->assertTrue($this->client->getResponse()->isClientError());
+    }
 }

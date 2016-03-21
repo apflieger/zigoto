@@ -4,6 +4,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints;
 
 /**
  * @ORM\Entity
@@ -16,12 +17,18 @@ class Contact implements PersistableInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     *
+     * @Constraints\NotBlank()
+     * @Constraints\Length(max = 255)
      */
     private $email;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=1000)
+     *
+     * @Constraints\NotBlank()
+     * @Constraints\Length(max = 1000)
      */
     private $message;
 
