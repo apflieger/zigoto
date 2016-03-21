@@ -178,6 +178,9 @@ class ContactController
     {
         $email = $this->session->getFlashBag()->get(static::FLASH_BAG_EMAIL);
 
+        if (empty($email))
+            return new RedirectResponse($this->router->generate('contact_route'));
+
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'contact/confirmation',
             'email' => $email[0]

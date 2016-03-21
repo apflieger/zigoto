@@ -13,7 +13,8 @@ framework:
     validation: { enable_annotations: true }
     templating:
         engines: ['twig']
-    translator: ~ # Utilisé par FOSUserBundle
+    translator:
+        logging: false
     default_locale: fr
     session:
         # handler_id set to null will use default session handler from php.ini

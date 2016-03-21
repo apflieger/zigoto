@@ -20,6 +20,16 @@ html {
 }
 
 .global-footer {
-    text-align: center;
+    display: flex;
+    justify-content: center;
     padding: 2em 0;
+
+    > a {
+        border-left: 2px solid #D0D0D0;
+        padding: 0 1em;
+
+        &:first-child {
+            border-left: none;
+        }
+    }
 }
