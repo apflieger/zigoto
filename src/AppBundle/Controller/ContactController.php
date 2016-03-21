@@ -146,6 +146,7 @@ class ContactController
                 /** @var \Swift_Mime_Message $messageAdmin */
                 $this->mailer->send($messageAdmin);
                 $this->logger->info('Message de ' . $contact->getEmail() . ' envoyé à ' . implode(';', array_keys($messageAdmin->getTo())));
+                // @codeCoverageIgnoreStart
             } catch (Exception $e) {
                 $this->logger->error('Echec d\'envoi de mail du formulaire de contact', [
                         'email' => $contact->getEmail(),
@@ -153,6 +154,7 @@ class ContactController
                         'exception' => $e
                     ]
                 );
+                // @codeCoverageIgnoreEnd
             }
 
             $this->session->getFlashBag()->add(static::FLASH_BAG_EMAIL, $contact->getEmail());
