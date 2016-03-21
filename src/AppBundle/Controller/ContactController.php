@@ -126,10 +126,10 @@ class ContactController
                     ->setFrom('no-reply@zigotoo.com', 'Zigotoo')
                     ->setTo($contact->getEmail())
                     ->setBody(
-                        "Bonjour, \n\nNous avons bien reçu votre message. " .
-                        "Nous vous répondrons dans les plus brefs délais.\n\n" .
-                        "Cordialement, \nL'équipe Zigotoo.",
-                        'text/plain'
+                        $this->templating->render(
+                            'contact/email-confirmation-contact.txt.twig',
+                            ['message' => $contact->getMessage()]
+                        ), 'text/plain'
                     );
 
                 /** @var \Swift_Mime_Message $accuseReception */

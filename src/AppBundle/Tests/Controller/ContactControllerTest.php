@@ -101,6 +101,7 @@ class ContactControllerTest extends WebTestCase
         $this->assertEquals('no-reply@zigotoo.com', key($accuseReception->getFrom()));
         $this->assertEquals('Zigotoo', current($accuseReception->getFrom()));
         $this->assertEquals($user->getEmail(), key($accuseReception->getTo()));
+        $this->assertContains($message, $accuseReception->getBody(), 'L\'accusé de réception ne contient pas le message');
 
         // Le 2eme est une notififaction aux admins
         /** @var Swift_Message $mailAdmins */
