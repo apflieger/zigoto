@@ -139,4 +139,11 @@ class ContactControllerTest extends WebTestCase
 
         $this->assertTrue($this->client->getResponse()->isClientError());
     }
+
+    public function testConfirmationSansFlashBag()
+    {
+        $this->client->request('GET', '/contact/confirmation');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect('/contact'));
+    }
 }
