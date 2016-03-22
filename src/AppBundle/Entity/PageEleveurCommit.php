@@ -64,14 +64,6 @@ class PageEleveurCommit implements PersistableInterface
     }
 
     /**
-     * @return PageEleveurCommit
-     */
-    public function getParent()
-    {
-        return $this->parent;
-    }
-
-    /**
      * @return string
      */
     public function getNom()

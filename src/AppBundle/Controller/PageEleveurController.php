@@ -168,18 +168,15 @@ class PageEleveurController
                 return new Response(
                     'Plusieurs éditions sont en cours, veuillez rafraichir la page.',
                     Response::HTTP_CONFLICT);
-                break;
             case HistoryException::DROIT_REFUSE:
                 return new Response(
                     'Vous ne pouvez pas modifier cette page. Vérifiez que vous êtes bien connecté.',
                     Response::HTTP_FORBIDDEN);
-                break;
             case HistoryException::BRANCHE_INCONNUE:
                 return new Response(
                     'Votre page a été supprimée.',
                     Response::HTTP_NOT_FOUND);
-                break;
         }
-        throw $e;
+        throw $e; // @codeCoverageIgnore
     }
 }
