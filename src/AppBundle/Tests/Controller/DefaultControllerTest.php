@@ -20,16 +20,6 @@ class DefaultControllerTest extends WebTestCase
         $this->testUtils = new TestUtils($this->client, $this);
     }
 
-    public function testHome_Anonyme()
-    {
-        $crawler = $this->client->request('GET', '/home');
-
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-        $this->assertContains('TODO Supprimer cette page', $crawler->filter('h1')->text());
-        $this->assertEquals('Zigotoo', $crawler->filter('title')->text());
-        $this->assertEquals(1, $crawler->filter('a[href="/login"]')->count());
-    }
-
     public function testHome_User()
     {
         $this->testUtils->createUser();

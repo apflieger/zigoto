@@ -86,9 +86,6 @@ class DefaultController
         /** @var User $user */
         $user = $token->getUser();
 
-        if ($user == 'anon.')
-            return $this->templating->renderResponse('base.html.twig', [TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/anonyme']);
-
         $pageEleveur = $this->pageEleveurService->findByOwner($user);
 
         $form = $this->formFactory->createNamedBuilder('creation-page-eleveur')
