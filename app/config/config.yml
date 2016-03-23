@@ -23,8 +23,8 @@ framework:
 
 monolog:
     handlers:
-        syslog: # Sert à ce que le handler de prod se retrouve ici et pas après les logs console (en bubble false)
-            type: "null"
+        syslog:
+            type: syslog
             level: NOTICE
         file:
             type:   stream

@@ -3,10 +3,3 @@ imports:
 
 framework:
     trusted_hosts: "www.zigotoo.com"
-
-monolog:
-    handlers:
-        syslog:
-            type:  syslog # Permet de brancher les logs dans la console Clever Cloud
-        file:
-            type: "null" # rien ne lit les fichiers de log
