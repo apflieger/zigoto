@@ -154,4 +154,13 @@ class DefaultControllerTest extends WebTestCase
         $this->client->click($crawler->filter('footer a[href="/contact"]')->link());
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
     }
+
+    public function testTeaserLoggedIn()
+    {
+        $user = $this->testUtils->createUser()->getUser();
+
+        $crawler = $this->client->request('GET', '/');
+        $this->assertContains('Bonjour ' . $user->getUsername(), $crawler->filter('body')->text());
+        $this->assertEquals(2, $crawler->filter('a[href="/contact"]')->count());
+    }
 }

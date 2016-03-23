@@ -67,8 +67,20 @@ class DefaultController
      */
     public function teaserAction(Request $request)
     {
+        /** @var AnonymousToken $token */
+        $token = $this->tokenStorage->getToken();
+
+        /** @var User $user */
+        $user = $token->getUser();
+
+        if ($user == 'anon.')
+            return $this->templating->renderResponse('base.html.twig', [
+                TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/teaser'
+            ]);
+
         return $this->templating->renderResponse('base.html.twig', [
-            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/teaser'
+            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/teaser_logged_in',
+            'user' => $user
         ]);
     }
 
