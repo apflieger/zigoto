@@ -68,7 +68,7 @@ class DefaultController
     public function teaserAction(Request $request)
     {
         return $this->templating->renderResponse('base.html.twig', [
-            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'teaser'
+            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/teaser'
         ]);
     }
 
