@@ -19,11 +19,9 @@ services:
             - "@templating"
             - "@form.factory"
             - "@security.token_storage"
-            - "@doctrine.orm.entity_manager"
             - "@router"
-            - "@mailer"
-            - "@logger"
             - "@session"
+            - "@zigotoo.contact"
 
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController
@@ -55,6 +53,14 @@ services:
             - "@doctrine.orm.entity_manager"
             - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')"
             - "@file_locator"
+
+    zigotoo.contact:
+        class: AppBundle\Service\ContactService
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@mailer"
+            - "@logger"
+            - "@templating"
 
     zigotoo.time:
         class: AppBundle\Service\TimeService
