@@ -58,9 +58,17 @@ services:
         class: AppBundle\Service\ContactService
         arguments:
             - "@doctrine.orm.entity_manager"
+            - "@event_dispatcher"
+            - "@logger"
+
+    zigotoo.mail_subscriber:
+        class: AppBundle\Subscriber\MailSubscriber
+        arguments:
             - "@mailer"
             - "@logger"
             - "@templating"
+        tags:
+            - { name: kernel.event_subscriber }
 
     zigotoo.time:
         class: AppBundle\Service\TimeService
