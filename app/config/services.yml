@@ -53,7 +53,7 @@ services:
             - "@doctrine.orm.entity_manager"
             - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')"
             - "@file_locator"
-
+    
     zigotoo.contact:
         class: AppBundle\Service\ContactService
         arguments:

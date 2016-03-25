@@ -6,7 +6,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Contact;
 use AppBundle\Event\ContactEvent;
-use AppBundle\Event\Events;
+use AppBundle\Event\ZigotooEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bridge\Monolog\Logger;
@@ -39,7 +39,7 @@ class ContactService
         $this->entityManager->flush();
 
         try {
-            $this->eventDispatcher->dispatch(Events::CONTACT, new ContactEvent($contact));
+            $this->eventDispatcher->dispatch(ZigotooEvent::CONTACT, new ContactEvent($contact));
             // @codeCoverageIgnoreStart
         } catch (Exception $e) {
             $this->logger->critical('', [

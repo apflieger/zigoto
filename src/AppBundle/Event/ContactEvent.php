@@ -7,7 +7,7 @@ namespace AppBundle\Event;
 use AppBundle\Entity\Contact;
 use Symfony\Component\EventDispatcher\Event;
 
-class ContactEvent extends Event
+class ContactEvent extends ZigotooEvent
 {
     /** @var Contact */
     private $contact;
@@ -23,5 +23,11 @@ class ContactEvent extends Event
     public function getContact()
     {
         return $this->contact;
+    }
+
+    /** @return string */
+    public function event()
+    {
+        return ZigotooEvent::CONTACT;
     }
 }

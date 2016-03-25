@@ -2,14 +2,16 @@
 
 namespace AppBundle\Subscriber;
 
-use AppBundle\Event\ContactEvent;
-use AppBundle\Event\Events;
-use AppBundle\Service\MailService;
+use AppBundle\Event\ZigotooEvent;
+use AppBundle\Mail\AccuseReceptionContact;
+use AppBundle\Mail\MailInterface;
+use AppBundle\Mail\NotificationAdminContact;
 use Exception;
 use Swift_Mailer;
 use Swift_Message;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MailSubscriber implements EventSubscriberInterface
@@ -20,11 +22,13 @@ class MailSubscriber implements EventSubscriberInterface
     private $logger;
     /** @var TwigEngine */
     private $templating;
+    /** @var MailInterface[] */
+    private $emails;
 
     public static function getSubscribedEvents()
     {
         return [
-            Events::CONTACT => 'onContact'
+            ZigotooEvent::CONTACT => 'onZigotooEvent'
         ];
     }
 
@@ -36,45 +40,52 @@ class MailSubscriber implements EventSubscriberInterface
         $this->mailer = $mailer;
         $this->logger = $logger;
         $this->templating = $templating;
+
+        $this->emails  = [
+            new AccuseReceptionContact(),
+            new NotificationAdminContact()
+        ];
     }
 
-    public function onContact(ContactEvent $contactEvent)
+    public function onZigotooEvent(ZigotooEvent $event)
     {
-        $contact = $contactEvent->getContact();
-        try {
-            $accuseReception = Swift_Message::newInstance()
-                ->setSubject('Formulaire de contact')
-                ->setFrom('no-reply@zigotoo.com', 'Zigotoo')
-                ->setTo($contact->getEmail())
-                ->setBody(
-                    $this->templating->render(
-                        'contact/email-confirmation-contact.txt.twig',
-                        ['message' => $contact->getMessage()]
-                    ), 'text/plain'
-                );
+        foreach ($this->emails as $mail) {
+            if ($mail->event() === $event->event()) {
+                try {
+                    $swiftMessage = Swift_Message::newInstance()
+                        ->setSubject($mail->subject($event))
+                        ->setFrom($mail->from($event))
+                        ->setTo($mail->to($event))
+                        ->setBody(
+                            $this->templating->render(
+                                $mail->template($event),
+                                $mail->context($event)
+                            ), 'text/plain'
+                        );
 
-            /** @var \Swift_Mime_Message $accuseReception */
-            $this->mailer->send($accuseReception);
-            $this->logger->info('Accusé reception envoyé à ' . $contact->getEmail());
+                    /** @var \Swift_Mime_Message $swiftMessage */
+                    $this->mailer->send($swiftMessage);
 
-            $messageAdmin = Swift_Message::newInstance()
-                ->setSubject('Reception formulaire de contact')
-                ->setFrom($contact->getEmail())
-                ->setTo(['pflieger.arnaud@gmail.com', 'MehdiBelkacemi@gmail.com'])
-                ->setBody($contact->getMessage(), 'text/plain');
-
-            /** @var \Swift_Mime_Message $messageAdmin */
-            $this->mailer->send($messageAdmin);
-            $this->logger->info('Message de ' . $contact->getEmail() . ' envoyé à ' . implode(';', array_keys($messageAdmin->getTo())));
-            // @codeCoverageIgnoreStart
-        } catch (Exception $e) {
-            $this->logger->error('Echec d\'envoi de mail du formulaire de contact', [
-                    'email' => $contact->getEmail(),
-                    'message' => $contact->getMessage(),
-                    'exception' => $e
-                ]
-            );
-            // @codeCoverageIgnoreEnd
+                    $this->logger->info('Mail envoyé', [
+                            'email' => get_class($mail),
+                            'to' => $mail->to($event),
+                            'from' => $mail->from($event),
+                            'template' => $mail->template($event),
+                        ]
+                    );
+                    // @codeCoverageIgnoreStart
+                } catch (Exception $e) {
+                    $this->logger->error('Echec d\'envoi de mail', [
+                            'email' => get_class($mail),
+                            'to' => $mail->to($event),
+                            'from' => $mail->from($event),
+                            'template' => $mail->template($event),
+                            'exception' => $e
+                        ]
+                    );
+                    // @codeCoverageIgnoreEnd
+                }
+            }
         }
     }
 }

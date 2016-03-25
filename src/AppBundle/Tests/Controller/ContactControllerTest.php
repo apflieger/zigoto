@@ -109,6 +109,7 @@ class ContactControllerTest extends WebTestCase
 
         $this->assertEquals('Reception formulaire de contact', $mailAdmins->getSubject());
         $this->assertEquals($user->getEmail(), key($mailAdmins->getFrom()));
+        $this->assertEquals(['pflieger.arnaud@gmail.com', 'MehdiBelkacemi@gmail.com'], array_keys($mailAdmins->getTo()));
         $this->assertEquals($message, $mailAdmins->getBody());
     }
 
