@@ -69,6 +69,7 @@ services:
             - "@templating"
         tags:
             - { name: kernel.event_subscriber }
+            - { name: monolog.logger, channel: zigotoo.mail_subscriber }
 
     zigotoo.time:
         class: AppBundle\Service\TimeService
