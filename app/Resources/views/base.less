@@ -13,15 +13,29 @@
     url('@{icon-font-path}@{icon-font-name}.svg#@{icon-font-svg-id}') format('svg');
 }
 
+@cream: #f8efe0;
+@blue: #568389;
+
 html {
     font-size: 16px;
+    background: black;
+}
+
+body {
+    background: @cream;
+}
+
+a {
+    color: white !important;
+    text-decoration: underline;
 }
 
 .global-header {
-    background: linear-gradient(#E0E0E0, #D0D0D0);
+    background: black;
+    color: white !important;
 
     .navbar-brand {
-        color: black;
+        color: white;
     }
 
     + * {
@@ -32,16 +46,21 @@ html {
 }
 
 .global-footer {
-    display: flex;
-    justify-content: center;
     padding: 2em 0;
+    background: black;
+    color: white;
 
-    > a {
-        border-left: 2px solid #D0D0D0;
-        padding: 0 1em;
+    .container {
+        display: flex;
+        justify-content: center;
 
-        &:first-child {
-            border-left: none;
+        > a {
+            border-left: 2px solid #D0D0D0;
+            padding: 0 1em;
+
+            &:first-child {
+                border-left: none;
+            }
         }
     }
 }

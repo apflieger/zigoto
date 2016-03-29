@@ -37,6 +37,12 @@ module.exports = function(grunt) {
                 cwd: "<%= sourceDir %>/js",
                 src: ["**/*.js"],
                 dest: "<%= buildDir %>/js/",
+            },
+            images: {
+                expand: true,
+                cwd: "<%= sourceDir %>/views",
+                src: ["**/*.png", "**/*.jpg", "**/*.jpeg"],
+                dest: "<%= buildDir %>/css/",
             }
         },
         csstree: {

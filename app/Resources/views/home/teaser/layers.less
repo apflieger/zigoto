@@ -4,22 +4,68 @@ html, body {
 
 .layer {
     display: flex;
+    height: 75%;
+    flex-direction: column;
     align-items: center;
     text-align: center;
 
-    height: 75%;
+    background-repeat: no-repeat;
+
+    &:nth-child(2n+1) {
+        background-color: @blue;
+        color: white;
+
+        .layer-arrow:before {
+            border-right-color: @cream;
+            border-bottom-color: @cream;
+        }
+    }
+
+    &:nth-child(2n) {
+        background-color: @cream;
+        color: black;
+
+        .layer-arrow:before {
+            border-right-color: black;
+            border-bottom-color: black;
+        }
+    }
+
+    &:nth-child(2) {
+        background-image: url(../../brown-dog.png);
+        background-position: 20% bottom;
+    }
+
+    &:nth-child(3) {
+        background-image: url(../../cream-cat.png);
+        background-position: 85% bottom;
+    }
+
+    &:nth-child(4) {
+        background-image: url(../../yellow-cat.png);
+        background-position: 50% bottom;
+    }
+
+    &:nth-child(5) {
+        background-image: url(../../medal-dog.png);
+        background-position: 70% bottom;
+
+    }
+
+    .container {
+        margin: auto;
+    }
 }
 
 .layer-arrow {
-    width: 3em;
-    height: 3em;
-    margin: 0 auto;
-    cursor: pointer;
 
     &:before {
         content: "";
         display: block;
-        height: 100%;
+        width: 3em;
+        height: 3em;
+        margin: 0 auto;
+        cursor: pointer;
         border-right: 3px solid #D0D0D0;
         border-bottom: 3px solid #D0D0D0;
         transform: rotate(45deg);
