@@ -23,6 +23,15 @@ services:
             - "@session"
             - "@zigotoo.contact"
 
+    zigotoo.creation_page_eleveur_controller:
+        class: AppBundle\Controller\CreationPageEleveurController
+        arguments:
+            - "@security.token_storage"
+            - "@templating"
+            - "@form.factory"
+            - "@router"
+            - "@zigotoo.page_eleveur"
+
     zigotoo.page_eleveur_controller:
         class: AppBundle\Controller\PageEleveurController
         arguments:
