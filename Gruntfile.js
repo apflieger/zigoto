@@ -5,18 +5,14 @@ module.exports = function(grunt) {
         treeDir: "<%= sourceDir %>/views",
         buildDir: "web/build",
         clean: {
-            build: "<%= buildDir %>"
+            build: "<%= buildDir %>",
+            templateTree: "<%= treeDir %>/**/*.gen.*"
         },
         copy: {
             external_dependencies: {
                 expand: true,
                 src:[
-                    'node_modules/bootstrap/dist/css/bootstrap.min.css',
-                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot',
-                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.svg',
-                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf',
-                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff',
-                    'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2',
+                    'node_modules/normalize.css/normalize.css',
                     'node_modules/angular-xeditable-npm/dist/css/xeditable.css',
                     'node_modules/jquery/dist/jquery.min.js',
                     'node_modules/jquery.scrollto/jquery.scrollTo.min.js',
@@ -25,12 +21,6 @@ module.exports = function(grunt) {
                 ],
                 flatten: true,
                 dest: "<%= buildDir %>/lib/"
-            },
-            // Il semblerait que Clever Cloud ajoute une déclaration de sourcemap
-            // au bootstrap.min.css, du coup on met le fichier si non ca claque
-            bootstrap_sourcemap: {
-                src: ["node_modules/bootstrap/dist/css/bootstrap.css.map"],
-                dest: "<%= buildDir %>/lib/bootstrap.min.css.map"
             },
             js: {
                 expand: true,
@@ -42,7 +32,7 @@ module.exports = function(grunt) {
                 expand: true,
                 cwd: "<%= sourceDir %>/views",
                 src: ["**/*.png", "**/*.jpg", "**/*.jpeg"],
-                dest: "<%= buildDir %>/css/",
+                dest: "<%= buildDir %>/css/"
             }
         },
         csstree: {
@@ -63,8 +53,17 @@ module.exports = function(grunt) {
                 extDot: 'last'
             },
             fosuserbundle: {
-                src: ["app/Resources/FOSUserBundle/views/bootstrap-forms.less"],
-                dest: "<%= buildDir %>/css/bootstrap-forms.css"
+                src: ["app/Resources/FOSUserBundle/views/fos-user-bundle.less"],
+                dest: "<%= buildDir %>/css/fos-user-bundle.css"
+            }
+        },
+        watch: {
+            options: {
+                livereload: true
+            },
+            less: {
+                files: ['app/Resources/views/**/*.less'],
+                tasks: ['less']
             }
         }
     });
@@ -73,6 +72,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-csstree');
     grunt.loadNpmTasks('grunt-contrib-less');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default', ['clean', 'copy', 'csstree', 'less']);
 

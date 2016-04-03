@@ -1,0 +1,16 @@
+@import "../../views/branch.gen.less";
+
+.content {
+    padding: 5vh;
+}
+
+// On a pas accès aux templates de FOSUserBundle, on envoit les styles comme on peut
+input {
+    &[type="submit"] {
+        .btn() ;
+        .btn-primary();
+
+        display: block;
+        margin: auto;
+    }
+}
