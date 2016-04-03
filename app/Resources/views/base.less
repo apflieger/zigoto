@@ -1,52 +1,137 @@
-@import "../../../node_modules/bootstrap/less/variables.less";
-@import "../../../node_modules/bootstrap/less/mixins.less";
+@import (inline) "../../../node_modules/normalize.css/normalize.css";
 
-@icon-font-path: '/build/lib/';
-
-@font-face {
-    font-family: 'Glyphicons Halflings';
-    src: url('@{icon-font-path}@{icon-font-name}.eot');
-    src: url('@{icon-font-path}@{icon-font-name}.eot?#iefix') format('embedded-opentype'),
-    url('@{icon-font-path}@{icon-font-name}.woff2') format('woff2'),
-    url('@{icon-font-path}@{icon-font-name}.woff') format('woff'),
-    url('@{icon-font-path}@{icon-font-name}.ttf') format('truetype'),
-    url('@{icon-font-path}@{icon-font-name}.svg#@{icon-font-svg-id}') format('svg');
-}
-
+//colors
 @cream: #f8efe0;
 @blue: #568389;
+@yellow: #f8a732;
+@brown: #8e6048;
+@error: red;
+
+//font-size
+@normal: 1rem;
+@smaller: .8rem;
+@bigger: 1.2rem;
+
+* {
+    box-sizing: border-box;
+}
+*:before,
+*:after {
+    box-sizing: border-box;
+}
 
 html {
-    font-size: 16px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     background: black;
 }
 
 body {
     background: @cream;
+    color: @brown;
 }
 
 a {
-    color: white !important;
-    text-decoration: underline;
+    color: @blue;
+}
+
+input[type="submit"] {
+    border: none;
+}
+
+.container {
+    margin-right: auto;
+    margin-left: auto;
+
+    @media (min-width: @small-screen) {
+        width: @small-screen * .8;
+    }
+    @media (min-width: @medium-screen) {
+        width: @medium-screen * .8;
+    }
+    @media (min-width: @large-screen) {
+        width: @large-screen * .8;
+    }
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: .75em;
+    border-radius: 8px;
+    border: none;
+    font-size: inherit;
+}
+
+.colored-btn(@backgroundColor, @textColor) {
+    background-color: @backgroundColor;
+    color: @textColor;
+
+    &:hover {
+        box-shadow: 0 0 5px 5px darken(@backgroundColor, 8%) inset;
+    }
+
+    &:active {
+        background-color: darken(@backgroundColor, 8%);
+        box-shadow: none;
+    }
+}
+
+.btn-primary {
+    .colored-btn(@yellow, black);
+}
+
+.form-input() {
+    display: block;
+    width: 100%;
+    padding: .33em;
+    border: 1px solid @brown;
+    border-radius: 5px;
+    margin-top: .4em;
+    margin-bottom: 1.2em;
+    font-size: inherit;
+    &:focus {
+        outline: none;
+        border-color: @yellow;
+        box-shadow: 0 0 2px 1px @yellow inset;
+    }
+
+    .has-error & {
+        border-color: @error;
+        box-shadow: 0 0 2px 1px @error inset;
+    }
+}
+
+.has-error .help-block {
+    color: @error;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    .form-input();
 }
 
 .global-header {
+    color: white;
     background: black;
-    color: white !important;
+    padding: 1em;
 
-    .navbar-brand {
+    .global-header-logo {
+        font-size: 2em;
+        text-decoration: none;
         color: white;
     }
 
-    + * {
-        //pour ne pas passer derrière nav
-        padding-top:    @navbar-height + @navbar-margin-bottom;
-        padding-bottom: @navbar-height + @navbar-margin-bottom;
+    .global-header-login {
+        font-size: @smaller;
+        text-align: right;
     }
 }
 
 .global-footer {
-    padding: 2em 0;
+    font-size: @smaller;
+    padding: 2em;
     background: black;
     color: white;
 
@@ -62,5 +147,11 @@ a {
                 border-left: none;
             }
         }
+    }
+}
+
+.global-footer, .global-header {
+    a {
+        color: white;
     }
 }
