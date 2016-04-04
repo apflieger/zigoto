@@ -77,7 +77,7 @@ class CreationPageEleveurController
         $pageEleveur = $this->pageEleveurService->findByOwner($user);
 
         $form = $this->formFactory->createNamedBuilder('creation-page-eleveur')
-            ->add('nom', TextType::class)
+            ->add('nom', TextType::class, ['label' => 'Nom de l\'élevage'])
             ->add('save', SubmitType::class, array('label' => 'Créer ma page éleveur'))
             ->getForm();
 
@@ -87,7 +87,6 @@ class CreationPageEleveurController
             // un eleveur ne peux pas créer une 2eme page eleveur
             return $this->templating->renderResponse('base.html.twig', [
                 TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'creation-page-eleveur/deja-eleveur',
-                'username' => $user->getUserName(),
                 'pageEleveur' => $pageEleveur
             ]);
         }
@@ -113,7 +112,6 @@ class CreationPageEleveurController
         // home d'un user connecté mais qui n'a pas de page eleveur
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'creation-page-eleveur',
-            'username' => $user->getUserName(),
             'creationPageEleveur' => $form->createView()
         ]);
     }

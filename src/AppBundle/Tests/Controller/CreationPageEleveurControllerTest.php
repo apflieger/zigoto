@@ -53,7 +53,7 @@ class CreationPageEleveurControllerTest extends WebTestCase
         // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
         $crawler = $this->client->request('GET', '/creation-page-eleveur');
 
-        $this->assertEquals('Nom', $crawler->filter('form[name="creation-page-eleveur"] label')->text());
+        $this->assertEquals('Nom de l\'élevage', $crawler->filter('form[name="creation-page-eleveur"] label')->text());
         $this->assertEquals('Créer ma page éleveur', $crawler->filter('form[name="creation-page-eleveur"] [type="submit"]')->text());
 
         $creationPageEleveurForm = $crawler->filter('form[name="creation-page-eleveur"]')->form();
@@ -66,7 +66,7 @@ class CreationPageEleveurControllerTest extends WebTestCase
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->client->followRedirect();
         $this->assertEquals('/les-chartreux-de-tatouine-' . $rand, $this->client->getRequest()->getRequestUri());
-        $this->assertEquals('Bonjour '.$user->getUsername(), $this->client->request('GET', '/creation-page-eleveur')->filter('h1')->text());
+        $this->assertEquals(1, $this->client->request('GET', '/creation-page-eleveur')->filter('[href="'.'/les-chartreux-de-tatouine-' . $rand.'"]')->count());
     }
 
     public function testCreationPageEleveur_Deconnecte()

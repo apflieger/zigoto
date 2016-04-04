@@ -1,7 +1,6 @@
-<div class="container">
-    <h1>Bonjour {{ username }}</h1>
-    <h2>Créez votre page éleveur</h2>
-    {{ form_start(creationPageEleveur) }}
-        {{ form_widget(creationPageEleveur) }}
-    {{ form_end(creationPageEleveur) }}
+<div class="container content">
+    <h1>Créez votre page éleveur</h1>
+    <div class="grid-4-small-1">
+        {{ form(creationPageEleveur, { 'attr': {'class': 'flex-item-double middle'} }) }}
+    </div>
 </div>

@@ -1,7 +1,3 @@
 <div class="container grid-4-small-1 content">
-    <div class="flex-item-double middle">
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
-    </div>
+    {{ form(form, { 'attr': {'class': 'flex-item-double middle'} }) }}
 </div>

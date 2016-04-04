@@ -53,6 +53,10 @@ input[type="submit"] {
     }
 }
 
+.content {
+    padding: 5vmin;
+}
+
 .btn {
     display: inline-block;
     text-decoration: none;
@@ -110,6 +114,14 @@ input[type="email"],
 input[type="password"],
 textarea {
     .form-input();
+}
+
+form [type="submit"] {
+    .btn();
+    .btn-primary();
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .global-header {
