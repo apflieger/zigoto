@@ -6,8 +6,7 @@
 
         {% block title %}{% template_tree_section title %}{% endblock %}
 
-        {% block external_stylesheets %}
-                {% template_tree_section external_stylesheets optional %}
+        {% block stylesheets %}
             <link rel="stylesheet" href="/build/css/{{ template_tree_branch }}/branch.gen.css" />
         {% endblock %}
 
@@ -28,9 +27,9 @@
     </head>
     <body>
         <nav class="global-header">
-            <div class="container grid-2-tiny-1">
+            <div class="container grid-3-tiny-1">
                 <a href="{{ path('teaser_route') }}" class="global-header-logo">Zigotoo</a>
-                <span class="global-header-login">
+                <span class="global-header-login flex-item-double">
                     {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         {{ app.user.email }} - <a href="{{ path('fos_user_security_logout') }}">Déconnexion</a>
                     {% else %}

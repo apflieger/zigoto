@@ -64,20 +64,25 @@ input[type="submit"] {
     border-radius: 8px;
     border: none;
     font-size: inherit;
-}
 
-.colored-btn(@backgroundColor, @textColor) {
-    background-color: @backgroundColor;
-    color: @textColor;
+    box-shadow: 0 0 2px 1px @brown inset;
+
+    .colored-btn(transparent, @brown);
 
     &:hover {
-        box-shadow: 0 0 5px 5px darken(@backgroundColor, 8%) inset;
+        box-shadow: 0 0 2px 2px @brown inset;
     }
 
     &:active {
-        background-color: darken(@backgroundColor, 8%);
+        background-color: @brown;
+        color: @cream;
         box-shadow: none;
     }
+}
+
+.colored-btn(@backgroundColor, @color) {
+    background-color: @backgroundColor;
+    color: @color;
 }
 
 .btn-primary {

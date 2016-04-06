@@ -1,10 +1,10 @@
-<div ng-app="zigotoo" class="container">
+<div ng-app="zigotoo" class="container content">
     <div ng-controller="PageEleveurCtrl">
         <h1>{{ pageEleveur.nom }}</h1>
 
-        <a onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" e-rows="10" e-cols="100">
+        <div onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" e-rows="10" e-cols="100">
             <pre id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</pre>
-        </a>
+        </div>
         <div class="animaux">
             <ul>
                 {% if isOwner %}
@@ -19,7 +19,7 @@
                     {% endfor %}
                 {% endif %}
             </ul>
-            <button ng-click="addAnimal()">Ajouter un animal</button>
+            <button ng-click="addAnimal()" class="btn">Ajouter un animal</button>
         </div>
     </div>
 </div>
