@@ -68,6 +68,7 @@ class PageEleveurService
         $pageEleveur->setDescription($branch->getCommit()->getDescription());
         $pageEleveur->setEspeces($branch->getCommit()->getEspeces());
         $pageEleveur->setRaces($branch->getCommit()->getRaces());
+        $pageEleveur->setLieu($branch->getCommit()->getLieu());
 
         $arrayCollection = $branch->getCommit()->getAnimaux();
         $animaux = [];
@@ -124,7 +125,7 @@ class PageEleveurService
             throw new HistoryException(HistoryException::DEJA_OWNER);
         }
 
-        $commit = new PageEleveurCommit(null, $nom, null, null, null, null);
+        $commit = new PageEleveurCommit(null, $nom, null, null, null, null, null);
         $pageEleveurBranch = new PageEleveurBranch();
         $pageEleveurBranch->setCommit($commit);
         try {
@@ -173,6 +174,7 @@ class PageEleveurService
             $commitingPageEleveur->getDescription(),
             $commitingPageEleveur->getEspeces(),
             $commitingPageEleveur->getRaces(),
+            $commitingPageEleveur->getLieu(),
             $commitingPageEleveur->getAnimaux() !== null ?
                 array_map(
                     function(PageAnimal $pageAnimal) {

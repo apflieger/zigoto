@@ -29,7 +29,7 @@ class PageAnimalCommit implements PersistableInterface
      * @ORM\Column(type="string", length=120)
      * @var string
      */
-    protected $nom;
+    private $nom;
 
     /**
      * PageAnimalCommit constructor.

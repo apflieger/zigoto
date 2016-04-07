@@ -44,6 +44,12 @@ class PageEleveur extends Commitable
     private $races;
 
     /**
+     * @Type("string")
+     * @var string
+     */
+    private $lieu;
+
+    /**
      * @Type("array<AppBundle\Entity\PageAnimal>")
      * @var PageAnimal[]
      */
@@ -87,6 +93,14 @@ class PageEleveur extends Commitable
     public function setAnimaux($animaux)
     {
         $this->animaux = $animaux;
+    }
+
+    /**
+     * @param string $lieu
+     */
+    public function setLieu($lieu)
+    {
+        $this->lieu = $lieu;
     }
 
     /**
@@ -143,5 +157,13 @@ class PageEleveur extends Commitable
     public function getAnimaux()
     {
         return $this->animaux;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLieu()
+    {
+        return $this->lieu;
     }
 }

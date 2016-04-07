@@ -31,25 +31,31 @@ class PageEleveurCommit implements PersistableInterface
      * @ORM\Column(type="string", length=120)
      * @var string
      */
-    protected $nom;
+    private $nom;
 
     /**
      * @ORM\Column(type="string", length=1000, nullable=true)
      * @var string
      */
-    protected $description;
+    private $description;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      * @var string
      */
-    protected $especes;
+    private $especes;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
      * @var string
      */
-    protected $races;
+    private $races;
+
+    /**
+     * @ORM\Column(type="string", length=200, nullable=true)
+     * @var string
+     */
+    private $lieu;
 
     /**
      * @ORM\ManyToMany(targetEntity="PageAnimalBranch")
@@ -59,23 +65,25 @@ class PageEleveurCommit implements PersistableInterface
      *      )
      * @var ArrayCollection
      */
-    protected $animaux;
+    private $animaux;
 
     /**
      * @param PageEleveurCommit|null $parent
      * @param string $nom
-     * @param string|null $description
-     * @param string|null $especes
-     * @param string|null $races
+     * @param string $description
+     * @param string $especes
+     * @param string $races
+     * @param string $lieu
      * @param PageAnimalBranch[]|null $animaux
      */
-    public function __construct(PageEleveurCommit $parent = null, $nom, $description = null, $especes = null, $races = null, $animaux = null)
+    public function __construct(PageEleveurCommit $parent = null, $nom, $description, $especes, $races, $lieu, $animaux)
     {
         $this->parent = $parent;
         $this->nom = $nom;
         $this->description = $description;
         $this->especes = $especes;
         $this->races = $races;
+        $this->lieu = $lieu;
         $this->animaux = new ArrayCollection($animaux ?? []);
     }
 
@@ -117,5 +125,10 @@ class PageEleveurCommit implements PersistableInterface
     public function getRaces()
     {
         return $this->races;
+    }
+
+    public function getLieu()
+    {
+        return $this->lieu;
     }
 }

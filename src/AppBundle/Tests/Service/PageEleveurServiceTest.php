@@ -198,6 +198,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $pageEleveur->setHead($commit1->getId());
         $pageEleveur->setEspeces('Chiens');
         $pageEleveur->setRaces('Chihuahua');
+        $pageEleveur->setLieu('Hauts-de-Seine');
 
         $this->entityManager->expects($this->once())->method('flush');
         $this->pageEleveurService->commit($user, $pageEleveur);
@@ -205,6 +206,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         //On vérifie qu'il y a bien un nouveau commit avec les bonnes infos
         $this->assertEquals('Chiens', $pageEleveurBranch->getCommit()->getEspeces());
         $this->assertEquals('Chihuahua', $pageEleveurBranch->getCommit()->getRaces());
+        $this->assertEquals('Hauts-de-Seine', $pageEleveurBranch->getCommit()->getLieu());
     }
 
     public function testMappingBranchToModel()
@@ -219,7 +221,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurBranchRepository
             ->method('findBySlug')->withAnyParameters()->willReturn($pageEleveurBranch);
 
-        $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux');
+        $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux', 'Roubaix', null);
 
         $pageEleveurBranch->setCommit($commit);
 
@@ -232,6 +234,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Plein de chartreux', $pageEleveur->getDescription());
         $this->assertEquals('Chats', $pageEleveur->getEspeces());
         $this->assertEquals('Chartreux', $pageEleveur->getRaces());
+        $this->assertEquals('Roubaix', $pageEleveur->getLieu());
     }
 
     /**
