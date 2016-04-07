@@ -69,6 +69,11 @@ class CreationPageEleveurControllerTest extends WebTestCase
         $this->assertEquals(1, $this->client->request('GET', '/creation-page-eleveur')->filter('[href="'.'/les-chartreux-de-tatouine-' . $rand.'"]')->count());
     }
 
+    public function testCreationPageEleveur_Anonyme() {
+        $this->client->request('GET', '/creation-page-eleveur');
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testCreationPageEleveur_Deconnecte()
     {
         $this->testUtils->createUser();
