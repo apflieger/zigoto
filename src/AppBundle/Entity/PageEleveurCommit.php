@@ -40,6 +40,18 @@ class PageEleveurCommit implements PersistableInterface
     protected $description;
 
     /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     * @var string
+     */
+    protected $especes;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     * @var string
+     */
+    protected $races;
+
+    /**
      * @ORM\ManyToMany(targetEntity="PageAnimalBranch")
      * @ORM\JoinTable(name="page_eleveur_commit_page_animal",
      *      joinColumns={@ORM\JoinColumn(name="page_eleveur_commit_id", referencedColumnName="id")},
@@ -52,14 +64,18 @@ class PageEleveurCommit implements PersistableInterface
     /**
      * @param PageEleveurCommit|null $parent
      * @param string $nom
-     * @param string $description
+     * @param string|null $description
+     * @param string|null $especes
+     * @param string|null $races
      * @param PageAnimalBranch[]|null $animaux
      */
-    public function __construct(PageEleveurCommit $parent = null, $nom, $description, $animaux = null)
+    public function __construct(PageEleveurCommit $parent = null, $nom, $description = null, $especes = null, $races = null, $animaux = null)
     {
         $this->parent = $parent;
         $this->nom = $nom;
         $this->description = $description;
+        $this->especes = $especes;
+        $this->races = $races;
         $this->animaux = new ArrayCollection($animaux ?? []);
     }
 
@@ -85,5 +101,21 @@ class PageEleveurCommit implements PersistableInterface
     public function getAnimaux()
     {
         return $this->animaux;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEspeces()
+    {
+        return $this->especes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRaces()
+    {
+        return $this->races;
     }
 }

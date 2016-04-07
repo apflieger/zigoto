@@ -60,6 +60,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this
             ->getMockBuilder(Logger::class)
             ->disableOriginalConstructor()
@@ -160,7 +161,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
     /**
      * @param $id
-     * @param null|PageEleveurCommit $parent
+     * @param PageEleveurCommit|null $parent
      * @return PageEleveurCommit|\PHPUnit_Framework_MockObject_MockObject
      */
     private function newCommit($id, PageEleveurCommit $parent = null)
@@ -174,6 +175,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
     public function testCommit_FastForward()
     {
+        // Mock d'une page eleveur en base de données
         $user = new User();
         $user->setId(1);
         $pageEleveurBranch = new PageEleveurBranch();
@@ -190,13 +192,46 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurCommitRepository
             ->method('find')->withAnyParameters()->willReturn($commit1);
 
+        //Simulation d'une requete de commit
         $pageEleveur = new PageEleveur();
         $pageEleveur->setId($pageEleveurBranch->getId());
         $pageEleveur->setHead($commit1->getId());
+        $pageEleveur->setEspeces('Chiens');
+        $pageEleveur->setRaces('Chihuahua');
 
+        $this->entityManager->expects($this->once())->method('flush');
         $this->pageEleveurService->commit($user, $pageEleveur);
 
-        // pas d'exception
+        //On vérifie qu'il y a bien un nouveau commit avec les bonnes infos
+        $this->assertEquals('Chiens', $pageEleveurBranch->getCommit()->getEspeces());
+        $this->assertEquals('Chihuahua', $pageEleveurBranch->getCommit()->getRaces());
+    }
+
+    public function testMappingBranchToModel()
+    {
+        // Mock d'une page eleveur en base de données
+        $user = new User();
+        $user->setId(1);
+        $pageEleveurBranch = new PageEleveurBranch();
+        $pageEleveurBranch->setId(1);
+        $pageEleveurBranch->setOwner($user);
+
+        $this->pageEleveurBranchRepository
+            ->method('findBySlug')->withAnyParameters()->willReturn($pageEleveurBranch);
+
+        $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux');
+
+        $pageEleveurBranch->setCommit($commit);
+
+        $this->pageEleveurCommitRepository
+            ->method('find')->with($commit->getId())->willReturn($commit);
+
+        $pageEleveur = $this->pageEleveurService->findBySlug('');
+
+        $this->assertEquals('Tatouine', $pageEleveur->getNom());
+        $this->assertEquals('Plein de chartreux', $pageEleveur->getDescription());
+        $this->assertEquals('Chats', $pageEleveur->getEspeces());
+        $this->assertEquals('Chartreux', $pageEleveur->getRaces());
     }
 
     /**

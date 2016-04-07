@@ -32,6 +32,18 @@ class PageEleveur extends Commitable
     private $description;
 
     /**
+     * @Type("string")
+     * @var string
+     */
+    private $especes;
+
+    /**
+     * @Type("string")
+     * @var string
+     */
+    private $races;
+
+    /**
      * @Type("array<AppBundle\Entity\PageAnimal>")
      * @var PageAnimal[]
      */
@@ -51,6 +63,22 @@ class PageEleveur extends Commitable
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @param string $especes
+     */
+    public function setEspeces($especes)
+    {
+        $this->especes = $especes;
+    }
+
+    /**
+     * @param string $races
+     */
+    public function setRaces($races)
+    {
+        $this->races = $races;
     }
 
     /**
@@ -91,6 +119,22 @@ class PageEleveur extends Commitable
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEspeces()
+    {
+        return $this->especes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRaces()
+    {
+        return $this->races;
     }
 
     /**
