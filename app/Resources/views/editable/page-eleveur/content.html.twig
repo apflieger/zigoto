@@ -2,7 +2,7 @@
     <div ng-controller="PageEleveurCtrl">
         <h1>{{ pageEleveur.nom }}</h1>
 
-        <div onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" e-rows="10" e-cols="100">
+        <div onaftersave="commit()" href="#" editable-textarea="pageEleveur.description" blur="ignore" e-rows="10" e-cols="100">
             <pre id="description" ng-bind="pageEleveur.description">{{ pageEleveur.description }}</pre>
         </div>
         <div class="animaux">
