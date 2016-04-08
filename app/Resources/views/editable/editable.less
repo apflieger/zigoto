@@ -1,9 +1,9 @@
 pre {
     font-family: inherit;
+    margin: 0;
 }
 
-.editable-empty pre::before {
-    content: "Ajouter une description";
+.editable-empty {
     font-style: italic;
 }
 
@@ -14,11 +14,17 @@ pre {
 .editable {
     cursor: pointer;
     border: dashed 1px @brown;
-
-
 }
 
 .editable-buttons .btn {
     display: inline;
     margin-right: 1em;
+}
+
+.field {
+    margin: .4em 0;
+}
+
+.description {
+    margin: 1.4em 0;
 }

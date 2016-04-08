@@ -45,7 +45,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testContent()
+    public function testContent_Owner_PageVide()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
@@ -64,6 +64,9 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
+        $this->assertEquals(1, $crawler->filter('#especes')->count());
+        $this->assertEquals(1, $crawler->filter('#races')->count());
+        $this->assertEquals('Ajouter un animal', $crawler->filter('.animaux button')->text());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
@@ -72,6 +75,47 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(1, $script->count());
 
         $this->assertContains($this->serializer->serialize($pageEleveur, 'json'), $script->text());
+    }
+
+    public function testContent_UserAnonyme_PageVide()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+        $this->testUtils->logout();
+
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+
+        $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
+        $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
+        $this->assertEmpty($crawler->filter('#description')->text());
+        $this->assertEquals(0, $crawler->filter('#especes')->count());
+        $this->assertEquals(0, $crawler->filter('#races')->count());
+        $this->assertEquals(0, $crawler->filter('.animaux button')->count());
+    }
+
+    public function testContent_UserAnonyme_PageComplete()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+
+        $pageEleveur->setDescription('nouvelle description');
+        $pageEleveur->setEspeces('chats');
+        $pageEleveur->setRaces('chartreux');
+
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
+
+        $pageEleveurService->commit(
+            $this->testUtils->getUser(),
+            $pageEleveur
+        );
+
+        $this->testUtils->logout();
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+
+        $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
+        $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
+        $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
+        $this->assertEquals('chats', trim($crawler->filter('#especes')->text()));
+        $this->assertEquals('chartreux', trim($crawler->filter('#races')->text()));
     }
 
     public function testCommit()
@@ -213,6 +257,5 @@ class PageEleveurControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($animal->getNom(), $crawler->filter('a[href="/animal/'.$animal->getId().'"]')->text());
-        $this->assertEquals('Ajouter un animal', $crawler->filter('.animaux button')->text());
     }
 }
