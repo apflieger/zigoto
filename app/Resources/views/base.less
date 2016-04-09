@@ -105,14 +105,24 @@ input[type="submit"] {
     .colored-btn(@yellow, black);
 }
 
-.form-input() {
+.form-input {
+    margin-top: .4em;
+    margin-bottom: 1.2em;
+}
+
+.has-error .help-block {
+    color: @error;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
     display: block;
     width: 100%;
     padding: .33em;
     border: 1px solid @brown;
     border-radius: 5px;
-    margin-top: .4em;
-    margin-bottom: 1.2em;
     font-size: inherit;
     &:focus {
         outline: none;
@@ -124,17 +134,10 @@ input[type="submit"] {
         border-color: @error;
         box-shadow: 0 0 2px 1px @error inset;
     }
-}
 
-.has-error .help-block {
-    color: @error;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-textarea {
-    .form-input();
+    .form & {
+        .form-input;
+    }
 }
 
 form [type="submit"] {

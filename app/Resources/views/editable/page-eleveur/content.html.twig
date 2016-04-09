@@ -34,7 +34,7 @@
                         Lieu :
                         <span onaftersave="commit()" editable-text="pageEleveur.lieu" blur="ignore"
                               ng-bind="pageEleveur.lieu || 'saisir'"
-                              e-placeholder="chartreux"
+                              e-placeholder="Île-de-France"
                               id="lieu">
                             {{ pageEleveur.lieu }}
                         </span>
@@ -48,7 +48,9 @@
              editable-textarea="pageEleveur.description"
              blur="ignore"
              e-rows="10" e-cols="100">
-            <pre id="description" ng-bind="pageEleveur.description || 'Ajouter une description'">{{ pageEleveur.description }}</pre>
+            <pre id="description"
+                 ng-bind="pageEleveur.description || 'Ajouter la description de votre élevage'"
+            >{{ pageEleveur.description }}</pre>
         </div>
         <div class="animaux">
             <ul>
