@@ -62,6 +62,17 @@ input[type="submit"] {
     }
 }
 
+.text-right,
+.text-right-tiny-left {
+    text-align: right;
+}
+
+@media (max-width: @tiny-screen) {
+    .text-right-tiny-left {
+        text-align: left;
+    }
+}
+
 .btn {
     display: inline-block;
     text-decoration: none;

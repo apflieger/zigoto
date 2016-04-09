@@ -2,29 +2,46 @@
     <div ng-controller="PageEleveurCtrl">
         <h1>{{ pageEleveur.nom }}</h1>
 
-        {% if isOwner or pageEleveur.especes %}
-            <div class="field">
-                Animaux :
-                <span onaftersave="commit()" editable-text="pageEleveur.especes" blur="ignore"
-                      ng-bind="pageEleveur.especes || 'saisir'"
-                      e-placeholder="chats"
-                      id="especes">
-                    {{ pageEleveur.especes }}
-                </span>
-            </div>
-        {% endif %}
+        <div class="grid-2-tiny-1">
+            <div>
+                {% if isOwner or pageEleveur.especes %}
+                    <div class="field">
+                        Animaux :
+                        <span onaftersave="commit()" editable-text="pageEleveur.especes" blur="ignore"
+                              ng-bind="pageEleveur.especes || 'saisir'"
+                              e-placeholder="chats"
+                              id="especes">
+                            {{ pageEleveur.especes }}
+                        </span>
+                    </div>
+                {% endif %}
 
-        {% if isOwner or pageEleveur.races %}
-            <div class="field">
-                Race :
-                <span onaftersave="commit()" editable-text="pageEleveur.races" blur="ignore"
-                      ng-bind="pageEleveur.races || 'saisir'"
-                      e-placeholder="chartreux"
-                      id="races">
-                    {{ pageEleveur.races }}
-                </span>
+                {% if isOwner or pageEleveur.races %}
+                    <div class="field">
+                        Race :
+                        <span onaftersave="commit()" editable-text="pageEleveur.races" blur="ignore"
+                              ng-bind="pageEleveur.races || 'saisir'"
+                              e-placeholder="chartreux"
+                              id="races">
+                            {{ pageEleveur.races }}
+                        </span>
+                    </div>
+                {% endif %}
             </div>
-        {% endif %}
+            <div class="text-right-tiny-left">
+                {% if isOwner or pageEleveur.lieu %}
+                    <div class="field">
+                        Lieu :
+                        <span onaftersave="commit()" editable-text="pageEleveur.lieu" blur="ignore"
+                              ng-bind="pageEleveur.lieu || 'saisir'"
+                              e-placeholder="chartreux"
+                              id="lieu">
+                            {{ pageEleveur.lieu }}
+                        </span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
 
         <div class="description"
              onaftersave="commit()"

@@ -66,6 +66,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
         $this->assertEquals(1, $crawler->filter('#especes')->count());
         $this->assertEquals(1, $crawler->filter('#races')->count());
+        $this->assertEquals(1, $crawler->filter('#lieu')->count());
         $this->assertEquals('Ajouter un animal', $crawler->filter('.animaux button')->text());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
@@ -89,6 +90,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEmpty($crawler->filter('#description')->text());
         $this->assertEquals(0, $crawler->filter('#especes')->count());
         $this->assertEquals(0, $crawler->filter('#races')->count());
+        $this->assertEquals(0, $crawler->filter('#lieu')->count());
         $this->assertEquals(0, $crawler->filter('.animaux button')->count());
     }
 
