@@ -55,6 +55,10 @@ module.exports = function(grunt) {
             fosuserbundle: {
                 src: ["app/Resources/FOSUserBundle/views/fos-user-bundle.less"],
                 dest: "<%= buildDir %>/css/fos-user-bundle.css"
+            },
+            options: {
+                sourceMap: true,
+                sourceMapFileInline: true
             }
         },
         watch: {
