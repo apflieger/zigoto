@@ -42,6 +42,6 @@ class AccuseReceptionContact extends FromNoReplyMail
     /** @return string */
     public function template(Event $event)
     {
-        return 'contact/email-confirmation-contact.txt.twig';
+        return 'contact/email-contact-confirmation.txt.twig';
     }
 }

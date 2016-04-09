@@ -12,4 +12,9 @@ abstract class ToAdminMail implements MailInterface
     {
         return ['pflieger.arnaud@gmail.com', 'MehdiBelkacemi@gmail.com'];
     }
+
+    public final function from(Event $event)
+    {
+        return 'app@zigotoo.com';
+    }
 }

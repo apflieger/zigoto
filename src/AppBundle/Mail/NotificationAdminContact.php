@@ -23,17 +23,11 @@ class NotificationAdminContact extends ToAdminMail
         /** @var ContactEvent $event */
         $contact = $event->getContact();
 
-        return ['text' => $contact->getMessage()];
+        return [
+            'from' => $contact->getEmail(),
+            'text' => $contact->getMessage()
+        ];
     }
-
-    public function from(Event $event)
-    {
-        /** @var ContactEvent $event */
-        $contact = $event->getContact();
-
-        return $contact->getEmail();
-    }
-
 
     /** @return string */
     public function subject(Event $event)
@@ -44,6 +38,6 @@ class NotificationAdminContact extends ToAdminMail
     /** @return string */
     public function template(Event $event)
     {
-        return 'email-plain-text.txt.twig';
+        return 'contact/email-contact-notif-admin.txt.twig';
     }
 }
