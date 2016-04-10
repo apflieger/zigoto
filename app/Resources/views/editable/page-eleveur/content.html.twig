@@ -71,5 +71,26 @@
                 <button ng-click="addAnimal()" class="btn">Ajouter un animal</button>
             {% endif %}
         </div>
+
+
+        {% if isOwner or pageEleveur.actualites %}
+            <div id="actualites">
+                <h2>Actualités</h2>
+
+                {% if isOwner %}
+                    <button id="ajouter-actualite" ng-click="addActualite()" class="btn">Nouvelle actualité</button>
+                {% endif %}
+
+                {% if isOwner %}
+                    {% verbatim %}
+                        <article ng-repeat="actualite in pageEleveur.actualites" class="actualite">{{ actualite.contenu }}</article>
+                    {% endverbatim %}
+                {% else %}
+                    {% for actualite in pageEleveur.actualites %}
+                        <article class="actualite">{{ actualite.contenu }}</article>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 </div>
