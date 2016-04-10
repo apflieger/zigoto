@@ -82,6 +82,8 @@ class PageEleveurService
         }
         $pageEleveur->setAnimaux($animaux);
 
+        $pageEleveur->setActualites($branch->getCommit()->getActualites()->toArray());
+
         return $pageEleveur;
     }
 
@@ -125,7 +127,7 @@ class PageEleveurService
             throw new HistoryException(HistoryException::DEJA_OWNER);
         }
 
-        $commit = new PageEleveurCommit(null, $nom, null, null, null, null, null);
+        $commit = new PageEleveurCommit(null, $nom, null, null, null, null, null, null);
         $pageEleveurBranch = new PageEleveurBranch();
         $pageEleveurBranch->setCommit($commit);
         try {
@@ -168,6 +170,14 @@ class PageEleveurService
         if ($clientHead->getId() !== $pageEleveurBranch->getCommit()->getId())
             throw new HistoryException(HistoryException::NON_FAST_FORWARD);
 
+        if ($commitingPageEleveur->getActualites() !== null) {
+            foreach ($commitingPageEleveur->getActualites() as $actualite) {
+                if ($actualite->getId() == null) {
+                    $this->doctrine->persist($actualite);
+                }
+            }
+        }
+
         $newCommit = new PageEleveurCommit(
             $clientHead,
             $commitingPageEleveur->getNom(),
@@ -181,7 +191,8 @@ class PageEleveurService
                         return $this->pageAnimalBranchRepository->find($pageAnimal->getId());
                     }, $commitingPageEleveur->getAnimaux()
                 ) :
-                []
+                [],
+            $commitingPageEleveur->getActualites()
         );
 
         $this->doctrine->persist($newCommit);
