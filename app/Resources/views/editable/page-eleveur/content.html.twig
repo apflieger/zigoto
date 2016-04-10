@@ -5,8 +5,8 @@
         <div class="grid-2-tiny-1">
             <div>
                 {% if isOwner or pageEleveur.especes %}
-                    <div class="field">
-                        Animaux :
+                    <div class="oneline-field">
+                        <label>Animaux :</label>
                         <span onaftersave="commit()" editable-text="pageEleveur.especes" blur="ignore"
                               ng-bind="pageEleveur.especes || 'saisir'"
                               e-placeholder="chats"
@@ -17,8 +17,8 @@
                 {% endif %}
 
                 {% if isOwner or pageEleveur.races %}
-                    <div class="field">
-                        Race :
+                    <div class="oneline-field">
+                        <label>Race :</label>
                         <span onaftersave="commit()" editable-text="pageEleveur.races" blur="ignore"
                               ng-bind="pageEleveur.races || 'saisir'"
                               e-placeholder="chartreux"
@@ -30,8 +30,8 @@
             </div>
             <div class="text-right-tiny-left">
                 {% if isOwner or pageEleveur.lieu %}
-                    <div class="field">
-                        Lieu :
+                    <div class="oneline-field">
+                        <label>Lieu :</label>
                         <span onaftersave="commit()" editable-text="pageEleveur.lieu" blur="ignore"
                               ng-bind="pageEleveur.lieu || 'saisir'"
                               e-placeholder="Île-de-France"
@@ -47,11 +47,11 @@
              onaftersave="commit()"
              editable-textarea="pageEleveur.description"
              blur="ignore"
-             e-rows="10" e-cols="100">
-            <pre id="description"
-                 ng-bind="pageEleveur.description || 'Ajouter la description de votre élevage'"
-            >{{ pageEleveur.description }}</pre>
-        </div>
+             e-rows="10" e-cols="100"
+             ng-bind="pageEleveur.description || 'Ajouter la description de votre élevage'"
+             id="description"
+        >{{ pageEleveur.description }}</div>
+
         <div class="animaux">
             <ul>
                 {% if isOwner %}
