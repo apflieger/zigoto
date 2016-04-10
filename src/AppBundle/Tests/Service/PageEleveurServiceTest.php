@@ -9,6 +9,7 @@
 namespace AppBundle\Tests\Service;
 
 
+use AppBundle\Entity\Actualite;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
@@ -196,17 +197,22 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $pageEleveur = new PageEleveur();
         $pageEleveur->setId($pageEleveurBranch->getId());
         $pageEleveur->setHead($commit1->getId());
+        $pageEleveur->setDescription('Une longue description');
         $pageEleveur->setEspeces('Chiens');
         $pageEleveur->setRaces('Chihuahua');
         $pageEleveur->setLieu('Hauts-de-Seine');
+        $pageEleveur->setActualites([new Actualite('Nouvelle portée')]);
 
         $this->entityManager->expects($this->once())->method('flush');
         $this->pageEleveurService->commit($user, $pageEleveur);
 
         //On vérifie qu'il y a bien un nouveau commit avec les bonnes infos
+        $this->assertNotEquals($commit1->getId(), $pageEleveurBranch->getCommit()->getId());
+        $this->assertEquals('Une longue description', $pageEleveurBranch->getCommit()->getDescription());
         $this->assertEquals('Chiens', $pageEleveurBranch->getCommit()->getEspeces());
         $this->assertEquals('Chihuahua', $pageEleveurBranch->getCommit()->getRaces());
         $this->assertEquals('Hauts-de-Seine', $pageEleveurBranch->getCommit()->getLieu());
+        $this->assertEquals('Nouvelle portée', $pageEleveurBranch->getCommit()->getActualites()->first()->getContenu());
     }
 
     public function testMappingBranchToModel()
@@ -221,7 +227,10 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurBranchRepository
             ->method('findBySlug')->withAnyParameters()->willReturn($pageEleveurBranch);
 
-        $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux', 'Roubaix', null);
+        $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux', 'Roubaix',
+            null,
+            [new Actualite('Nouvelle portée')]
+        );
 
         $pageEleveurBranch->setCommit($commit);
 
@@ -235,6 +244,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Chats', $pageEleveur->getEspeces());
         $this->assertEquals('Chartreux', $pageEleveur->getRaces());
         $this->assertEquals('Roubaix', $pageEleveur->getLieu());
+        $this->assertEquals('Nouvelle portée', $pageEleveur->getActualites()[0]->getContenu());
     }
 
     /**

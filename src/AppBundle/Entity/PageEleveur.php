@@ -56,6 +56,12 @@ class PageEleveur extends Commitable
     private $animaux;
 
     /**
+     * @Type("array<AppBundle\Entity\Actualite>")
+     * @var Actualite[]
+     */
+    private $actualites;
+
+    /**
      * @param string $nom
      */
     public function setNom($nom)
@@ -120,6 +126,14 @@ class PageEleveur extends Commitable
     }
 
     /**
+     * @param Actualite[] $actualites
+     */
+    public function setActualites($actualites)
+    {
+        $this->actualites = $actualites;
+    }
+
+    /**
      * @return string
      */
     public function getNom()
@@ -165,5 +179,13 @@ class PageEleveur extends Commitable
     public function getLieu()
     {
         return $this->lieu;
+    }
+
+    /**
+     * @return Actualite[]
+     */
+    public function getActualites()
+    {
+        return $this->actualites;
     }
 }
