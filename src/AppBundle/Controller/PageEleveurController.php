@@ -17,9 +17,11 @@ use AppBundle\Service\PageEleveurService;
 use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,6 +36,10 @@ class PageEleveurController
      * @var TokenStorage
      */
     private $tokenStorage;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
     /**
      * @var TwigEngine
      */
@@ -53,12 +59,14 @@ class PageEleveurController
 
     public function __construct(
         TokenStorage $tokenStorage,
+        RouterInterface $router,
         TwigEngine $templating,
         Serializer $serializer,
         PageEleveurService $pageEleveurService,
         PageAnimalService $pageAnimalService
     ) {
         $this->tokenStorage = $tokenStorage;
+        $this->router = $router;
         $this->templating = $templating;
         $this->serializer = $serializer;
         $this->pageEleveurService = $pageEleveurService;
@@ -116,6 +124,10 @@ class PageEleveurController
 
         /** @var User $user */
         $user = $token->getUser();
+
+        if ($user === 'anon.') {
+            return new RedirectResponse($this->router->generate('fos_user_security_login'));
+        }
 
         try {
             $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);

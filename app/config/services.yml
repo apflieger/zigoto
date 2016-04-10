@@ -36,6 +36,7 @@ services:
         class: AppBundle\Controller\PageEleveurController
         arguments:
             - "@security.token_storage"
+            - "@router"
             - "@templating"
             - "@serializer"
             - "@zigotoo.page_eleveur"

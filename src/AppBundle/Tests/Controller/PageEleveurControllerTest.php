@@ -162,6 +162,20 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
+    public function testCommitLogout()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+
+        // Simule une perte de session
+        $this->testUtils->logout();
+
+        $this->client->request('POST', '/commit-page-eleveur',
+            array(), array(), array(),
+            $this->serializer->serialize($pageEleveur, 'json'));
+
+        $this->assertTrue($this->client->getResponse()->isRedirect('/login'));
+    }
+
     public function testAccesOwner()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
