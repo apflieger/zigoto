@@ -10,6 +10,7 @@ namespace AppBundle\Tests\Controller;
 
 
 use AppBundle\Controller\PageEleveurController;
+use AppBundle\Entity\Actualite;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
@@ -49,25 +50,18 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $pageEleveur->setDescription('nouvelle description');
-
-        /** @var PageEleveurService $pageEleveurService */
-        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
-
-        $pageEleveurService->commit(
-            $this->testUtils->getUser(),
-            $pageEleveur
-        );
-
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
-        $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
         $this->assertEquals(1, $crawler->filter('#especes')->count());
         $this->assertEquals(1, $crawler->filter('#races')->count());
         $this->assertEquals(1, $crawler->filter('#lieu')->count());
+        $this->assertEquals(1, $crawler->filter('#lieu')->count());
+        $this->assertEquals(1, $crawler->filter('#description')->count());
         $this->assertEquals('Ajouter un animal', $crawler->filter('.animaux button')->text());
+        $this->assertEquals('Actualités', $crawler->filter('#actualites h2')->text());
+        $this->assertEquals('Nouvelle actualité', $crawler->filter('#actualites #ajouter-actualite')->text());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
@@ -92,6 +86,8 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(0, $crawler->filter('#races')->count());
         $this->assertEquals(0, $crawler->filter('#lieu')->count());
         $this->assertEquals(0, $crawler->filter('.animaux button')->count());
+        $this->assertEquals(0, $crawler->filter('#actualites h2')->count());
+        $this->assertEquals(0, $crawler->filter('#actualites #ajouter-actualite')->count());
     }
 
     public function testContent_UserAnonyme_PageComplete()
@@ -101,6 +97,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur->setDescription('nouvelle description');
         $pageEleveur->setEspeces('chats');
         $pageEleveur->setRaces('chartreux');
+        $pageEleveur->setActualites([new Actualite('Nouvelle portée')]);
 
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
@@ -118,6 +115,8 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('nouvelle description', $crawler->filter('#description')->text());
         $this->assertEquals('chats', trim($crawler->filter('#especes')->text()));
         $this->assertEquals('chartreux', trim($crawler->filter('#races')->text()));
+        $this->assertEquals(1, $crawler->filter('#actualites h2')->count());
+        $this->assertContains('Nouvelle portée', $crawler->filter('#actualites .actualite')->text());
     }
 
     public function testCommit()
