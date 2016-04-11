@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints;
  * @ORM\Entity
  * @ORM\Table(name="contact")
  */
-class Contact implements PersistableInterface
+class Contact implements IdentityPersistableInterface
 {
     use Persistable;
 

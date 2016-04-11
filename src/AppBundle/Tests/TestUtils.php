@@ -14,6 +14,7 @@ use AppBundle\Entity\PageEleveur;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
+use Doctrine\ORM\EntityManager;
 use FOS\UserBundle\Doctrine\UserManager;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -98,6 +99,13 @@ class TestUtils
         $this->client->getCookieJar()->clear();
         $this->user = null;
         $this->pageEleveur = null;
+    }
+
+    public function clearEntities()
+    {
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $entityManager->clear();
     }
 
     /**

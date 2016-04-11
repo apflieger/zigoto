@@ -9,7 +9,7 @@
 namespace AppBundle\Tests\Service;
 
 
-use AppBundle\Entity\PersistableInterface;
+use AppBundle\Entity\IdentityPersistableInterface;
 use AppBundle\Tests\TestTimeService;
 use DateInterval;
 use FOS\UserBundle\Doctrine\UserManager;
@@ -43,7 +43,7 @@ class PersistableTest extends KernelTestCase
 
         $user = $this->createUser();
 
-        $this->assertTrue($user instanceof PersistableInterface);
+        $this->assertTrue($user instanceof IdentityPersistableInterface);
 
         $this->assertNull($user->getId());
         $this->assertNull($user->getCreatedAt());
@@ -79,7 +79,7 @@ class PersistableTest extends KernelTestCase
     }
 
     /**
-     * @return UserInterface|PersistableInterface
+     * @return UserInterface|IdentityPersistableInterface
      */
     private function createUser()
     {

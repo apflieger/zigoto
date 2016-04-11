@@ -170,11 +170,17 @@ class PageEleveurService
         if ($clientHead->getId() !== $pageEleveurBranch->getCommit()->getId())
             throw new HistoryException(HistoryException::NON_FAST_FORWARD);
 
+        $managedActialites = [];
         if ($commitingPageEleveur->getActualites() !== null) {
             foreach ($commitingPageEleveur->getActualites() as $actualite) {
-                if ($actualite->getId() == null) {
+                if ($actualite->hashCode() !== $actualite->getId()) {
+                    // l'actualité a été modifiée, on doit persister la nouvelle version
                     $this->doctrine->persist($actualite);
+                } else {
+                    // L'actualité n'a pas changé
+                    $actualite = $this->doctrine->merge($actualite);
                 }
+                array_push($managedActialites, $actualite);
             }
         }
 
@@ -192,7 +198,7 @@ class PageEleveurService
                     }, $commitingPageEleveur->getAnimaux()
                 ) :
                 [],
-            $commitingPageEleveur->getActualites()
+            $managedActialites
         );
 
         $this->doctrine->persist($newCommit);
