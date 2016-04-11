@@ -97,7 +97,19 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur->setDescription('nouvelle description');
         $pageEleveur->setEspeces('chats');
         $pageEleveur->setRaces('chartreux');
-        $pageEleveur->setActualites([new Actualite('Nouvelle portée')]);
+
+        /*
+         * Enregistrement d'une actualité en base pour simuler le fait que
+         * la page eleveur a déjà une actualité.
+         */
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+        $actualite1 = new Actualite('Vieille news', new \DateTime());
+        $entityManager->persist($actualite1);
+        $entityManager->flush($actualite1);
+        $this->testUtils->clearEntities();
+
+        $pageEleveur->setActualites([$actualite1, new Actualite('Nouvelle portée', new \DateTime())]);
 
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
@@ -108,6 +120,7 @@ class PageEleveurControllerTest extends WebTestCase
         );
 
         $this->testUtils->logout();
+        $this->testUtils->clearEntities();
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
@@ -116,7 +129,8 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('chats', trim($crawler->filter('#especes')->text()));
         $this->assertEquals('chartreux', trim($crawler->filter('#races')->text()));
         $this->assertEquals(1, $crawler->filter('#actualites h2')->count());
-        $this->assertContains('Nouvelle portée', $crawler->filter('#actualites .actualite')->text());
+        $this->assertEquals(2, $crawler->filter('#actualites .actualite')->count());
+        $this->assertContains('Nouvelle portée', $crawler->filter('#actualites .actualite')->getNode(1)->textContent);
     }
 
     public function testCommit()

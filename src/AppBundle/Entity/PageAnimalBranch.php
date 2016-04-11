@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PageAnimalBranchRepository")
  * @ORM\Table(name="page_animal")
  */
-class PageAnimalBranch implements PersistableInterface
+class PageAnimalBranch implements IdentityPersistableInterface
 {
     use Persistable;
 

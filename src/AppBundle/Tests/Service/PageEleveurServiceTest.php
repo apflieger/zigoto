@@ -201,7 +201,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $pageEleveur->setEspeces('Chiens');
         $pageEleveur->setRaces('Chihuahua');
         $pageEleveur->setLieu('Hauts-de-Seine');
-        $pageEleveur->setActualites([new Actualite('Nouvelle portée')]);
+        $pageEleveur->setActualites([new Actualite('Nouvelle portée', new \DateTime())]);
 
         $this->entityManager->expects($this->once())->method('flush');
         $this->pageEleveurService->commit($user, $pageEleveur);
@@ -229,7 +229,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
         $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux', 'Roubaix',
             null,
-            [new Actualite('Nouvelle portée')]
+            [new Actualite('Nouvelle portée', new \DateTime())]
         );
 
         $pageEleveurBranch->setCommit($commit);

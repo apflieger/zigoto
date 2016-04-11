@@ -2,25 +2,36 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="actualite_eleveur")
  */
-class Actualite implements PersistableInterface
+class Actualite implements StatePersistableInterface
 {
     use Persistable;
 
-    /** @var string */
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=1000, nullable=true)
+     */
     private $contenu;
 
     /**
-     * @param string $contenu
+     * @var DateTime
      */
-    public function __construct($contenu)
+    private $date;
+
+    /**
+     * @param string $contenu
+     * @param DateTime $date
+     */
+    public function __construct($contenu, DateTime $date)
     {
         $this->contenu = $contenu;
+        $this->date = $date;
     }
 
     /**
@@ -29,5 +40,10 @@ class Actualite implements PersistableInterface
     public function getContenu()
     {
         return $this->contenu;
+    }
+
+    public function hashCode()
+    {
+        return substr(md5(serialize([$this->contenu, $this->date])), 0, 16);
     }
 }

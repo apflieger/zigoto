@@ -41,15 +41,18 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
         $entity = $event->getEntity();
 
         if ($entity instanceof PersistableInterface) {
-            /** @var PersistableInterface $entity */
-
-            $entity->setId(bin2hex(random_bytes(8))); // Ce calcul prend 4 μs sur mon macbook
+            if ($entity->getId() !== null)
+                throw new \Exception('entité '. get_class($entity) . ' deja persistée : ' . $entity->getId()); // @codeCoverageIgnore
 
             $now = $this->timeService->now();
-
             $entity->setCreatedAt($now);
-
             $entity->setModifiedAt($now);
+
+            if ($entity instanceof IdentityPersistableInterface) {
+                $entity->setId(bin2hex(random_bytes(8))); // Ce calcul prend 4 μs sur mon macbook
+            } else if ($entity instanceof StatePersistableInterface) {
+                $entity->setId($entity->hashCode());
+            }
         }
     }
 
@@ -57,10 +60,14 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
     {
         $entity = $event->getEntity();
 
-        if ($entity instanceof PersistableInterface) {
-            /** @var PersistableInterface $entity */
-
+        if ($entity instanceof IdentityPersistableInterface) {
+            /** @var IdentityPersistableInterface $entity */
             $entity->setModifiedAt($this->timeService->now());
+        // @codeCoverageIgnoreStart
+        } else if ($entity instanceof StatePersistableInterface) {
+            throw new \Exception('Une instance de ' . StatePersistableInterface::class .
+                ' ne doit pas être modifiée : ' . $entity);
         }
+        // @codeCoverageIgnoreEnd
     }
 }
