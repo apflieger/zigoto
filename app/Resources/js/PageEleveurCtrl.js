@@ -33,4 +33,14 @@ zigotoo.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $htt
             console.debug(response);
         });
     };
+
+    $scope.addActualite = function() {
+        $scope.pageEleveur.actualites = $scope.pageEleveur.actualites || [];
+        $scope.pageEleveur.actualites.push( {
+            contenu: '',
+            date: new Date()
+        });
+
+        $scope.commit();
+    };
 }]);

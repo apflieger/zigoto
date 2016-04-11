@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\Entity
@@ -21,6 +22,8 @@ class Actualite implements StatePersistableInterface
 
     /**
      * @var DateTime
+     * @Type("DateTime")
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
@@ -40,6 +43,14 @@ class Actualite implements StatePersistableInterface
     public function getContenu()
     {
         return $this->contenu;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 
     public function hashCode()

@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,13 +26,13 @@ trait Persistable
 
     /**
      * @ORM\Column(type="datetime")
-     * @var DateTimeImmutable
+     * @var DateTime
      */
     protected $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @var DateTimeImmutable
+     * @var DateTime
      */
     protected $modifiedAt;
 
@@ -53,7 +54,7 @@ trait Persistable
     }
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -61,7 +62,7 @@ trait Persistable
     }
 
     /**
-     * @param DateTimeImmutable $createdAt
+     * @param DateTime $createdAt
      */
     public function setCreatedAt($createdAt)
     {
@@ -69,7 +70,7 @@ trait Persistable
     }
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function getModifiedAt()
     {
@@ -77,7 +78,7 @@ trait Persistable
     }
 
     /**
-     * @param DateTimeImmutable $modifiedAt
+     * @param DateTime $modifiedAt
      */
     public function setModifiedAt($modifiedAt)
     {

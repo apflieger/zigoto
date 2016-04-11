@@ -90,6 +90,11 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+jms_serializer:
+    handlers:
+        datetime:
+            default_format: 'Y-m-d\TH:i:s.uO' # https://github.com/schmittjoh/JMSSerializerBundle/issues/395
+
 swiftmailer:
     transport:  smtp
     host:       mail.gandi.net

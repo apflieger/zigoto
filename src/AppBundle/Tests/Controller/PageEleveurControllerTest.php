@@ -104,7 +104,7 @@ class PageEleveurControllerTest extends WebTestCase
          */
         /** @var EntityManager $entityManager */
         $entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $actualite1 = new Actualite('Vieille news', new \DateTime());
+        $actualite1 = new Actualite($this->getName() . rand(), new \DateTime('2015/12/25'));
         $entityManager->persist($actualite1);
         $entityManager->flush($actualite1);
         $this->testUtils->clearEntities();
@@ -130,7 +130,9 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('chartreux', trim($crawler->filter('#races')->text()));
         $this->assertEquals(1, $crawler->filter('#actualites h2')->count());
         $this->assertEquals(2, $crawler->filter('#actualites .actualite')->count());
-        $this->assertContains('Nouvelle portée', $crawler->filter('#actualites .actualite')->getNode(1)->textContent);
+        $this->assertContains('Nouvelle portée', $crawler->filter('#actualites .actualite')->first()->text());
+        $this->assertContains('25/12/2015', $crawler->filter('#actualites .actualite')->nextAll()->text());
+        $this->assertContains($actualite1->getContenu(), $crawler->filter('#actualites .actualite')->nextAll()->text());
     }
 
     public function testCommit()
@@ -139,6 +141,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $pageEleveur->setNom('nouveau nom');
         $pageEleveur->setDescription('description non nulle');
+        $pageEleveur->setActualites([new Actualite('Nouvelle portée', new \DateTime())]);
 
         // Modification du nom et de la description de la page
         $this->client->request('POST', '/commit-page-eleveur',

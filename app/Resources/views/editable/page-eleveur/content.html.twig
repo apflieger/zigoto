@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="description"
+        <div class="multi-line"
              onaftersave="commit()"
              editable-textarea="pageEleveur.description"
              blur="ignore"
@@ -83,11 +83,23 @@
 
                 {% if isOwner %}
                     {% verbatim %}
-                        <article ng-repeat="actualite in pageEleveur.actualites" class="actualite">{{ actualite.contenu }}</article>
+                        <article ng-repeat="actualite in pageEleveur.actualites | orderBy:'':true" class="actualite">
+                            <header>{{ actualite.date }}</header>
+                            <div class="multi-line"
+                                 onaftersave="commit()"
+                                 editable-textarea="actualite.contenu"
+                                 blur="ignore"
+                                 e-rows="10" e-cols="100"
+                                 ng-bind="actualite.contenu || 'Saisir'"
+                            >{{ actualite.contenu }}</div>
+                        </article>
                     {% endverbatim %}
                 {% else %}
-                    {% for actualite in pageEleveur.actualites %}
-                        <article class="actualite">{{ actualite.contenu }}</article>
+                    {% for actualite in pageEleveur.actualites | reverse %}
+                        <article class="actualite">
+                            <header>{{ actualite.date | date("d/m/Y")}}</header>
+                            {{ actualite.contenu }}
+                        </article>
                     {% endfor %}
                 {% endif %}
             </div>
