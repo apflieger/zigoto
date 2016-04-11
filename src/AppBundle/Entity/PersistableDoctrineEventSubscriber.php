@@ -41,14 +41,13 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
         $entity = $event->getEntity();
 
         if ($entity instanceof PersistableInterface) {
-            if ($entity->getId() !== null)
-                throw new \Exception('entité '. get_class($entity) . ' deja persistée : ' . $entity->getId()); // @codeCoverageIgnore
-
             $now = $this->timeService->now();
             $entity->setCreatedAt($now);
             $entity->setModifiedAt($now);
 
             if ($entity instanceof IdentityPersistableInterface) {
+                if ($entity->getId() !== null)
+                    throw new \Exception('entité '. get_class($entity) . ' deja persistée : ' . $entity->getId()); // @codeCoverageIgnore
                 $entity->setId(bin2hex(random_bytes(8))); // Ce calcul prend 4 μs sur mon macbook
             } else if ($entity instanceof StatePersistableInterface) {
                 $entity->setId($entity->hashCode());

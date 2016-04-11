@@ -9,16 +9,16 @@
 namespace AppBundle\Service;
 
 
-use DateTimeImmutable;
+use DateTime;
 
 class TimeService
 {
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function now()
     {
-        return new DateTimeImmutable();
+        return new DateTime();
     }
 }
