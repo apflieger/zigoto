@@ -65,7 +65,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
-            return strpos($script->text(), 'const-js');
+            return strpos($script->text(), 'flag:const-js');
         });
         $this->assertEquals(1, $script->count());
 
@@ -209,7 +209,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertNotContains('owner', $crawler->html(), 'ca marche pas !');
+        $this->assertNotContains('flag:js-owner', $crawler->html(), 'ca marche pas !');
     }
 
     public function testCommitBrancheInconnue()
