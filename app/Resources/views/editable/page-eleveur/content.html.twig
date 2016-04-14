@@ -47,13 +47,13 @@
                 </div>
             </header>
 
-            <article class="multi-line"
+            <article class="multi-line description"
+                 id="description"
                  onaftersave="commit()"
                  editable-textarea="pageEleveur.description"
                  blur="ignore"
                  e-rows="10" e-cols="100"
                  ng-bind="pageEleveur.description || 'Ajouter la description de votre élevage'"
-                 id="description"
             >{{ pageEleveur.description }}</article>
 
         </section>
