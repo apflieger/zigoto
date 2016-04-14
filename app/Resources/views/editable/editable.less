@@ -13,11 +13,13 @@
 
 .editable-buttons {
     display: block;
-    margin: .2em;
+    margin: .66em 0;
     font-size: @smaller;
     .btn {
         display: inline;
-        margin-right: 1em;
+        + .btn {
+            margin-left: 1em;
+        }
     }
 }
 
