@@ -76,7 +76,7 @@ class ContactControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_FOUND, $this->client->getResponse()->getStatusCode());
 
-        $contactRepository->clear(); // permet de s'assurer que les 'find' vont bien chercher en bdd
+        $this->testUtils->clearEntities();
 
         // On vérifie que le contact est en bdd
         /** @var Contact[] $contacts */
