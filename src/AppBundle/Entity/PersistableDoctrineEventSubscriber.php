@@ -10,6 +10,7 @@ namespace AppBundle\Entity;
 
 
 use AppBundle\Service\TimeService;
+use DateTime;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
@@ -41,7 +42,7 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
         $entity = $event->getEntity();
 
         if ($entity instanceof PersistableInterface) {
-            $now = $this->timeService->now();
+            $now = DateTime::createFromFormat('U', time());
             $entity->setCreatedAt($now);
             $entity->setModifiedAt($now);
 
@@ -61,7 +62,7 @@ class PersistableDoctrineEventSubscriber implements EventSubscriber
 
         if ($entity instanceof IdentityPersistableInterface) {
             /** @var IdentityPersistableInterface $entity */
-            $entity->setModifiedAt($this->timeService->now());
+            $entity->setModifiedAt(DateTime::createFromFormat('U', time()));
         // @codeCoverageIgnoreStart
         } else if ($entity instanceof StatePersistableInterface) {
             throw new \Exception('Une instance de ' . StatePersistableInterface::class .

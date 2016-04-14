@@ -12,6 +12,7 @@ namespace AppBundle\Tests\Service;
 use AppBundle\Entity\IdentityPersistableInterface;
 use AppBundle\Tests\TestTimeService;
 use DateInterval;
+use DateTime;
 use FOS\UserBundle\Doctrine\UserManager;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -56,25 +57,28 @@ class PersistableTest extends KernelTestCase
         $this->assertEquals($this->timeService->now(), $user->getCreatedAt());
     }
 
+    /**
+     * @group time-sensitive
+     */
     public function testModifiedAt()
     {
         $user = $this->createUser();
 
-        $this->timeService->lockNow();
         $this->userManager->updateUser($user);
 
         // A la création de l'entité, createdAt et modifiedAt ont la même valeur, 'now'
-        $this->assertEquals($this->timeService->now(), $user->getModifiedAt());
+        $this->assertEquals(DateTime::createFromFormat('U', time()), $user->getModifiedAt());
+        $this->assertEquals(DateTime::createFromFormat('U', time()), $user->getCreatedAt());
 
         //modification du user
         $user->setPlainPassword('modified');
 
         //enregistrement du user une seconde plus tard
-        $this->timeService->lockNow($this->timeService->now()->add(new DateInterval('PT1S'))); // Simule un sleep(1)
+        sleep(2);
         $this->userManager->updateUser($user);
 
 
-        $this->assertEquals($this->timeService->now(), $user->getModifiedAt());
+        $this->assertEquals(DateTime::createFromFormat('U', time()), $user->getModifiedAt());
         $this->assertGreaterThan($user->getCreatedAt(), $user->getModifiedAt());
     }
 
