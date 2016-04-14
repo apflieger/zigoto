@@ -90,7 +90,7 @@
                 {% if isOwner %}
                     {% verbatim %}
                         <article ng-repeat="actualite in pageEleveur.actualites | orderBy:'':true" class="actualite">
-                            <header>{{ actualite.date }}</header>
+                            <header class="actualite-date">{{ actualite.date | date : 'dd/MM/yyyy' }}</header>
                             <div class="multi-line"
                                  onaftersave="commit()"
                                  editable-textarea="actualite.contenu"
@@ -103,7 +103,7 @@
                 {% else %}
                     {% for actualite in pageEleveur.actualites | reverse %}
                         <article class="actualite"> <!-- {{ actualite.id }} -->
-                            <header>{{ actualite.date | date("d/m/Y")}}</header>
+                            <header class="actualite-date">{{ actualite.date | date("d/m/Y")}}</header>
                             {{ actualite.contenu }}
                         </article>
                     {% endfor %}
