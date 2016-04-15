@@ -198,7 +198,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertContains('owner', $crawler->html());
+        $this->assertContains('flag:js-editable', $crawler->html());
     }
 
     public function testAccesAnonyme()
@@ -209,7 +209,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertNotContains('flag:js-owner', $crawler->html(), 'ca marche pas !');
+        $this->assertNotContains('flag:js-editable', $crawler->html(), 'ca marche pas !');
     }
 
     public function testCommitBrancheInconnue()

@@ -94,7 +94,7 @@ class PageEleveurController
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'editable/page-eleveur',
             'pageEleveur' => $pageEleveur,
-            'isOwner' => $isOwner
+            'isEditable' => $isOwner
         ]);
     }
 

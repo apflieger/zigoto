@@ -8,7 +8,7 @@
         <section>
             <header class="grid-2-tiny-1">
                 <div>
-                    {% if isOwner or pageEleveur.especes %}
+                    {% if isEditable or pageEleveur.especes %}
                         <div class="oneline-field">
                             <label>Animaux :</label>
                             <span onaftersave="commit()" editable-text="pageEleveur.especes" blur="ignore"
@@ -20,7 +20,7 @@
                         </div>
                     {% endif %}
 
-                    {% if isOwner or pageEleveur.races %}
+                    {% if isEditable or pageEleveur.races %}
                         <div class="oneline-field">
                             <label>Race :</label>
                             <span onaftersave="commit()" editable-text="pageEleveur.races" blur="ignore"
@@ -33,7 +33,7 @@
                     {% endif %}
                 </div>
                 <div class="text-right-tiny-left">
-                    {% if isOwner or pageEleveur.lieu %}
+                    {% if isEditable or pageEleveur.lieu %}
                         <div class="oneline-field">
                             <label>Lieu :</label>
                             <span onaftersave="commit()" editable-text="pageEleveur.lieu" blur="ignore"
@@ -60,7 +60,7 @@
 
         <section class="animaux">
             <ul>
-                {% if isOwner %}
+                {% if isEditable %}
                     {% verbatim %}
                         <li ng-repeat="animal in pageEleveur.animaux">
                             <a href="/animal/{{ animal.id }}">{{ animal.nom }}</a>
@@ -73,21 +73,21 @@
                 {% endif %}
             </ul>
 
-            {% if isOwner %}
+            {% if isEditable %}
                 <button ng-click="addAnimal()" class="btn">Ajouter un animal</button>
             {% endif %}
         </section>
 
 
-        {% if isOwner or pageEleveur.actualites %}
+        {% if isEditable or pageEleveur.actualites %}
             <section id="actualites">
                 <h2>Actualités</h2>
 
-                {% if isOwner %}
+                {% if isEditable %}
                     <button id="ajouter-actualite" ng-click="addActualite()" class="btn">Nouvelle actualité</button>
                 {% endif %}
 
-                {% if isOwner %}
+                {% if isEditable %}
                     {% verbatim %}
                         <article ng-repeat="actualite in pageEleveur.actualites | orderBy:'':true" class="actualite">
                             <header class="actualite-date">{{ actualite.date | date : 'dd/MM/yyyy' }}</header>
