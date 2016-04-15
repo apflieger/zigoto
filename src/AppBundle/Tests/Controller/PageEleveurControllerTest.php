@@ -212,6 +212,15 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertNotContains('flag:js-editable', $crawler->html(), 'ca marche pas !');
     }
 
+    public function testPreviewOwner()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug() . '?preview');
+
+        $this->assertNotContains('flag:js-editable', $crawler->html());
+    }
+
     public function testCommitBrancheInconnue()
     {
         $this->testUtils->createUser();

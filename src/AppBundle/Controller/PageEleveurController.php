@@ -77,7 +77,7 @@ class PageEleveurController
      * @Route("/{pageEleveurSlug}", name="getPageEleveur_route")
      * @Method("GET")
      */
-    public function getAction($pageEleveurSlug)
+    public function getAction($pageEleveurSlug, Request $request)
     {
         $pageEleveur = $this->pageEleveurService->findBySlug($pageEleveurSlug);
 
@@ -90,11 +90,12 @@ class PageEleveurController
         /** @var User $user */
         $user = $token->getUser();
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
+        $isPreview = $request->query->has('preview');
 
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'editable/page-eleveur',
             'pageEleveur' => $pageEleveur,
-            'isEditable' => $isOwner
+            'isEditable' => $isOwner && !$isPreview
         ]);
     }
 
