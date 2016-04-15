@@ -52,6 +52,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
+        $this->assertEquals(1, $crawler->filter('#eleveur-toolbar #preview.btn')->count());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
         $this->assertEquals(1, $crawler->filter('#especes')->count());
@@ -79,6 +80,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
+        $this->assertEquals(0, $crawler->filter('#eleveur-toolbar')->count());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
         $this->assertEmpty($crawler->filter('#description')->text());
@@ -216,9 +218,15 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug() . '?preview');
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertNotContains('flag:js-editable', $crawler->html());
+        $this->assertContains('flag:js-editable', $crawler->html());
+
+        $previewLink = $crawler->filter('#eleveur-toolbar #preview')->link();
+
+        $crawnlerPreview = $this->client->click($previewLink);
+
+        $this->assertNotContains('flag:js-editable', $crawnlerPreview->html());
     }
 
     public function testCommitBrancheInconnue()

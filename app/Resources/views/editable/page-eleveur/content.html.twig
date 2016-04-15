@@ -1,5 +1,12 @@
 <div ng-app="zigotoo" class="container padded">
     <div ng-controller="PageEleveurCtrl">
+
+        {% if isEditable %}
+            <header id="eleveur-toolbar">
+                <a class="btn" id="preview" href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}?preview" target="_blank">Prévisualiser</a>
+            </header>
+        {% endif %}
+
         <h1>{{ pageEleveur.nom }}</h1>
         <!-- id : {{ pageEleveur.id }} -->
         <!-- HEAD : {{ pageEleveur.head }} -->
