@@ -10,27 +10,28 @@ namespace AppBundle\Tests;
 
 
 use AppBundle\Service\TimeService;
+use DateTime;
 use DateTimeImmutable;
 
 class TestTimeService extends TimeService
 {
-    /** @var DateTimeImmutable */
+    /** @var DateTime */
     private $now;
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTime
      */
     public function now()
     {
-        return $this->now != null ? $this->now : parent::now();
+        return $this->now != null ? clone $this->now : parent::now();
     }
 
-    public function lockNow(DateTimeImmutable $now = null)
+    public function lockNow(DateTime $now = null)
     {
         if ($now != null)
-            $this->now = $now;
+            $this->now = clone $now;
         else
-            $this->now = new DateTimeImmutable();
+            $this->now = new DateTime();
     }
 
     public function unlockNow()

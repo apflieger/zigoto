@@ -238,8 +238,10 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurCommitRepository
             ->method('find')->with($commit->getId())->willReturn($commit);
 
+        // requete cliente par le slug
         $pageEleveur = $this->pageEleveurService->findBySlug('');
 
+        // l'objet PageEleveur est bien rempli
         $this->assertEquals('Tatouine', $pageEleveur->getNom());
         $this->assertEquals('Plein de chartreux', $pageEleveur->getDescription());
         $this->assertEquals('Chats', $pageEleveur->getEspeces());

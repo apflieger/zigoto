@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnaudpflieger
- * Date: 20/01/2016
- * Time: 00:43
- */
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,14 +27,42 @@ class PageAnimalCommit implements IdentityPersistableInterface
     private $nom;
 
     /**
+     * @var DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateNaissance;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=1000, nullable=true)
+     */
+    private $description;
+
+    /**
      * PageAnimalCommit constructor.
      * @param PageAnimalCommit|null $parent
      * @param string $nom
+     * @param DateTime $dateNaissance
+     * @param string $description
      */
-    public function __construct(PageAnimalCommit $parent = null, $nom)
-    {
-        $this->nom = $nom;
+    public function __construct(
+        PageAnimalCommit $parent = null,
+        $nom,
+        DateTime $dateNaissance = null,
+        $description
+    ) {
         $this->parent = $parent;
+        $this->nom = $nom;
+        $this->dateNaissance = $dateNaissance;
+        $this->description = $description;
+    }
+
+    /**
+     * @return PageAnimalCommit
+     */
+    public function getParent()
+    {
+        return $this->parent;
     }
 
     /**
@@ -51,10 +74,18 @@ class PageAnimalCommit implements IdentityPersistableInterface
     }
 
     /**
-     * @return PageAnimalCommit
+     * @return DateTime
      */
-    public function getParent()
+    public function getDateNaissance()
     {
-        return $this->parent;
+        return $this->dateNaissance;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

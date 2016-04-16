@@ -65,6 +65,7 @@ services:
             - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')"
             - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalCommit')"
             - "@file_locator"
+            - "@zigotoo.time"
     
     zigotoo.contact:
         class: AppBundle\Service\ContactService

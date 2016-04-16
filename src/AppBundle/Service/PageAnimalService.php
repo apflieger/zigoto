@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnaudpflieger
- * Date: 09/01/2016
- * Time: 21:52
- */
 
 namespace AppBundle\Service;
 
@@ -32,16 +26,21 @@ class PageAnimalService
     /** @var FileLocator */
     private $fileLocator;
 
+    /** @var TimeService */
+    private $timeService;
+
     public function __construct(
         EntityManager $doctrine,
         PageAnimalBranchRepository $pageAnimalBranchRepository,
         EntityRepository $pageAnimalCommitRepository,
-        FileLocator $fileLocator
+        FileLocator $fileLocator,
+        TimeService $timeService
     ) {
         $this->doctrine = $doctrine;
         $this->pageAnimalBranchRepository = $pageAnimalBranchRepository;
         $this->pageAnimalCommitRepository = $pageAnimalCommitRepository;
         $this->fileLocator = $fileLocator;
+        $this->timeService = $timeService;
     }
 
     public function find($pageAnimalId)
@@ -57,6 +56,8 @@ class PageAnimalService
         $pageAnimal->setHead($branch->getCommit()->getId());
         $pageAnimal->setOwner($branch->getOwner());
         $pageAnimal->setNom($branch->getCommit()->getNom());
+        $pageAnimal->setDateNaissance($branch->getCommit()->getDateNaissance());
+        $pageAnimal->setDescription($branch->getCommit()->getDescription());
 
         return $pageAnimal;
     }
@@ -74,7 +75,12 @@ class PageAnimalService
         $noms = file($this->fileLocator->locate('@AppBundle/Resources/noms-animaux/noms.txt'));
 
         $nom = trim($noms[rand(0, count($noms) - 1)]);
-        $pageAnimalBranch->setCommit(new PageAnimalCommit(null, $nom));
+        $pageAnimalBranch->setCommit(new PageAnimalCommit(
+            null,
+            $nom,
+            $this->timeService->now(),
+            null
+        ));
 
         $this->doctrine->persist($pageAnimalBranch->getCommit());
         $this->doctrine->persist($pageAnimalBranch);
@@ -100,7 +106,12 @@ class PageAnimalService
         /** @var PageAnimalCommit $clientHead */
         $clientHead = $this->pageAnimalCommitRepository->find($pageAnimal->getHead());
 
-        $commit = new PageAnimalCommit($clientHead, $pageAnimal->getNom());
+        $commit = new PageAnimalCommit(
+            $clientHead,
+            $pageAnimal->getNom(),
+            $pageAnimal->getDateNaissance(),
+            $pageAnimal->getDescription()
+        );
 
         $pageAnimalBranch->setCommit($commit);
     }

@@ -9,6 +9,7 @@ use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalBranchRepository;
 use AppBundle\Service\PageAnimalService;
+use AppBundle\Tests\TestTimeService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit_Framework_MockObject_MockObject;
@@ -26,6 +27,9 @@ class PageAnimalServiceTest extends KernelTestCase
 
     /** @var EntityRepository|PHPUnit_Framework_MockObject_MockObject */
     private $pageAnimalCommitRepository;
+
+    /** @var TestTimeService */
+    private $timeService;
 
     public function setup()
     {
@@ -45,12 +49,14 @@ class PageAnimalServiceTest extends KernelTestCase
         static::bootKernel();
         /** @var FileLocator $fileLocator */
         $fileLocator = static::$kernel->getContainer()->get('file_locator');
+        $this->timeService = self::$kernel->getContainer()->get('zigotoo.time');
 
         $this->pageAnimalService = new PageAnimalService(
             $entityManager,
             $this->pageAnimalBranchRepository,
             $this->pageAnimalCommitRepository,
-            $fileLocator
+            $fileLocator,
+            $this->timeService
         );
     }
 
@@ -65,12 +71,14 @@ class PageAnimalServiceTest extends KernelTestCase
 
     public function testCommit_fastforward()
     {
+        $this->timeService->lockNow();
+
         // Simulation d'une page animal en base de données
         $user = new User();
         $pageAnimalBranch = new PageAnimalBranch();
 
         $pageAnimalBranch->setOwner($user);
-        $commit = new PageAnimalCommit(null, 'rodolf');
+        $commit = new PageAnimalCommit(null, 'rodolf', null, null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
@@ -81,10 +89,35 @@ class PageAnimalServiceTest extends KernelTestCase
         $pageAnimal = new PageAnimal();
         $pageAnimal->setHead($commit->getId());
         $pageAnimal->setNom('rudolf');
+        $pageAnimal->setDateNaissance($this->timeService->now());
+        $pageAnimal->setDescription('Inscrit au LOF');
         $this->pageAnimalService->commit($user, $pageAnimal);
 
         // On vérifier que le commit a bien été créé avec les nouvelles données
         $this->assertEquals($commit->getId(), $pageAnimalBranch->getCommit()->getParent()->getId());
         $this->assertEquals('rudolf', $pageAnimalBranch->getCommit()->getNom());
+        $this->assertEquals($this->timeService->now(), $pageAnimalBranch->getCommit()->getDateNaissance());
+        $this->assertEquals('Inscrit au LOF', $pageAnimalBranch->getCommit()->getDescription());
+    }
+
+    public function testMappingBranchToModel()
+    {
+        $this->timeService->lockNow();
+
+        // mock d'une page animal en bdd
+        $pageAnimalBranch = new PageAnimalBranch();
+        $pageAnimalBranch->setId(1);
+        $this->pageAnimalBranchRepository->method('find')->with(1)->willReturn($pageAnimalBranch);
+
+        $commit = new PageAnimalCommit(null, 'rudy', $this->timeService->now(), 'Un beau chien');
+        $pageAnimalBranch->setCommit($commit);
+
+        // Requete de la page animal
+        $pageAnimal = $this->pageAnimalService->find(1);
+
+        // On vérifie que la page est retournée avec les bonnes données
+        $this->assertEquals('rudy', $pageAnimal->getNom());
+        $this->assertEquals($this->timeService->now(), $pageAnimal->getDateNaissance());
+        $this->assertEquals('Un beau chien', $pageAnimal->getDescription());
     }
 }
