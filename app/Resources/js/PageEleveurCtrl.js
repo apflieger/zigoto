@@ -43,4 +43,13 @@ zigotoo.controller('PageEleveurCtrl', ['$scope', '$http', function ($scope, $htt
 
         $scope.commit();
     };
+
+    $scope.removeActualite = function($actualite) {
+        var index = $scope.pageEleveur.actualites.indexOf($actualite);
+        if (index > -1) {
+            $scope.pageEleveur.actualites.splice(index, 1);
+        }
+
+        $scope.commit();
+    };
 }]);

@@ -97,7 +97,10 @@
                 {% if isEditable %}
                     {% verbatim %}
                         <article ng-repeat="actualite in pageEleveur.actualites | orderBy:'':true" class="actualite">
-                            <header class="actualite-date">{{ actualite.date | date : 'dd/MM/yyyy' }}</header>
+                            <header class="actualite-date">
+                                <span class="italic">{{ actualite.date | date : 'dd/MM/yyyy' }}</span>
+                                <button class="btn supprimer-actualite" ng-click="removeActualite(actualite)">Supprimer</button>
+                            </header>
                             <div class="multi-line"
                                  onaftersave="commit()"
                                  editable-textarea="actualite.contenu"
@@ -110,7 +113,7 @@
                 {% else %}
                     {% for actualite in pageEleveur.actualites | reverse %}
                         <article class="actualite"> <!-- {{ actualite.id }} -->
-                            <header class="actualite-date">{{ actualite.date | date("d/m/Y")}}</header>
+                            <header class="actualite-date"><span class="italic">{{ actualite.date | date("d/m/Y")}}</span></header>
                             {{ actualite.contenu }}
                         </article>
                     {% endfor %}
