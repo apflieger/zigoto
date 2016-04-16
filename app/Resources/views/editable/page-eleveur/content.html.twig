@@ -2,9 +2,9 @@
     <div ng-controller="PageEleveurCtrl">
 
         {% if isEditable %}
-            <header id="eleveur-toolbar">
+            <div id="eleveur-toolbar">
                 <a class="btn" id="preview" href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}?preview" target="_blank">Prévisualiser</a>
-            </header>
+            </div>
         {% endif %}
 
         <h1>{{ pageEleveur.nom }}</h1>
