@@ -104,6 +104,9 @@ class PageAnimalService
         /** @var PageAnimalBranch $pageAnimalBranch */
         $pageAnimalBranch = $this->pageAnimalBranchRepository->find($pageAnimal->getId());
 
+        if ($user->getId() !== $pageAnimalBranch->getOwner()->getId())
+            throw new HistoryException(HistoryException::DROIT_REFUSE);
+
         /** @var PageAnimalCommit $clientHead */
         $clientHead = $this->pageAnimalCommitRepository->find($pageAnimal->getHead());
 

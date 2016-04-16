@@ -127,17 +127,42 @@ class PageAnimalServiceTest extends KernelTestCase
      */
     public function testCommit_non_fastforward()
     {
+        // Simulation d'une branche en bdd sur le commit 1
+        $user = new User();
+        $user->setId(1);
         $pageAnimalBranch = new PageAnimalBranch();
+        $pageAnimalBranch->setOwner($user);
         $commit = new PageAnimalCommit(null, 'Joey', null, null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
+        $this->pageAnimalBranchRepository->method('find')->with(10)->willReturn($pageAnimalBranch);
+
+        // Simulation commit à partir d'un head sur le commit 2
+        $pageAnimal = new PageAnimal();
+        $pageAnimal->setHead(2);
+        $pageAnimal->setId(10);
+        $this->pageAnimalCommitRepository->method('find')->with(2)
+            ->willReturn(new PageAnimalCommit(null, 'Joey', null, null));
+        $this->pageAnimalService->commit($user, $pageAnimal);
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::DROIT_REFUSE
+     */
+    public function testCommit_pas_owner_droit_refuse()
+    {
+        $user = new User();
+        $user->setId(1);
+        $pageAnimalBranch = new PageAnimalBranch();
+        $pageAnimalBranch->setOwner($user);
+
         $this->pageAnimalBranchRepository->method('find')->willReturn($pageAnimalBranch);
 
         $pageAnimal = new PageAnimal();
-        $pageAnimal->setHead(2);
-        $this->pageAnimalCommitRepository->method('find')->with(2)
-            ->willReturn(new PageAnimalCommit(null, 'Joey', null, null));
-        $this->pageAnimalService->commit(new User(), $pageAnimal);
+        $user2 = new User();
+        $user2->setId(2);
+        $this->pageAnimalService->commit($user2, $pageAnimal);
     }
 }
