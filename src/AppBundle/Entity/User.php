@@ -28,4 +28,9 @@ class User extends \FOS\UserBundle\Model\User implements IdentityPersistableInte
     {
         parent::__construct();
     }
+
+    public function __toString()
+    {
+        return 'id: ' . $this->id . '; userName: ' . $this->getUsername() . '; email: ' . $this->getEmail();
+    }
 }

@@ -41,6 +41,7 @@ services:
             - "@serializer"
             - "@zigotoo.page_eleveur"
             - "@zigotoo.page_animal"
+            - "@logger"
 
     zigotoo.page_animal_controller:
         class: AppBundle\Controller\PageAnimalController

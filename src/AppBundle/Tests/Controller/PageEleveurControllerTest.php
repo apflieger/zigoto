@@ -229,6 +229,20 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertNotContains('flag:js-editable', $crawnlerPreview->html());
     }
 
+    public function testPreviewAnonyme()
+    {
+        /*
+         * Un user qui n'est pas owner de la page et qui arrive en ?preview
+         * doit être redirigé sur l'url sans le param preview
+         */
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+        $this->testUtils->logout();
+
+        $this->client->request('GET', '/' . $pageEleveur->getSlug() . '?preview');
+
+        $this->assertTrue($this->client->getResponse()->isRedirect('/' . $pageEleveur->getSlug()));
+    }
+
     public function testCommitBrancheInconnue()
     {
         $this->testUtils->createUser();

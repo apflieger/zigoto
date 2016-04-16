@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: apf
- * Date: 05/11/15
- * Time: 20:52
- */
 
 namespace AppBundle\Controller;
-
 
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\User;
@@ -16,6 +9,7 @@ use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use JMS\Serializer\Serializer;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,38 +26,45 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
  */
 class PageEleveurController
 {
-    /**
-     * @var TokenStorage
-     */
+    /** @var TokenStorage */
     private $tokenStorage;
-    /**
-     * @var RouterInterface
-     */
+
+    /** @var RouterInterface */
     private $router;
-    /**
-     * @var TwigEngine
-     */
+
+    /** @var TwigEngine */
     private $templating;
-    /**
-     * @var Serializer
-     */
+
+    /** @var Serializer */
     private $serializer;
-    /**
-     * @var PageEleveurService
-     */
+
+    /** @var PageEleveurService */
     private $pageEleveurService;
-    /**
-     * @var PageAnimalService
-     */
+
+    /** @var PageAnimalService */
     private $pageAnimalService;
 
+    /** @var Logger */
+    private $logger;
+
+    /**
+     * PageEleveurController constructor.
+     * @param TokenStorage $tokenStorage
+     * @param RouterInterface $router
+     * @param TwigEngine $templating
+     * @param Serializer $serializer
+     * @param PageEleveurService $pageEleveurService
+     * @param PageAnimalService $pageAnimalService
+     * @param Logger $logger
+     */
     public function __construct(
         TokenStorage $tokenStorage,
         RouterInterface $router,
         TwigEngine $templating,
         Serializer $serializer,
         PageEleveurService $pageEleveurService,
-        PageAnimalService $pageAnimalService
+        PageAnimalService $pageAnimalService,
+        Logger $logger
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->router = $router;
@@ -71,11 +72,16 @@ class PageEleveurController
         $this->serializer = $serializer;
         $this->pageEleveurService = $pageEleveurService;
         $this->pageAnimalService = $pageAnimalService;
+        $this->logger = $logger;
     }
 
     /**
      * @Route("/{pageEleveurSlug}", name="getPageEleveur_route")
      * @Method("GET")
+     *
+     * @param $pageEleveurSlug
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
     public function getAction($pageEleveurSlug, Request $request)
     {
@@ -91,6 +97,17 @@ class PageEleveurController
         $user = $token->getUser();
         $isOwner = $user !== 'anon.' && $pageEleveur->getOwner()->getId() === $user->getId();
         $isPreview = $request->query->has('preview');
+
+        if ($isPreview && !$isOwner) {
+            $this->logger->notice('Requete visiteur sur page eleveur en mode preview', [
+                    'user' => $user,
+                    'pageEleveurSlug' => $pageEleveurSlug,
+                    'pageEleveurId' => $pageEleveur->getId()
+            ]);
+            return new RedirectResponse(
+                $this->router->generate('getPageEleveur_route', ['pageEleveurSlug' => $pageEleveurSlug])
+            );
+        }
 
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'editable/page-eleveur',
