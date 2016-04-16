@@ -15,6 +15,7 @@ use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalBranchRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 
 class PageAnimalService
@@ -25,16 +26,21 @@ class PageAnimalService
     /** @var PageAnimalBranchRepository */
     private $pageAnimalBranchRepository;
 
+    /** @var EntityRepository */
+    private $pageAnimalCommitRepository;
+
     /** @var FileLocator */
     private $fileLocator;
 
     public function __construct(
         EntityManager $doctrine,
         PageAnimalBranchRepository $pageAnimalBranchRepository,
+        EntityRepository $pageAnimalCommitRepository,
         FileLocator $fileLocator
     ) {
         $this->doctrine = $doctrine;
         $this->pageAnimalBranchRepository = $pageAnimalBranchRepository;
+        $this->pageAnimalCommitRepository = $pageAnimalCommitRepository;
         $this->fileLocator = $fileLocator;
     }
 
@@ -80,5 +86,22 @@ class PageAnimalService
         $pageAnimal->setOwner($pageAnimalBranch->getOwner());
         $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
         return $pageAnimal;
+    }
+
+    /**
+     * @param User $user
+     * @param PageAnimal $pageAnimal
+     */
+    public function commit(User $user, PageAnimal $pageAnimal)
+    {
+        /** @var PageAnimalBranch $pageAnimalBranch */
+        $pageAnimalBranch = $this->pageAnimalBranchRepository->find($pageAnimal->getId());
+
+        /** @var PageAnimalCommit $clientHead */
+        $clientHead = $this->pageAnimalCommitRepository->find($pageAnimal->getHead());
+
+        $commit = new PageAnimalCommit($clientHead, $pageAnimal->getNom());
+
+        $pageAnimalBranch->setCommit($commit);
     }
 }

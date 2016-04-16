@@ -49,4 +49,12 @@ class PageAnimalCommit implements IdentityPersistableInterface
     {
         return $this->nom;
     }
+
+    /**
+     * @return PageAnimalCommit
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
 }

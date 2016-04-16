@@ -63,6 +63,7 @@ services:
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalBranch')"
+            - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageAnimalCommit')"
             - "@file_locator"
     
     zigotoo.contact:
