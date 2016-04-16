@@ -120,4 +120,24 @@ class PageAnimalServiceTest extends KernelTestCase
         $this->assertEquals($this->timeService->now(), $pageAnimal->getDateNaissance());
         $this->assertEquals('Un beau chien', $pageAnimal->getDescription());
     }
+
+    /**
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::NON_FAST_FORWARD
+     */
+    public function testCommit_non_fastforward()
+    {
+        $pageAnimalBranch = new PageAnimalBranch();
+        $commit = new PageAnimalCommit(null, 'Joey', null, null);
+        $commit->setId(1);
+        $pageAnimalBranch->setCommit($commit);
+
+        $this->pageAnimalBranchRepository->method('find')->willReturn($pageAnimalBranch);
+
+        $pageAnimal = new PageAnimal();
+        $pageAnimal->setHead(2);
+        $this->pageAnimalCommitRepository->method('find')->with(2)
+            ->willReturn(new PageAnimalCommit(null, 'Joey', null, null));
+        $this->pageAnimalService->commit(new User(), $pageAnimal);
+    }
 }

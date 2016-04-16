@@ -97,6 +97,7 @@ class PageAnimalService
     /**
      * @param User $user
      * @param PageAnimal $pageAnimal
+     * @throws HistoryException
      */
     public function commit(User $user, PageAnimal $pageAnimal)
     {
@@ -105,6 +106,9 @@ class PageAnimalService
 
         /** @var PageAnimalCommit $clientHead */
         $clientHead = $this->pageAnimalCommitRepository->find($pageAnimal->getHead());
+
+        if ($clientHead->getId() !== $pageAnimalBranch->getCommit()->getId())
+            throw new HistoryException(HistoryException::NON_FAST_FORWARD);
 
         $commit = new PageAnimalCommit(
             $clientHead,
