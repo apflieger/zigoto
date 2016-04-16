@@ -208,6 +208,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
 
         //On vérifie qu'il y a bien un nouveau commit avec les bonnes infos
         $this->assertNotEquals($commit1->getId(), $pageEleveurBranch->getCommit()->getId());
+        $this->assertEquals($commit1->getId(), $pageEleveurBranch->getCommit()->getParent()->getId());
         $this->assertEquals('Une longue description', $pageEleveurBranch->getCommit()->getDescription());
         $this->assertEquals('Chiens', $pageEleveurBranch->getCommit()->getEspeces());
         $this->assertEquals('Chihuahua', $pageEleveurBranch->getCommit()->getRaces());

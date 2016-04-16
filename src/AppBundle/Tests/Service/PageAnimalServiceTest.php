@@ -58,10 +58,4 @@ class PageAnimalServiceTest extends KernelTestCase
 
         $this->assertEquals($owner, $pageAnimal->getOwner());
     }
-
-    public function testCreate_PlusieursAnimaux()
-    {
-        $this->pageAnimalRepository->method('findByOwner')->willReturn([new PageEleveur()]);
-        $this->pageAnimalService->create(new User());
-    }
 }

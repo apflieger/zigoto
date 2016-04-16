@@ -151,4 +151,12 @@ class PageEleveurCommit implements IdentityPersistableInterface
     {
         return $this->lieu;
     }
+
+    /**
+     * @return PageEleveurCommit
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
 }
