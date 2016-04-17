@@ -113,7 +113,7 @@
                 {% else %}
                     {% for actualite in pageEleveur.actualites | reverse %}
                         <article class="actualite"> <!-- {{ actualite.id }} -->
-                            <header class="actualite-date"><span class="italic">{{ actualite.date | date("d/m/Y")}}</span></header>
+                            <header class="actualite-date"><span class="italic">{{ actualite.date | date("d/m/Y") }}</span></header>
                             {{ actualite.contenu }}
                         </article>
                     {% endfor %}

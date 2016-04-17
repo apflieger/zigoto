@@ -1,14 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnaudpflieger
- * Date: 13/01/2016
- * Time: 22:41
- */
 
 namespace AppBundle\Tests\Controller;
 
 
+use AppBundle\Tests\TestTimeService;
 use AppBundle\Tests\TestUtils;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -46,12 +41,18 @@ class PageAnimalControllerTest extends WebTestCase
 
     public function testContent_Owner_PageVide()
     {
+        /** @var TestTimeService $timeService */
+        $timeService = $this->client->getContainer()->get('zigotoo.time');
+        $timeService->lockNow();
+
         $pageAnimal = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur()->getAnimaux()[0];
 
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
+        $this->assertEquals($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
+        $this->assertEquals(1, $crawler->filter('#description')->count());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
@@ -64,6 +65,10 @@ class PageAnimalControllerTest extends WebTestCase
 
     public function testContent_UserAnonyme_PageVide()
     {
+        /** @var TestTimeService $timeService */
+        $timeService = $this->client->getContainer()->get('zigotoo.time');
+        $timeService->lockNow();
+
         $pageAnimal = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur()->getAnimaux()[0];
 
         $this->testUtils->logout();
@@ -71,8 +76,8 @@ class PageAnimalControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
-
-        
+        $this->assertEquals($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
+        $this->assertEquals(1, $crawler->filter('#description')->count());
     }
 
     public function testAccesOwner()

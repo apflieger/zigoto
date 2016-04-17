@@ -1,3 +1,13 @@
-<div class="container">
+<div class="container padded">
     <h1>{{ pageAnimal.nom }}</h1>
+    <!-- id : {{ pageAnimal.id }} -->
+    <!-- HEAD : {{ pageAnimal.head }} -->
+    <!-- owner : {{ pageAnimal.owner.id }} -->
+
+    <section>
+        <header>
+            <div id="date-naissance">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</div>
+        </header>
+        <div id="description"></div>
+    </section>
 </div>
