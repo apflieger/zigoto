@@ -308,4 +308,29 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
     {
         PageEleveurService::slug('!?,.<>=&');
     }
+
+    /**
+     * @expectedException \AppBundle\Service\HistoryException
+     * @expectedExceptionCode \AppBundle\Service\HistoryException::DROIT_REFUSE
+     */
+    public function testCommit_pas_owner_droit_refuse()
+    {
+        // Simulation branche en bdd
+        $user = new User();
+        $user->setId(1);
+        $pageEleveurBranch = new PageEleveurBranch();
+        $pageEleveurBranch->setOwner($user);
+        $commit = new PageEleveurCommit(null, '', null, null, null, null, null, null);
+        $pageEleveurBranch->setCommit($commit);
+
+        $this->pageEleveurBranchRepository->method('find')->willReturn($pageEleveurBranch);
+        $this->pageEleveurCommitRepository->method('find')->with(10)->willReturn($commit);
+
+        // Simulation commit
+        $pageEleveur = new PageEleveur();
+        $user2 = new User();
+        $user2->setId(2);
+        $pageEleveur->setHead(10);
+        $this->pageEleveurService->commit($user2, $pageEleveur);
+    }
 }
