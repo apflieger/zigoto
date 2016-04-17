@@ -91,6 +91,8 @@ class PageAnimalService
         $pageAnimal->setHead($pageAnimalBranch->getCommit()->getId());
         $pageAnimal->setOwner($pageAnimalBranch->getOwner());
         $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
+        $pageAnimal->setDescription($pageAnimalBranch->getCommit()->getDescription());
+        $pageAnimal->setDateNaissance($pageAnimalBranch->getCommit()->getDateNaissance());
         return $pageAnimal;
     }
 

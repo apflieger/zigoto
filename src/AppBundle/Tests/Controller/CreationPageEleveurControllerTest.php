@@ -48,9 +48,10 @@ class CreationPageEleveurControllerTest extends WebTestCase
 
     public function testCreationPageEleveur_Success()
     {
+        // Création de compte
         $user = $this->testUtils->createUser()->getUser();
 
-        // on va sur la home en mode connecté, il y a le formulaire de création de page eleveur
+        // Formulaire de créatoin de page eleveur
         $crawler = $this->client->request('GET', '/creation-page-eleveur');
 
         $this->assertEquals('Nom de l\'élevage', $crawler->filter('form[name="creation-page-eleveur"] label')->text());

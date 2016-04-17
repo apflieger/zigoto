@@ -25,6 +25,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PageEleveurControllerTest extends WebTestCase
 {
+    const FLAG_CONST_JS = 'flag:const-js';
+    const FLAG_JS_EDITABLE = 'flag:js-editable';
+
     /** @var Serializer */
     private $serializer;
     /** @var Client */
@@ -64,9 +67,9 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('Actualités', $crawler->filter('#actualites h2')->text());
         $this->assertEquals('Nouvelle actualité', $crawler->filter('#actualites #ajouter-actualite')->text());
 
-        // On vérifie qu'il y a un script qui passe l'id du commit au JS
+        // On vérifie que le JS est dans la page
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
-            return strpos($script->text(), 'flag:const-js');
+            return strpos($script->text(), static::FLAG_CONST_JS);
         });
         $this->assertEquals(1, $script->count());
 
@@ -200,7 +203,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertContains('flag:js-editable', $crawler->html());
+        $this->assertContains(self::FLAG_JS_EDITABLE, $crawler->html());
     }
 
     public function testAccesAnonyme()
@@ -211,7 +214,19 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertNotContains('flag:js-editable', $crawler->html(), 'ca marche pas !');
+        $this->assertNotContains(self::FLAG_JS_EDITABLE, $crawler->html(), 'ca marche pas !');
+    }
+
+    public function testAccesUserNonOwner()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+
+        $this->testUtils->logout();
+        $this->testUtils->createUser();
+
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+
+        $this->assertNotContains(self::FLAG_JS_EDITABLE, $crawler->html(), 'ca marche pas !');
     }
 
     public function testPreviewOwner()
@@ -220,13 +235,13 @@ class PageEleveurControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
-        $this->assertContains('flag:js-editable', $crawler->html());
+        $this->assertContains(self::FLAG_JS_EDITABLE, $crawler->html());
 
         $previewLink = $crawler->filter('#eleveur-toolbar #preview')->link();
 
         $crawnlerPreview = $this->client->click($previewLink);
 
-        $this->assertNotContains('flag:js-editable', $crawnlerPreview->html());
+        $this->assertNotContains(self::FLAG_JS_EDITABLE, $crawnlerPreview->html());
     }
 
     public function testPreviewAnonyme()

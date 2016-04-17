@@ -1,0 +1,11 @@
+{% if isEditable %}
+    <!-- flag:js-editable -->
+    <script type="text/javascript">
+        // flag:const-js
+        {% autoescape false %}
+        var globPageAnimal = {{ pageAnimal | serialize }};
+        {% endautoescape %}
+    </script>
+    <script src="/build/lib/angular.js"></script>
+    <script src="/build/lib/xeditable.min.js"></script>
+{% endif %}

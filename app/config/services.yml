@@ -46,6 +46,7 @@ services:
     zigotoo.page_animal_controller:
         class: AppBundle\Controller\PageAnimalController
         arguments:
+            - "@security.token_storage"
             - "@templating"
             - "@zigotoo.page_animal"
 
