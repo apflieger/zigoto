@@ -15,9 +15,7 @@ module.exports = function(grunt) {
                     'node_modules/normalize.css/normalize.css',
                     'node_modules/angular-xeditable-npm/dist/css/xeditable.css',
                     'node_modules/jquery/dist/jquery.min.js',
-                    'node_modules/jquery.scrollto/jquery.scrollTo.min.js',
-                    'node_modules/angular/angular.js',
-                    'node_modules/angular-xeditable-npm/dist/js/xeditable.min.js'
+                    'node_modules/jquery.scrollto/jquery.scrollTo.min.js'
                 ],
                 flatten: true,
                 dest: "<%= buildDir %>/lib/"
@@ -25,7 +23,7 @@ module.exports = function(grunt) {
             js: {
                 expand: true,
                 cwd: "<%= sourceDir %>/js",
-                src: ["**/*.js"],
+                src: ["teaser.js"],
                 dest: "<%= buildDir %>/js/",
             },
             images: {
@@ -69,6 +67,12 @@ module.exports = function(grunt) {
                 files: ['app/Resources/views/**/*.less'],
                 tasks: ['less']
             }
+        },
+        browserify: {
+            pageEleveur: {
+                src: "<%= sourceDir %>/js/zigotoo-editable.js",
+                dest: "<%=buildDir %>/js/zigotoo-editable.js"
+            }
         }
     });
 
@@ -77,7 +81,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-csstree');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-browserify');
 
-    grunt.registerTask('default', ['clean', 'copy', 'csstree', 'less']);
-
+    grunt.registerTask('default', ['clean', 'copy', 'csstree', 'less', 'browserify']);
 };
