@@ -204,7 +204,7 @@ class PageEleveurController
                     Response::HTTP_FORBIDDEN);
             case HistoryException::BRANCHE_INCONNUE:
                 return new Response(
-                    'Votre page a été supprimée.',
+                    'La page a été supprimée.',
                     Response::HTTP_NOT_FOUND);
         }
         throw $e; // @codeCoverageIgnore

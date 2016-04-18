@@ -106,6 +106,9 @@ class PageAnimalService
         /** @var PageAnimalBranch $pageAnimalBranch */
         $pageAnimalBranch = $this->pageAnimalBranchRepository->find($pageAnimal->getId());
 
+        if ($pageAnimalBranch == null)
+            throw new HistoryException(HistoryException::BRANCHE_INCONNUE);
+
         if ($user->getId() !== $pageAnimalBranch->getOwner()->getId())
             throw new HistoryException(HistoryException::DROIT_REFUSE);
 
@@ -122,6 +125,11 @@ class PageAnimalService
             $pageAnimal->getDescription()
         );
 
+
+        $this->doctrine->persist($commit);
         $pageAnimalBranch->setCommit($commit);
+        $this->doctrine->flush([$commit, $pageAnimalBranch]);
+
+        $pageAnimal->setHead($commit->getId());
     }
 }

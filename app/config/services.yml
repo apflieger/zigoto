@@ -48,6 +48,8 @@ services:
         arguments:
             - "@security.token_storage"
             - "@templating"
+            - "@router"
+            - "@serializer"
             - "@zigotoo.page_animal"
 
     zigotoo.page_eleveur:

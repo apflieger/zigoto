@@ -154,13 +154,13 @@ class PageEleveurControllerTest extends WebTestCase
             $this->serializer->serialize($pageEleveur, 'json')
         );
 
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
         // mise à jour de la page eleveur après commit
         $pageEleveur = $pageEleveurService->findBySlug($pageEleveur->getSlug());
-
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
 
         $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
@@ -169,7 +169,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
     }
 
-    public function testDroitCommitRefuse()
+    public function testCommit_non_owner()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
@@ -183,7 +183,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testCommitLogout()
+    public function testCommit_logged_out()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
@@ -258,7 +258,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertTrue($this->client->getResponse()->isRedirect('/' . $pageEleveur->getSlug()));
     }
 
-    public function testCommitBrancheInconnue()
+    public function testCommit_BrancheInconnue()
     {
         $this->testUtils->createUser();
 
@@ -274,7 +274,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testCommitNonFastForward()
+    public function testCommit_NonFastForward()
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
