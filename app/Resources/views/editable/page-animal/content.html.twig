@@ -1,13 +1,25 @@
 <div ng-app="zigotoo" class="container padded">
-    <h1>{{ pageAnimal.nom }}</h1>
-    <!-- id : {{ pageAnimal.id }} -->
-    <!-- HEAD : {{ pageAnimal.head }} -->
-    <!-- owner : {{ pageAnimal.owner.id }} -->
+    <div ng-controller="PageAnimalCtrl">
+        <h1><span onaftersave="commit()" editable-text="pageAnimal.nom" blur="ignore"
+              ng-bind="pageAnimal.nom || 'nom'"
+              id="animal-nom">{{ pageAnimal.nom }}</span>
+        </h1>
+        <!-- id : {{ pageAnimal.id }} -->
+        <!-- HEAD : {{ pageAnimal.head }} -->
+        <!-- owner : {{ pageAnimal.owner.id }} -->
 
-    <section>
-        <header>
-            <div id="date-naissance">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</div>
-        </header>
-        <div id="description"></div>
-    </section>
+        <section>
+            <header>
+                <div id="date-naissance">Date de naissance : {{ pageAnimal.dateNaissance | date("d/m/Y") }}</div>
+            </header>
+            <article class="multi-line description"
+                     id="description"
+                     onaftersave="commit()"
+                     editable-textarea="pageAnimal.description"
+                     blur="ignore"
+                     e-rows="10" e-cols="100"
+                     ng-bind="pageAnimal.description || 'Saisir'"
+            >{{ pageAnimal.description }}</article>
+        </section>
+    </div>
 </div>

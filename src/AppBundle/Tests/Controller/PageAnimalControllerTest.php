@@ -53,7 +53,7 @@ class PageAnimalControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
-        $this->assertEquals($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
+        $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
@@ -78,7 +78,7 @@ class PageAnimalControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
-        $this->assertEquals($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
+        $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
     }
 
