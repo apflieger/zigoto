@@ -28,7 +28,7 @@ class PageAnimalCommit implements IdentityPersistableInterface
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="datetime")
      */
     private $dateNaissance;
 

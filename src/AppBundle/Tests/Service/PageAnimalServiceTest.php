@@ -71,20 +71,20 @@ class PageAnimalServiceTest extends KernelTestCase
 
     public function testCommit_fastforward()
     {
-        $this->timeService->lockNow();
 
         // Simulation d'une page animal en base de données
         $user = new User();
         $pageAnimalBranch = new PageAnimalBranch();
 
         $pageAnimalBranch->setOwner($user);
-        $commit = new PageAnimalCommit(null, 'rodolf', null, null);
+        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
         $this->pageAnimalBranchRepository->method('find')->willReturn($pageAnimalBranch);
         $this->pageAnimalCommitRepository->method('find')->with($commit->getId())->willReturn($commit);
 
+        $this->timeService->lockNow($this->timeService->now()->add(new \DateInterval("P1D")));
         // Simulation d'un commit coté client sur la page animal
         $pageAnimal = new PageAnimal();
         $pageAnimal->setHead($commit->getId());
@@ -164,5 +164,53 @@ class PageAnimalServiceTest extends KernelTestCase
         $user2 = new User();
         $user2->setId(2);
         $this->pageAnimalService->commit($user2, $pageAnimal);
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\ValidationException
+     * @expectedExceptionCode \AppBundle\Service\ValidationException::EMPTY_NOM
+     */
+    public function testCommit_nom_empty()
+    {
+        // Simulation d'une page animal en base de données
+        $user = new User();
+        $pageAnimalBranch = new PageAnimalBranch();
+
+        $pageAnimalBranch->setOwner($user);
+        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null);
+        $commit->setId(1);
+        $pageAnimalBranch->setCommit($commit);
+
+        $this->pageAnimalBranchRepository->method('find')->willReturn($pageAnimalBranch);
+        $this->pageAnimalCommitRepository->method('find')->with($commit->getId())->willReturn($commit);
+
+        // Commit la page avec un nom vide
+        $pageAnimal = $this->pageAnimalService->find($pageAnimalBranch->getId());
+        $pageAnimal->setNom('');
+        $this->pageAnimalService->commit($user, $pageAnimal);
+    }
+
+    /**
+     * @expectedException \AppBundle\Service\ValidationException
+     * @expectedExceptionCode \AppBundle\Service\ValidationException::EMPTY_DATE_NAISSANCE
+     */
+    public function testCommit_dateNaissance_empty()
+    {
+        // Simulation d'une page animal en base de données
+        $user = new User();
+        $pageAnimalBranch = new PageAnimalBranch();
+
+        $pageAnimalBranch->setOwner($user);
+        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null);
+        $commit->setId(1);
+        $pageAnimalBranch->setCommit($commit);
+
+        $this->pageAnimalBranchRepository->method('find')->willReturn($pageAnimalBranch);
+        $this->pageAnimalCommitRepository->method('find')->with($commit->getId())->willReturn($commit);
+
+        // Commit la page avec un nom vide
+        $pageAnimal = $this->pageAnimalService->find($pageAnimalBranch->getId());
+        $pageAnimal->setDateNaissance(null);
+        $this->pageAnimalService->commit($user, $pageAnimal);
     }
 }

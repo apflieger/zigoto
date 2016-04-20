@@ -1,8 +1,10 @@
 <div ng-app="zigotoo" class="container padded">
     <div ng-controller="PageAnimalCtrl">
-        <h1><span onaftersave="commit()" editable-text="pageAnimal.nom" blur="ignore"
-              ng-bind="pageAnimal.nom || 'nom'"
-              id="animal-nom">{{ pageAnimal.nom }}</span>
+        <h1><span editable-text="pageAnimal.nom" blur="ignore"
+                  onbeforesave="validateNom($nom)"
+                  onaftersave="commit()"
+                  ng-bind="pageAnimal.nom || 'saisir'"
+                  id="animal-nom">{{ pageAnimal.nom }}</span>
         </h1>
         <!-- id : {{ pageAnimal.id }} -->
         <!-- HEAD : {{ pageAnimal.head }} -->

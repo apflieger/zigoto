@@ -13,4 +13,9 @@ module.exports = function($scope, $http) {
             console.debug(response);
         });
     };
+
+    $scope.validateNom = function($nom) {
+        if (!$nom)
+            return "L'animal doit avoir un nom";
+    };
 };

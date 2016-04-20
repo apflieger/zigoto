@@ -14,14 +14,19 @@
 .editable-buttons {
     display: block;
     margin: .66em 0;
-    font-size: 1rem;
-    font-weight: normal;
     .btn {
         display: inline;
         + .btn {
             margin-left: 1em;
         }
     }
+}
+
+// Dans la page animal, ces éléments se retrouvent dans le h1
+.editable-error, .editable-buttons {
+    font-size: 1rem;
+    font-weight: normal;
+    color: @error;
 }
 
 .oneline-field {

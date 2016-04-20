@@ -13,6 +13,7 @@ use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\User;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
+use AppBundle\Service\ValidationException;
 use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -110,7 +111,9 @@ class PageAnimalController
             $this->pageAnimalService->commit($user, $pageAnimal);
             return new Response($this->serializer->serialize($pageAnimal, 'json'));
         } catch (HistoryException $e) {
-            return $this->createErrorResponse($e);
+            return $this->createHistoryErrorResponse($e);
+        } catch (ValidationException $e) {
+            return $this->createValidationErrorResponse($e);
         }
     }
 
@@ -119,7 +122,7 @@ class PageAnimalController
      * @return Response
      * @throws HistoryException
      */
-    private function createErrorResponse(HistoryException $e)
+    private function createHistoryErrorResponse(HistoryException $e)
     {
         switch ($e->getCode()) {
             case HistoryException::NON_FAST_FORWARD:
@@ -134,6 +137,26 @@ class PageAnimalController
                 return new Response(
                     'La page a été supprimée.',
                     Response::HTTP_NOT_FOUND);
+        }
+        throw $e; // @codeCoverageIgnore
+    }
+
+    /**
+     * @param ValidationException $e
+     * @return Response
+     * @throws ValidationException
+     */
+    private function createValidationErrorResponse(ValidationException $e)
+    {
+        switch ($e->getCode()) {
+            case ValidationException::EMPTY_NOM:
+                return new Response(
+                    'L\'animal doit avoir un nom',
+                    Response::HTTP_NOT_ACCEPTABLE);
+            case ValidationException::EMPTY_DATE_NAISSANCE:
+                return new Response(
+                    'L\'animal doit avoir une date de naissance',
+                    Response::HTTP_NOT_ACCEPTABLE);
         }
         throw $e; // @codeCoverageIgnore
     }

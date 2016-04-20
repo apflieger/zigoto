@@ -100,6 +100,7 @@ class PageAnimalService
      * @param User $user
      * @param PageAnimal $pageAnimal
      * @throws HistoryException
+     * @throws ValidationException
      */
     public function commit(User $user, PageAnimal $pageAnimal)
     {
@@ -118,14 +119,19 @@ class PageAnimalService
         if ($clientHead->getId() !== $pageAnimalBranch->getCommit()->getId())
             throw new HistoryException(HistoryException::NON_FAST_FORWARD);
 
+        if (empty($pageAnimal->getNom()))
+            throw new ValidationException(ValidationException::EMPTY_NOM);
+
+        if (empty($pageAnimal->getDateNaissance()))
+            throw new ValidationException(ValidationException::EMPTY_DATE_NAISSANCE);
+
         $commit = new PageAnimalCommit(
             $clientHead,
             $pageAnimal->getNom(),
             $pageAnimal->getDateNaissance(),
             $pageAnimal->getDescription()
         );
-
-
+        
         $this->doctrine->persist($commit);
         $pageAnimalBranch->setCommit($commit);
         $this->doctrine->flush([$commit, $pageAnimalBranch]);

@@ -201,4 +201,34 @@ class PageAnimalControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
+
+    public function testCommit_empty_nom()
+    {
+        $pageAnimal = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur()->getAnimaux()[0];
+
+        $pageAnimal->setNom('');
+
+        // Modification du nom et de la description de la page
+        $this->client->request('POST', '/animal/' . $pageAnimal->getId(),
+            array(), array(), array(),
+            $this->serializer->serialize($pageAnimal, 'json')
+        );
+
+        $this->assertEquals(Response::HTTP_NOT_ACCEPTABLE, $this->client->getResponse()->getStatusCode());
+    }
+
+    public function testCommit_dateNaissance_nom()
+    {
+        $pageAnimal = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur()->getAnimaux()[0];
+
+        $pageAnimal->setDateNaissance(null);
+
+        // Modification du nom et de la description de la page
+        $this->client->request('POST', '/animal/' . $pageAnimal->getId(),
+            array(), array(), array(),
+            $this->serializer->serialize($pageAnimal, 'json')
+        );
+
+        $this->assertEquals(Response::HTTP_NOT_ACCEPTABLE, $this->client->getResponse()->getStatusCode());
+    }
 }
