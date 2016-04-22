@@ -12,7 +12,12 @@
 
         <section>
             <header>
-                <div id="date-naissance">Date de naissance : {{ pageAnimal.dateNaissance | date("d/m/Y") }}</div>
+                <div id="date-naissance">Date de naissance :
+                    <span
+                        editable-text="dateNaissanceString" blur="ignore"
+                        onaftersave="dateNaissanceChanged()"
+                        ng-bind="dateNaissanceString || 'saisir'">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</span>
+                </div>
             </header>
             <article class="multi-line description"
                      id="description"
