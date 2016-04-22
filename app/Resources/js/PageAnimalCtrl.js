@@ -23,8 +23,15 @@ module.exports = function($scope, $http) {
             return "L'animal doit avoir un nom";
     };
 
+    $scope.validateDateNaissance = function($dateNaissance) {
+        if (!$dateNaissance)
+            return "L'animal doit avoir une date de naissance";
+        if (!moment($dateNaissance, 'DD/MM/YYYY').isValid())
+            return "La date doit être au format jj/mm/aaaa"
+    };
+
     $scope.dateNaissanceChanged = function() {
-        $scope.pageAnimal.date_naissance = moment($scope.dateNaissanceString, 'DD-MM-YYYY');
+        $scope.pageAnimal.date_naissance = moment($scope.dateNaissanceString, 'DD/MM/YYYY');
         $scope.commit();
     };
 };

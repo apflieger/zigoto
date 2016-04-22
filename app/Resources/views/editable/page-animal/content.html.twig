@@ -1,7 +1,7 @@
 <div ng-app="zigotoo" class="container padded">
     <div ng-controller="PageAnimalCtrl">
         <h1><span editable-text="pageAnimal.nom" blur="ignore"
-                  onbeforesave="validateNom($nom)"
+                  onbeforesave="validateNom($data)"
                   onaftersave="commit()"
                   ng-bind="pageAnimal.nom || 'saisir'"
                   id="animal-nom">{{ pageAnimal.nom }}</span>
@@ -15,6 +15,7 @@
                 <div id="date-naissance">Date de naissance :
                     <span
                         editable-text="dateNaissanceString" blur="ignore"
+                        onbeforesave="validateDateNaissance($data)"
                         onaftersave="dateNaissanceChanged()"
                         ng-bind="dateNaissanceString || 'saisir'">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</span>
                 </div>
