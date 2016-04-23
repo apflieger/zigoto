@@ -55,7 +55,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
-        $this->assertEquals('Disponible', $crawler->filter('select#statut option[selected]')->text());
+        $this->assertEquals('Disponible', trim($crawler->filter('select#statut option[selected]')->text()));
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
@@ -81,7 +81,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
-        $this->assertEquals('Disponible', $crawler->filter('span#statut')->text());
+        $this->assertEquals('Disponible', trim($crawler->filter('span#statut')->text()));
     }
 
     public function testAccesOwner()
@@ -145,7 +145,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains('18/01/2015', $crawler->filter('#date-naissance')->text());
         $this->assertEquals('Un gros toutou', $crawler->filter('#description')->text());
-        $this->assertEquals('Réservé', $crawler->filter('select#statut option[selected]')->text());
+        $this->assertEquals('Réservé', trim($crawler->filter('select#statut option[selected]')->text()));
     }
 
     public function testCommit_logged_out()
