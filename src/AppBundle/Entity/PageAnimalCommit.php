@@ -38,23 +38,28 @@ class PageAnimalCommit implements IdentityPersistableInterface
      */
     private $description;
 
+    private $statut;
+
     /**
      * PageAnimalCommit constructor.
      * @param PageAnimalCommit|null $parent
      * @param string $nom
      * @param DateTime $dateNaissance
      * @param string $description
+     * @param int $statut
      */
     public function __construct(
         PageAnimalCommit $parent = null,
         $nom,
         DateTime $dateNaissance = null,
-        $description
+        $description,
+        $statut
     ) {
         $this->parent = $parent;
         $this->nom = $nom;
         $this->dateNaissance = $dateNaissance;
         $this->description = $description;
+        $this->statut = $statut;
     }
 
     /**
@@ -87,5 +92,13 @@ class PageAnimalCommit implements IdentityPersistableInterface
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatut()
+    {
+        return $this->statut;
     }
 }

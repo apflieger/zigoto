@@ -26,10 +26,10 @@ class PageAnimal extends Commitable
      */
     private $description;
 
-    const A_ADOPTER = 0;
-    const OPTION = 1;
-    const ADOPTE = 2;
-    const REPRODUCTEUR = 3;
+    const DISPONIBLE = 1;
+    const OPTION = 2;
+    const RESERVE = 3;
+    const ADOPTE = 4;
 
     /**
      * @Type("integer")

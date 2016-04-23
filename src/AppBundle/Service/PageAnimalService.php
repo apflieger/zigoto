@@ -79,7 +79,8 @@ class PageAnimalService
             null,
             $nom,
             $this->timeService->now(),
-            null
+            null,
+            PageAnimal::DISPONIBLE
         ));
 
         $this->doctrine->persist($pageAnimalBranch->getCommit());
@@ -93,6 +94,7 @@ class PageAnimalService
         $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
         $pageAnimal->setDescription($pageAnimalBranch->getCommit()->getDescription());
         $pageAnimal->setDateNaissance($pageAnimalBranch->getCommit()->getDateNaissance());
+        $pageAnimal->setStatut($pageAnimalBranch->getCommit()->getStatut());
         return $pageAnimal;
     }
 
@@ -129,7 +131,8 @@ class PageAnimalService
             $clientHead,
             $pageAnimal->getNom(),
             $pageAnimal->getDateNaissance(),
-            $pageAnimal->getDescription()
+            $pageAnimal->getDescription(),
+            $pageAnimal->getStatut()
         );
         
         $this->doctrine->persist($commit);
