@@ -19,7 +19,21 @@
                         onaftersave="dateNaissanceChanged()"
                         ng-bind="dateNaissanceString || 'saisir'">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</span>
                 </div>
-                <span id="statut">{{ pageAnimal.statut | translate_page_animal_statut }}</span>
+                {% if isEditable %}
+                    <select id="statut"
+                        ng-model="pageAnimal.statut" z-integer-model
+                        ng-change="commit()">
+                        {% for statut in [
+                            constant('AppBundle\\Entity\\PageAnimal::DISPONIBLE'),
+                            constant('AppBundle\\Entity\\PageAnimal::OPTION'),
+                            constant('AppBundle\\Entity\\PageAnimal::RESERVE')
+                        ] %}
+                            <option value="{{ statut }}" {{ pageAnimal.statut == statut ? "selected" : "" }}>{{ statut | translate_page_animal_statut }}</option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <span id="statut">{{ pageAnimal.statut | translate_page_animal_statut }}</span>
+                {% endif %}
             </header>
             <article class="multi-line description"
                      id="description"
