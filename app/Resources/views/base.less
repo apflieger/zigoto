@@ -5,7 +5,9 @@
 @blue: #568389;
 @yellow: #f8a732;
 @brown: #8e6048;
-@error: red;
+@valid: green;
+@warn: #ff7733;
+@error: #d5332f;
 
 //font-size
 @normal: 1rem;
@@ -103,10 +105,33 @@ input[type="submit"] {
 .colored-btn(@backgroundColor, @color) {
     background-color: @backgroundColor;
     color: @color;
+    border-color: @backgroundColor;
 }
 
 .btn-primary {
     .colored-btn(@yellow, black);
+}
+
+.chip {
+    display: inline-block;
+    border-radius: 2em; // correspond à rien, c'est pour être sur que c'est bien rond
+    border-width: 1px;
+    border-style: solid;
+    padding: .4em .8em;
+
+    .colored-btn(@brown, white);
+}
+
+.chip-valid {
+    .colored-btn(@valid, white);
+}
+
+.chip-warn {
+    .colored-btn(@warn, white);
+}
+
+.chip-error {
+    .colored-btn(@error, white);
 }
 
 .form-input {

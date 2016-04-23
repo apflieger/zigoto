@@ -23,16 +23,30 @@ class EnumTranslationExtension extends Twig_Extension
 
     public function getFilters()
     {
-        return [new Twig_SimpleFilter('translate_page_animal_statut', function($statut) {
-            switch($statut) {
-                case PageAnimal::DISPONIBLE:
-                    return 'Disponible';
-                case PageAnimal::OPTION:
-                    return 'Option';
-                case PageAnimal::RESERVE:
-                    return 'Réservé';
-            }
-        })];
-    }
+        return [
+            new Twig_SimpleFilter('translate_page_animal_statut', function($statut) {
+                switch($statut) {
+                    case PageAnimal::DISPONIBLE:
+                        return 'Disponible';
+                    case PageAnimal::OPTION:
+                        return 'Option';
+                    case PageAnimal::RESERVE:
+                        return 'Réservé';
+                }
+                return "";
+            }),
+            new Twig_SimpleFilter('chip_page_animal_statut', function($statut) {
+                switch($statut) {
+                    case PageAnimal::DISPONIBLE:
+                        return 'chip-valid';
+                    case PageAnimal::OPTION:
+                        return 'chip-warn';
+                    case PageAnimal::RESERVE:
+                        return 'chip-error';
+                }
+                return "";
+            })
 
+        ];
+    }
 }
