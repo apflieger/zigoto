@@ -38,6 +38,10 @@ class PageAnimalCommit implements IdentityPersistableInterface
      */
     private $description;
 
+    /**
+     * @var int
+     * @ORM\Column(type="integer")
+     */
     private $statut;
 
     /**

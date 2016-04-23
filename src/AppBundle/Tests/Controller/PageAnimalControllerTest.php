@@ -55,6 +55,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
+        $this->assertEquals('Disponible', $crawler->filter('#statut')->text());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
@@ -80,6 +81,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
+        $this->assertEquals('Disponible', $crawler->filter('#statut')->text());
     }
 
     public function testAccesOwner()
@@ -121,6 +123,7 @@ class PageAnimalControllerTest extends WebTestCase
         $pageAnimal->setNom('Bernard');
         $pageAnimal->setDateNaissance(new \DateTime('2015/01/18'));
         $pageAnimal->setDescription('Un gros toutou');
+        $pageAnimal->setStatut(PageAnimal::RESERVE);
 
         // Modification du nom et de la description de la page
         $this->client->request('POST', '/animal/' . $pageAnimal->getId(),
@@ -136,6 +139,13 @@ class PageAnimalControllerTest extends WebTestCase
         $pageAnimal = $pageAnimalService->find($pageAnimal->getId());
 
         $this->assertEquals($this->serializer->serialize($pageAnimal, 'json'), $this->client->getResponse()->getContent());
+
+        $this->testUtils->clearEntities();
+        $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
+        $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
+        $this->assertContains('18/01/2015', $crawler->filter('#date-naissance')->text());
+        $this->assertEquals('Un gros toutou', $crawler->filter('#description')->text());
+        $this->assertEquals('Réservé', $crawler->filter('#statut')->text());
     }
 
     public function testCommit_logged_out()

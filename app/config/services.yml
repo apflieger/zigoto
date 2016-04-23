@@ -95,6 +95,11 @@ services:
         tags:
             - { name: twig.extension }
 
+    zigotoo.twig.enum_translate_extension:
+        class: AppBundle\Twig\EnumTranslationExtension
+        tags:
+            - { name: twig.extension }
+
     zigotoo.doctrine.id_generation_subscriber:
         class: AppBundle\Entity\PersistableDoctrineEventSubscriber
         arguments:

@@ -19,6 +19,7 @@
                         onaftersave="dateNaissanceChanged()"
                         ng-bind="dateNaissanceString || 'saisir'">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</span>
                 </div>
+                <span id="statut">{{ pageAnimal.statut | translate_page_animal_statut }}</span>
             </header>
             <article class="multi-line description"
                      id="description"
