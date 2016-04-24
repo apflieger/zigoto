@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\User;
@@ -28,6 +29,23 @@ class PageEleveurBranchRepository extends EntityRepository
     {
         /** @var PageEleveurBranch $pageEleveur */
         $pageEleveur = $this->findOneBy(['owner' => $user]);
+
+        return $pageEleveur;
+    }
+
+    /**
+     * @param $pageAnimal
+     * @return PageEleveurBranch
+     */
+    public function findByPageAnimal(PageAnimal $pageAnimal)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('SELECT e FROM AppBundle:PageEleveurBranch e JOIN e.commit c JOIN c.animaux a WHERE a.id = ?1');
+
+        $query->setParameter(1, $pageAnimal->getId());
+
+        /** @var PageEleveurBranch $pageEleveur */
+        $pageEleveur = $query->getOneOrNullResult();
 
         return $pageEleveur;
     }

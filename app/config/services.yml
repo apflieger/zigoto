@@ -51,6 +51,7 @@ services:
             - "@router"
             - "@serializer"
             - "@zigotoo.page_animal"
+            - "@zigotoo.page_eleveur"
 
     zigotoo.page_eleveur:
         class: AppBundle\Service\PageEleveurService

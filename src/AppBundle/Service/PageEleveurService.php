@@ -237,4 +237,13 @@ class PageEleveurService
 
         return $ascii;
     }
+
+    /**
+     * @param PageAnimal $pageAnimal
+     * @return PageEleveur
+     */
+    public function findByPageAnimal(PageAnimal $pageAnimal)
+    {
+        return $this->fromBranch($this->pageEleveurBranchRepository->findByPageAnimal($pageAnimal));
+    }
 }

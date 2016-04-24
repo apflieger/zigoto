@@ -1,16 +1,22 @@
-<div ng-app="zigotoo" class="container padded">
-    <div ng-controller="PageAnimalCtrl">
-        <h1><span editable-text="pageAnimal.nom" blur="ignore"
-                  onbeforesave="validateNom($data)"
-                  onaftersave="commit()"
-                  ng-bind="pageAnimal.nom || 'saisir'"
-                  id="animal-nom">{{ pageAnimal.nom }}</span>
-        </h1>
-        <!-- id : {{ pageAnimal.id }} -->
-        <!-- HEAD : {{ pageAnimal.head }} -->
-        <!-- owner : {{ pageAnimal.owner.id }} -->
+<div class="container padded">
+    <nav>
+        <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">
+            {{ pageEleveur.nom }}
+        </a>
+    </nav>
 
-        <section>
+    <section ng-app="zigotoo">
+        <div ng-controller="PageAnimalCtrl">
+            <h1><span editable-text="pageAnimal.nom" blur="ignore"
+                      onbeforesave="validateNom($data)"
+                      onaftersave="commit()"
+                      ng-bind="pageAnimal.nom || 'saisir'"
+                      id="animal-nom">{{ pageAnimal.nom }}</span>
+            </h1>
+            <!-- id : {{ pageAnimal.id }} -->
+            <!-- HEAD : {{ pageAnimal.head }} -->
+            <!-- owner : {{ pageAnimal.owner.id }} -->
+
             <header>
                 <div class="text-right-tiny-left">
                     {% if isEditable %}
@@ -44,14 +50,14 @@
                         ng-bind="dateNaissanceString || 'saisir'">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</span>
                 </div>
             </header>
-            <article class="multi-line description"
+            <p class="multi-line description"
                      id="description"
                      onaftersave="commit()"
                      editable-textarea="pageAnimal.description"
                      blur="ignore"
                      e-rows="10" e-cols="100"
                      ng-bind="pageAnimal.description || 'Saisir'"
-            >{{ pageAnimal.description }}</article>
-        </section>
-    </div>
+            >{{ pageAnimal.description }}</p>
+        </div>
+    </section>
 </div>

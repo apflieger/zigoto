@@ -72,12 +72,14 @@ class PageAnimalControllerTest extends WebTestCase
         $timeService = $this->client->getContainer()->get('zigotoo.time');
         $timeService->lockNow();
 
-        $pageAnimal = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur()->getAnimaux()[0];
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur();
+        $pageAnimal = $pageEleveur->getAnimaux()[0];
 
         $this->testUtils->logout();
 
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
+        $this->assertEquals(1, $crawler->filter('nav a[href="/' . $pageEleveur->getSlug() . '"]')->count());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());

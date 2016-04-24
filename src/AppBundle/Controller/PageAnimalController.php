@@ -13,6 +13,7 @@ use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\User;
 use AppBundle\Service\HistoryException;
 use AppBundle\Service\PageAnimalService;
+use AppBundle\Service\PageEleveurService;
 use AppBundle\Service\ValidationException;
 use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use JMS\Serializer\Serializer;
@@ -47,18 +48,24 @@ class PageAnimalController
     /** @var PageAnimalService */
     private $pageAnimalService;
 
+    /** @var PageEleveurService */
+    private $pageEleveurService;
+
     public function __construct(
         TokenStorage $tokenStorage,
         TwigEngine $templating,
         RouterInterface $router,
         Serializer $serializer,
-        PageAnimalService $pageAnimalService
+        PageAnimalService $pageAnimalService,
+        PageEleveurService $pageEleveurService
+
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
         $this->router = $router;
         $this->serializer = $serializer;
         $this->pageAnimalService = $pageAnimalService;
+        $this->pageEleveurService = $pageEleveurService;
     }
 
     /**
@@ -80,10 +87,12 @@ class PageAnimalController
         $user = $token->getUser();
         $isOwner = $user !== 'anon.' && $pageAnimal->getOwner()->getId() === $user->getId();
 
+        $pageEleveur = $this->pageEleveurService->findByPageAnimal($pageAnimal);
         return $this->templating->renderResponse('base.html.twig', [
             TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'editable/page-animal',
             'pageAnimal' => $pageAnimal,
-            'isEditable' => $isOwner
+            'isEditable' => $isOwner,
+            'pageEleveur' => $pageEleveur
         ]);
     }
 
