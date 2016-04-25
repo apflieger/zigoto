@@ -65,14 +65,19 @@
                 >+ Ajouter une photo</div>
             {% endif %}
 
-            <div class="grid-3">
+            <div class="grid-4">
                 {% if isEditable %}
                     {% verbatim %}
-                        <img ng-repeat="photo in dirtyPhotos" class="photo" ngf-thumbnail="photoThumbnails(photo)">
+                        <div class="photo" ng-repeat="photo in dirtyPhotos">
+                            <div ng-click="deletePhoto(photo)">Supprimer</div>
+                            <img ngf-thumbnail="photoThumbnails(photo)">
+                        </div>
                     {% endverbatim %}
                 {% else %}
                     {% for photo in pageAnimal.photos %}
-                        <img class="photo" src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/{{ photo.nom }}">
+                        <div class="photo">
+                            <img src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/{{ photo.nom }}">
+                        </div>
                     {% endfor %}
                 {% endif %}
             </div>

@@ -24,6 +24,11 @@ module.exports = function($scope, $http, Upload) {
             return;
         }
         commiting = true;
+
+        $scope.pageAnimal.photos = $scope.dirtyPhotos.filter(function(photo){
+            return !Upload.isFile(photo) || photo.uploaded;
+        });
+
         $http({
             method: 'POST',
             url: '/animal/' + $scope.pageAnimal.id,
@@ -86,9 +91,6 @@ module.exports = function($scope, $http, Upload) {
                         }
                     }).then(function(response) {
                         file.uploaded = true;
-                        $scope.pageAnimal.photos = $scope.dirtyPhotos.filter(function(photo){
-                            return !Upload.isFile(photo) || photo.uploaded;
-                        });
                         $scope.commit();
                     });
                 })(file);
@@ -98,5 +100,13 @@ module.exports = function($scope, $http, Upload) {
 
     $scope.photoThumbnails = function(photo) {
         return Upload.isFile(photo) ? photo : 'https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom;
+    };
+
+    $scope.deletePhoto = function(photo) {
+        var i = $scope.dirtyPhotos.indexOf(photo);
+        if(i != -1) {
+            $scope.dirtyPhotos.splice(i, 1);
+        }
+        $scope.commit();
     };
 };
