@@ -50,6 +50,25 @@
                         ng-bind="dateNaissanceString || 'saisir'">{{ pageAnimal.dateNaissance | date("d/m/Y") }}</span>
                 </div>
             </header>
+
+            <div ngf-drop ngf-select
+                 class="image-drop"
+                 accept="image/*"
+                 ngf-pattern="'image/*'"
+                 ngf-multiple="true"
+                 ngf-keep="'distinct'"
+                 ng-model="dirtyPhotos"
+                 ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
+            >+ Ajouter une photo</div>
+
+            <div class="grid-3">
+                {% verbatim %}
+                    <div ng-repeat="photo in pageAnimal.photos">
+                        <img ngf-thumbnail="photo.file">
+                    </div>
+                {% endverbatim %}
+            </div>
+
             <p class="multi-line description"
                      id="description"
                      onaftersave="commit()"

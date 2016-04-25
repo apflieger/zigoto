@@ -1,6 +1,6 @@
 var moment = require('moment');
 
-module.exports = function($scope, $http) {
+module.exports = function($scope, $http, Upload) {
     // Variable injectée dans la page par le backend
     $scope.pageAnimal = globPageAnimal;
     $scope.dateNaissanceString = moment(globPageAnimal.date_naissance).format('DD/MM/YYYY');
@@ -33,5 +33,37 @@ module.exports = function($scope, $http) {
     $scope.dateNaissanceChanged = function() {
         $scope.pageAnimal.date_naissance = moment($scope.dateNaissanceString, 'DD/MM/YYYY');
         $scope.commit();
+    };
+
+    $scope.uploadPhotos = function($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event) {
+        if ($newFiles && $newFiles.length) {
+            for (var i = 0; i < $newFiles.length; i++) {
+                var file = $newFiles[i];
+
+                $scope.pageAnimal.photos = $scope.pageAnimal.photos || [];
+
+                var photo = {
+                    file: file,
+                    uploaded: false
+                };
+
+                $scope.pageAnimal.photos.push(photo);
+
+                (function(photo) {
+                    // Il n'y a aucune authentification, le bucket autorise tous les POST.
+                    Upload.upload({
+                        url: 'https://zigotoo-runtime.s3.amazonaws.com/', //S3 upload url including bucket name
+                        method: 'POST',
+                        data: {
+                            key: 'images/' + file.name,
+                            "Content-Type": file.type != '' ? file.type : 'application/octet-stream',
+                            file: file
+                        }
+                    }).then(function(response) {
+                        photo.uploaded = true;
+                    });
+                })(photo);
+            }
+        }
     };
 };
