@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -45,25 +46,34 @@ class PageAnimalCommit implements IdentityPersistableInterface
     private $statut;
 
     /**
+     * @var ArrayCollection
+     * @ORM\Column(type="photoarray", length=5000, nullable=true)
+     */
+    private $photos;
+
+    /**
      * PageAnimalCommit constructor.
      * @param PageAnimalCommit|null $parent
      * @param string $nom
      * @param DateTime $dateNaissance
      * @param string $description
      * @param int $statut
+     * @param Photo[] $photos
      */
     public function __construct(
         PageAnimalCommit $parent = null,
         $nom,
         DateTime $dateNaissance = null,
         $description,
-        $statut
+        $statut,
+        $photos
     ) {
         $this->parent = $parent;
         $this->nom = $nom;
         $this->dateNaissance = $dateNaissance;
         $this->description = $description;
         $this->statut = $statut;
+        $this->photos = new ArrayCollection($photos ?? []);
     }
 
     /**
@@ -104,5 +114,13 @@ class PageAnimalCommit implements IdentityPersistableInterface
     public function getStatut()
     {
         return $this->statut;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPhotos()
+    {
+        return $this->photos;
     }
 }

@@ -38,6 +38,12 @@ class PageAnimal extends Commitable
     private $statut;
 
     /**
+     * @Type("array<AppBundle\Entity\Photo>")
+     * @var Photo[]
+     */
+    private $photos;
+
+    /**
      * @return string
      */
     public function getNom()
@@ -99,5 +105,21 @@ class PageAnimal extends Commitable
     public function setStatut($statut)
     {
         $this->statut = $statut;
+    }
+
+    /**
+     * @return Photo[]
+     */
+    public function getPhotos()
+    {
+        return $this->photos;
+    }
+
+    /**
+     * @param Photo[] $photos
+     */
+    public function setPhotos($photos)
+    {
+        $this->photos = $photos;
     }
 }

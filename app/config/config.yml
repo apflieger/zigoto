@@ -85,6 +85,8 @@ doctrine:
         password: "%database_password%"
         dbname:   "%database_name%"
         charset:  UTF8
+        types:
+            photoarray: AppBundle\Entity\PhotoArrayType
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore

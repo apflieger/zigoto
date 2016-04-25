@@ -4,6 +4,7 @@ namespace AppBundle\Tests\Controller;
 
 
 use AppBundle\Entity\PageAnimal;
+use AppBundle\Entity\Photo;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Tests\TestTimeService;
 use AppBundle\Tests\TestUtils;
@@ -56,6 +57,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
         $this->assertEquals('Disponible', trim($crawler->filter('select#statut option[selected]')->text()));
+        $this->assertEquals(1, $crawler->filter('#photo-drop')->count());
 
         // On vérifie qu'il y a un script qui passe l'id du commit au JS
         $script = $crawler->filter('script')->reduce(function (Crawler $script) {
@@ -84,6 +86,8 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
         $this->assertEquals('Disponible', trim($crawler->filter('span#statut')->text()));
+        $this->assertEquals(0, $crawler->filter('.photo')->count());
+        $this->assertEquals(0, $crawler->filter('#photo-drop')->count());
     }
 
     public function testAccesOwner()
@@ -126,6 +130,9 @@ class PageAnimalControllerTest extends WebTestCase
         $pageAnimal->setDateNaissance(new \DateTime('2015/01/18'));
         $pageAnimal->setDescription('Un gros toutou');
         $pageAnimal->setStatut(PageAnimal::RESERVE);
+        $photo = new Photo();
+        $photo->setNom('img1.jpg');
+        $pageAnimal->setPhotos([$photo]);
 
         // Modification du nom et de la description de la page
         $this->client->request('POST', '/animal/' . $pageAnimal->getId(),
@@ -148,6 +155,15 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertContains('18/01/2015', $crawler->filter('#date-naissance')->text());
         $this->assertEquals('Un gros toutou', $crawler->filter('#description')->text());
         $this->assertEquals('Réservé', trim($crawler->filter('select#statut option[selected]')->text()));
+
+        $this->testUtils->logout();
+        $this->testUtils->clearEntities();
+        $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
+        $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
+        $this->assertContains('18/01/2015', $crawler->filter('#date-naissance')->text());
+        $this->assertEquals('Un gros toutou', $crawler->filter('#description')->text());
+        $this->assertEquals('Réservé', trim($crawler->filter('#statut')->text()));
+        $this->assertEquals(1, $crawler->filter('.photo')->count());
     }
 
     public function testCommit_logged_out()

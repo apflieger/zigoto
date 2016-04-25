@@ -51,6 +51,11 @@ class PageAnimalService
         if (!$branch)
             return null;
 
+        return $this->fromBranch($branch);
+    }
+
+    private function fromBranch(PageAnimalBranch $branch)
+    {
         $pageAnimal = new PageAnimal();
         $pageAnimal->setId($branch->getId());
         $pageAnimal->setHead($branch->getCommit()->getId());
@@ -59,6 +64,7 @@ class PageAnimalService
         $pageAnimal->setDateNaissance($branch->getCommit()->getDateNaissance());
         $pageAnimal->setDescription($branch->getCommit()->getDescription());
         $pageAnimal->setStatut($branch->getCommit()->getStatut());
+        $pageAnimal->setPhotos($branch->getCommit()->getPhotos()->toArray());
 
         return $pageAnimal;
     }
@@ -81,22 +87,15 @@ class PageAnimalService
             $nom,
             $this->timeService->now(),
             null,
-            PageAnimal::DISPONIBLE
+            PageAnimal::DISPONIBLE,
+            null
         ));
 
         $this->doctrine->persist($pageAnimalBranch->getCommit());
         $this->doctrine->persist($pageAnimalBranch);
         $this->doctrine->flush([$pageAnimalBranch->getCommit(), $pageAnimalBranch]);
 
-        $pageAnimal = new PageAnimal();
-        $pageAnimal->setId($pageAnimalBranch->getId());
-        $pageAnimal->setHead($pageAnimalBranch->getCommit()->getId());
-        $pageAnimal->setOwner($pageAnimalBranch->getOwner());
-        $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
-        $pageAnimal->setDescription($pageAnimalBranch->getCommit()->getDescription());
-        $pageAnimal->setDateNaissance($pageAnimalBranch->getCommit()->getDateNaissance());
-        $pageAnimal->setStatut($pageAnimalBranch->getCommit()->getStatut());
-        return $pageAnimal;
+        return $this->fromBranch($pageAnimalBranch);
     }
 
     /**
@@ -133,7 +132,8 @@ class PageAnimalService
             $pageAnimal->getNom(),
             $pageAnimal->getDateNaissance(),
             $pageAnimal->getDescription(),
-            $pageAnimal->getStatut()
+            $pageAnimal->getStatut(),
+            $pageAnimal->getPhotos()
         );
         
         $this->doctrine->persist($commit);

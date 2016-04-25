@@ -40,7 +40,7 @@ class PageEleveurBranchRepository extends EntityRepository
     public function findByPageAnimal(PageAnimal $pageAnimal)
     {
         $query = $this->getEntityManager()
-            ->createQuery('SELECT e FROM AppBundle:PageEleveurBranch e JOIN e.commit c JOIN c.animaux a WHERE a.id = ?1');
+            ->createQuery('SELECT e,c,a FROM AppBundle:PageEleveurBranch e JOIN e.commit c JOIN c.animaux a WHERE a.id = ?1');
 
         $query->setParameter(1, $pageAnimal->getId());
 

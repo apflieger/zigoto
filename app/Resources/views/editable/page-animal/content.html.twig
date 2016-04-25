@@ -51,20 +51,30 @@
                 </div>
             </header>
 
-            <div ngf-drop ngf-select
-                 class="image-drop"
-                 accept="image/*"
-                 ngf-pattern="'image/*'"
-                 ngf-multiple="true"
-                 ngf-keep="'distinct'"
-                 ng-model="dirtyPhotos"
-                 ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
-            >+ Ajouter une photo</div>
+            {% if isEditable %}
+                <div ngf-drop ngf-select
+                     class="photo-drop"
+                     id="photo-drop"
+                     accept="image/*"
+                     ngf-pattern="'image/*'"
+                     ngf-multiple="true"
+                     ngf-max-size="400KB"
+                     ngf-keep="'distinct'"
+                     ng-model="dirtyPhotos"
+                     ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
+                >+ Ajouter une photo</div>
+            {% endif %}
 
             <div class="grid-3">
-                {% verbatim %}
-                    <img ng-repeat="photo in dirtyPhotos" class="photo" ngf-thumbnail="photo.file || ('https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom)">
-                {% endverbatim %}
+                {% if isEditable %}
+                    {% verbatim %}
+                        <img ng-repeat="photo in dirtyPhotos" class="photo" ngf-thumbnail="photo.file || ('https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom)">
+                    {% endverbatim %}
+                {% else %}
+                    {% for photo in pageAnimal.photos %}
+                        <img class="photo" src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/{{ photo.nom }}">
+                    {% endfor %}
+                {% endif %}
             </div>
 
             <p class="multi-line description"

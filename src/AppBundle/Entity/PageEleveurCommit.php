@@ -147,6 +147,9 @@ class PageEleveurCommit implements IdentityPersistableInterface
         return $this->races;
     }
 
+    /**
+     * @return string
+     */
     public function getLieu()
     {
         return $this->lieu;
