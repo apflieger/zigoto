@@ -68,7 +68,7 @@
             <div class="grid-3">
                 {% if isEditable %}
                     {% verbatim %}
-                        <img ng-repeat="photo in dirtyPhotos" class="photo" ngf-thumbnail="photo.file || ('https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom)">
+                        <img ng-repeat="photo in dirtyPhotos" class="photo" ngf-thumbnail="photoThumbnails(photo)">
                     {% endverbatim %}
                 {% else %}
                     {% for photo in pageAnimal.photos %}

@@ -71,7 +71,7 @@ module.exports = function($scope, $http, Upload) {
             for (var i = 0; i < $newFiles.length; i++) {
                 var file = $newFiles[i];
 
-                file.nom = file.name;
+                file.nom = Math.random().toString(16).slice(2);
                 file.uploaded = false;
 
                 (function(file) {
@@ -80,19 +80,23 @@ module.exports = function($scope, $http, Upload) {
                         url: 'https://zigotoo-runtime.s3.amazonaws.com/',
                         method: 'POST',
                         data: {
-                            key: 'images/' + file.name,
+                            key: 'images/' + file.nom,
                             "Content-Type": file.type != '' ? file.type : 'application/octet-stream',
                             file: file
                         }
                     }).then(function(response) {
                         file.uploaded = true;
                         $scope.pageAnimal.photos = $scope.dirtyPhotos.filter(function(photo){
-                            return photo.uploaded
+                            return !Upload.isFile(photo) || photo.uploaded;
                         });
                         $scope.commit();
                     });
                 })(file);
             }
         }
+    };
+
+    $scope.photoThumbnails = function(photo) {
+        return Upload.isFile(photo) ? photo : 'https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom;
     };
 };
