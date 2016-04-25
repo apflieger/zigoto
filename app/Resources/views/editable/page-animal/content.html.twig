@@ -63,9 +63,7 @@
 
             <div class="grid-3">
                 {% verbatim %}
-                    <div ng-repeat="photo in pageAnimal.photos">
-                        <img ngf-thumbnail="photo.file">
-                    </div>
+                    <img ng-repeat="photo in dirtyPhotos" class="photo" ngf-thumbnail="photo.file || ('https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom)">
                 {% endverbatim %}
             </div>
 
