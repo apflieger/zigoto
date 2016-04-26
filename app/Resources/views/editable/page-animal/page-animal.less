@@ -1,17 +1,72 @@
 @import (inline) "../../../../../node_modules/photoswipe/dist/photoswipe.css";
+@import (inline) "../../../../../node_modules/photoswipe/dist/default-skin/default-skin.css";
 
 .statut option {
     background: white;
     color: black;
 }
 
-.photo {
+@photo-gutter: 1.25vw;
+.gallerie {
+    margin-left: -@photo-gutter;
+    margin-right: -@photo-gutter;
+}
+
+.photo-editable-border() {
     padding: 10px;
+    border: 1px dashed @brown;
+}
+
+.photo-dragover() {
+    background: @lightbrown;
+    color: @cream;
+}
+
+.photo, .dndPlaceholder {
+    padding: @photo-gutter;
+    text-align: center;
+
     img {
         width: 100%;
     }
-    &.photo-drop {
-        min-height: 200px; // utilisé quand il se retrouve tout seul sur sa ligne
+}
+
+.dndPlaceholder {
+    &:before {
+        content: "";
+        display: block;
+        height: 100%;
+        .photo-dragover();
+    }
+}
+
+.photo-editable {
+    > div {
+        .photo-editable-border();
+        display: flex;
+        flex-wrap: wrap;
+        cursor: move;
+    }
+
+    .supprimer-photo {
+        font-size: .75em;
+        margin-bottom: .5em;
+        margin-left: auto;
+    }
+}
+
+.photo-drop {
+    > div {
+        .photo-editable-border();
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    &.dragover > div {
+        .photo-dragover();
     }
 }
 
@@ -21,8 +76,4 @@
 
 .dndDraggingSource {
     display: none;
-}
-
-.dndPlaceholder {
-    background: @brown;
 }

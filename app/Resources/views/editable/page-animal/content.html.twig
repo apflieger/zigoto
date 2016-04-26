@@ -58,29 +58,33 @@
                 dnd-dragover="draggable(index)">
                 {% if isEditable %}
                     {% verbatim %}
-                        <div class="photo"
+                        <div class="photo photo-editable"
                             ng-repeat="photo in dirtyPhotos"
                             dnd-draggable="photo"
                             dnd-moved="dirtyPhotos.splice($index, 1)"
                             dnd-dragend="commit()"
                             >
-                            <div ng-click="deletePhoto(photo)">Supprimer</div>
-                            <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
-                            <img ng-if="photo.uploaded"
-                                ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}"
-                                ng-click="gallerie($index)">
+                            <div>
+                                <div class="btn supprimer-photo" ng-click="deletePhoto(photo)">Supprimer</div>
+                                <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
+                                <img ng-if="photo.uploaded"
+                                    ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}"
+                                    ng-click="gallerie($index)">
+                            </div>
+                        </div>
+                        <div ngf-drop ngf-select
+                             class="photo photo-drop"
+                             id="photo-drop"
+                             accept="image/*"
+                             ngf-pattern="'image/*'"
+                             ngf-multiple="true"
+                             ngf-keep="'distinct'"
+                             ng-model="dirtyPhotos"
+                             ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
+                        >
+                            <div><span>Ajouter une photo</span></div>
                         </div>
                     {% endverbatim %}
-                    <div ngf-drop ngf-select
-                         class="photo photo-drop"
-                         id="photo-drop"
-                         accept="image/*"
-                         ngf-pattern="'image/*'"
-                         ngf-multiple="true"
-                         ngf-keep="'distinct'"
-                         ng-model="dirtyPhotos"
-                         ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
-                    >+ Ajouter une photo</div>
                 {% else %}
                     {% for photo in pageAnimal.photos %}
                         <div class="photo">
@@ -155,10 +159,10 @@
                 <div class="pswp__share-tooltip"></div>
             </div>
 
-            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            <button class="pswp__button pswp__button--arrow--left" title="Précédent">
             </button>
 
-            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            <button class="pswp__button pswp__button--arrow--right" title="Suivant">
             </button>
 
             <div class="pswp__caption">
