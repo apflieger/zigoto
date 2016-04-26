@@ -1,10 +1,12 @@
+<script type="text/javascript">
+    // flag:const-js
+    {% autoescape false %}
+    var globPageAnimal = {{ pageAnimal | serialize }};
+    {% endautoescape %}
+</script>
 {% if isEditable %}
     <!-- flag:js-editable -->
-    <script type="text/javascript">
-        // flag:const-js
-        {% autoescape false %}
-        var globPageAnimal = {{ pageAnimal | serialize }};
-        {% endautoescape %}
-    </script>
     <script src="/build/js/zigotoo-editable.js"></script>
+{% else %}
+    <script src="/build/js/page-eleveur.js"></script>
 {% endif %}

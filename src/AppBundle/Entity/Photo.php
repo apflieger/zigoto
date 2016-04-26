@@ -14,6 +14,19 @@ class Photo
     private $nom;
 
     /**
+     * @Type("string")
+     * @var string
+     */
+    private $width;
+
+    /**
+     * @Type("string")
+     * @var string
+     */
+    private $height;
+
+
+    /**
      * @return string
      */
     public function getNom()
@@ -27,5 +40,37 @@ class Photo
     public function setNom($nom)
     {
         $this->nom = $nom;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    /**
+     * @param string $width
+     */
+    public function setWidth($width)
+    {
+        $this->width = $width;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
+     * @param string $height
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
     }
 }

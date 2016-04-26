@@ -72,6 +72,10 @@ module.exports = function(grunt) {
             pageEleveur: {
                 src: "<%= sourceDir %>/js/zigotoo-editable.js",
                 dest: "<%=buildDir %>/js/zigotoo-editable.js"
+            },
+            gallerie: {
+                src: "<%= sourceDir %>/js/page-eleveur.js",
+                dest: "<%=buildDir %>/js/page-eleveur.js"
             }
         }
     });

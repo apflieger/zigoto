@@ -1,4 +1,5 @@
 var moment = require('moment');
+var gallerie = require('./gallerie.js');
 
 module.exports = function($scope, $http, Upload) {
     // Variable injectée dans la page par le backend
@@ -88,9 +89,7 @@ module.exports = function($scope, $http, Upload) {
                     var fileUploaded = 0;
 
                     // Upload de la version full de l'image
-                    Upload.resize(file, 1280, null, 1, null, null, false).then(function(resizedFile){
-                        uploadResizedFile(resizedFile, 'images/full/' + file.nom);
-                    });
+                    uploadResizedFile(file, 'images/full/' + file.nom);
 
                     // Upload de la version thumbnail de l'image
                     Upload.resize(file, 300, 300, 0.8, null, null, true).then(function(resizedFile){
@@ -111,7 +110,13 @@ module.exports = function($scope, $http, Upload) {
                             fileUploaded++;
                             if (fileUploaded == 2) {
                                 file.uploaded = true;
-                                $scope.commit();
+                                Upload.imageDimensions(file).then(function(dimensions){
+                                    /* On doit enregistrer les dimensions car
+                                     photoswipe en a besoin à l'affichage */
+                                    file.width = dimensions.width;
+                                    file.height = dimensions.height;
+                                    $scope.commit();
+                                });
                             }
                         });
                     }
@@ -126,5 +131,9 @@ module.exports = function($scope, $http, Upload) {
             $scope.dirtyPhotos.splice(i, 1);
         }
         $scope.commit();
+    };
+
+    $scope.gallerie = function() {
+        gallerie($scope.pageAnimal.photos);
     };
 };
