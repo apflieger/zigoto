@@ -29,7 +29,7 @@ module.exports = function(grunt) {
             images: {
                 expand: true,
                 cwd: "<%= sourceDir %>/views",
-                src: ["**/*.png", "**/*.jpg", "**/*.jpeg"],
+                src: ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.svg", "**/*.gif"],
                 dest: "<%= buildDir %>/css/"
             }
         },

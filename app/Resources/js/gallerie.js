@@ -16,7 +16,9 @@ module.exports = function(photos, index) {
     }
 
     var options = {
-        index: index
+        index: index,
+        shareEl: false, // pas besoin du bouton share
+        fullscreenEl: false // mois y a de boutons mieux on se porte
     };
 
     var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);

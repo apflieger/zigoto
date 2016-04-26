@@ -32,6 +32,8 @@ class EnumTranslationExtension extends Twig_Extension
                         return 'Option';
                     case PageAnimal::RESERVE:
                         return 'Réservé';
+                    case PageAnimal::ADOPTE:
+                        return 'Adopté';
                 }
                 return "";
             }),
@@ -43,8 +45,10 @@ class EnumTranslationExtension extends Twig_Extension
                         return 'chip-warn';
                     case PageAnimal::RESERVE:
                         return 'chip-error';
+                    case PageAnimal::ADOPTE:
+                        return '';
                 }
-                return "";
+                return '';
             })
 
         ];
