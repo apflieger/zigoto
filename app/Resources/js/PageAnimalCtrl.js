@@ -82,21 +82,40 @@ module.exports = function($scope, $http, Upload) {
                 file.nom = Math.random().toString(16).slice(2);
                 file.uploaded = false;
 
-                (function(file) {
-                    // Il n'y a aucune authentification, le bucket autorise tous les POST.
-                    Upload.upload({
-                        url: 'https://zigotoo-runtime.s3.amazonaws.com/',
-                        method: 'POST',
-                        data: {
-                            key: 'images/' + file.nom,
-                            "Content-Type": file.type != '' ? file.type : 'application/octet-stream',
-                            file: file
-                        }
-                    }).then(function(response) {
-                        file.uploaded = true;
-                        $scope.commit();
+                var contentType = file.type != '' ? file.type : 'application/octet-stream';
+
+                (function(file, contentType) {
+                    var fileUploaded = 0;
+
+                    // Upload de la version full de l'image
+                    Upload.resize(file, 1280, null, 1, null, null, false).then(function(resizedFile){
+                        uploadResizedFile(resizedFile, 'images/full/' + file.nom);
                     });
-                })(file);
+
+                    // Upload de la version thumbnail de l'image
+                    Upload.resize(file, 300, 300, 0.8, null, null, true).then(function(resizedFile){
+                        uploadResizedFile(resizedFile, 'images/thumbnail/' + file.nom);
+                    });
+
+                    function uploadResizedFile(resizedFile, key) {
+                        // Il n'y a aucune authentification, le bucket autorise tous les POST.
+                        Upload.upload({
+                            url: 'https://zigotoo-runtime.s3.amazonaws.com/',
+                            method: 'POST',
+                            data: {
+                                key: key,
+                                "Content-Type": contentType,
+                                file: resizedFile
+                            }
+                        }).then(function() {
+                            fileUploaded++;
+                            if (fileUploaded == 2) {
+                                file.uploaded = true;
+                                $scope.commit();
+                            }
+                        });
+                    }
+                })(file, contentType);
             }
         }
     };

@@ -58,7 +58,6 @@
                      accept="image/*"
                      ngf-pattern="'image/*'"
                      ngf-multiple="true"
-                     ngf-max-size="400KB"
                      ngf-keep="'distinct'"
                      ng-model="dirtyPhotos"
                      ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
@@ -71,13 +70,13 @@
                         <div class="photo" ng-repeat="photo in dirtyPhotos">
                             <div ng-click="deletePhoto(photo)">Supprimer</div>
                             <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
-                            <img ng-if="photo.uploaded" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/{{ photo.nom }}">
+                            <img ng-if="photo.uploaded" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}">
                         </div>
                     {% endverbatim %}
                 {% else %}
                     {% for photo in pageAnimal.photos %}
                         <div class="photo">
-                            <img src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/{{ photo.nom }}">
+                            <img src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}">
                         </div>
                     {% endfor %}
                 {% endif %}
