@@ -2,6 +2,7 @@
   "private": true,
   "dependencies": {
     "angular": "1.4.8",
+    "angular-drag-and-drop-lists": "^1.4.0",
     "angular-xeditable-npm": "0.1.9",
     "grunt": "^0.4.5",
     "grunt-browserify": "^5.0.0",

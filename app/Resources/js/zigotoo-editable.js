@@ -1,8 +1,9 @@
 require('angular');
 require('angular-xeditable-npm');
 require('ng-file-upload');
+require('angular-drag-and-drop-lists');
 
-var zigotoo = angular.module('zigotoo', ['xeditable', 'ngFileUpload']);
+var zigotoo = angular.module('zigotoo', ['xeditable', 'ngFileUpload', 'dndLists']);
 
 zigotoo.run(['editableOptions', 'editableThemes', require('./ZigotooRun.js')]);
 

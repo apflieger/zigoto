@@ -64,10 +64,18 @@
                 >+ Ajouter une photo</div>
             {% endif %}
 
-            <div class="grid-4-medium-3-small-2" id="gallerie">
+            <div class="gallerie grid-4-medium-3-small-2"
+                id="gallerie"
+                dnd-list="dirtyPhotos"
+                dnd-horizontal-list="true">
                 {% if isEditable %}
                     {% verbatim %}
-                        <div class="photo" ng-repeat="photo in dirtyPhotos">
+                        <div class="photo"
+                            ng-repeat="photo in dirtyPhotos"
+                            dnd-draggable="photo"
+                            dnd-moved="dirtyPhotos.splice($index, 1)"
+                            dnd-dragend="commit()"
+                            >
                             <div ng-click="deletePhoto(photo)">Supprimer</div>
                             <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
                             <img ng-if="photo.uploaded"
