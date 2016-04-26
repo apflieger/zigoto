@@ -5,6 +5,9 @@ module.exports = function($scope, $http, Upload) {
     $scope.pageAnimal = globPageAnimal;
     $scope.dateNaissanceString = moment(globPageAnimal.date_naissance).format('DD/MM/YYYY');
     $scope.dirtyPhotos = globPageAnimal.photos || [];
+    for (var i = 0; i < $scope.dirtyPhotos.length; i++) {
+        $scope.dirtyPhotos[i].uploaded = true;
+    }
 
     // si une requete http de commit est en cours
     var commiting = false;
@@ -96,10 +99,6 @@ module.exports = function($scope, $http, Upload) {
                 })(file);
             }
         }
-    };
-
-    $scope.photoThumbnails = function(photo) {
-        return Upload.isFile(photo) ? photo : 'https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/' + photo.nom;
     };
 
     $scope.deletePhoto = function(photo) {

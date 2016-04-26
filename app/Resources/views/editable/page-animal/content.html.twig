@@ -65,12 +65,13 @@
                 >+ Ajouter une photo</div>
             {% endif %}
 
-            <div class="grid-4">
+            <div class="grid-4-medium-3-small-2">
                 {% if isEditable %}
                     {% verbatim %}
                         <div class="photo" ng-repeat="photo in dirtyPhotos">
                             <div ng-click="deletePhoto(photo)">Supprimer</div>
-                            <img ngf-thumbnail="photoThumbnails(photo)">
+                            <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
+                            <img ng-if="photo.uploaded" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/{{ photo.nom }}">
                         </div>
                     {% endverbatim %}
                 {% else %}
