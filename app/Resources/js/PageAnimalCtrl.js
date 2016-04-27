@@ -133,7 +133,7 @@ module.exports = function($scope, $http, Upload) {
         $scope.commit();
     };
 
-    $scope.gallerie = function() {
-        gallerie($scope.pageAnimal.photos);
+    $scope.gallerie = function(index) {
+        gallerie($scope.pageAnimal.photos, index);
     };
 };

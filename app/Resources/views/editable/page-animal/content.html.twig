@@ -72,13 +72,14 @@
                             <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
                             <img ng-if="photo.uploaded"
                                 ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}"
-                                ng-click="gallerie()">
+                                ng-click="gallerie($index)">
                         </div>
                     {% endverbatim %}
                 {% else %}
                     {% for photo in pageAnimal.photos %}
                         <div class="photo">
-                            <img src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}">
+                            <img src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}"
+                                data-photo-index="{{ loop.index0 }}">
                         </div>
                     {% endfor %}
                 {% endif %}

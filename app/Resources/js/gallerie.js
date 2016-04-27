@@ -2,7 +2,7 @@ var $ = require('jquery');
 var PhotoSwipe = require('photoswipe/dist/photoswipe.js');
 var PhotoSwipeUI_Default = require('photoswipe/dist/photoswipe-ui-default.js');
 
-module.exports = function(photos) {
+module.exports = function(photos, index) {
     var pswpElement = document.querySelectorAll('.pswp')[0];
 
     var items = [];
@@ -16,7 +16,7 @@ module.exports = function(photos) {
     }
 
     var options = {
-        index: 0
+        index: index
     };
 
     var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, options);
