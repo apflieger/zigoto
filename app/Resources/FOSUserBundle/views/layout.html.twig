@@ -29,4 +29,7 @@
     </div>
 {% endblock %}
 
-{% block javascripts %}{% endblock %}
+{# surchage de ces blocks pour que les template_tree_section ne soient pas
+ exécutés. Ca claque parce que les controlleurs ne déclarent pas la branche. #}
+{% block javascripts_bottom %}{% endblock %}
+{% block javascripts_top %}{% endblock %}

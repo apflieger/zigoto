@@ -24,6 +24,7 @@
             ga('create', '{{ trackingId }}', 'auto');
             ga('send', 'pageview');
         </script>
+        {% block javascripts_top %}{% template_tree_section javascripts_top optional %}{% endblock %}
     </head>
     <body>
         <nav class="global-header">
@@ -48,7 +49,7 @@
             </div>
         </footer>
 
-        {% block javascripts %}{% template_tree_section javascripts optional %}{% endblock %}
+        {% block javascripts_bottom %}{% template_tree_section javascripts_bottom optional %}{% endblock %}
         {% if app.environment == 'dev' %}
             <script src="//localhost:35729/livereload.js"></script>
         {% endif %}
