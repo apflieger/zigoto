@@ -56,7 +56,11 @@ module.exports = function(grunt) {
             },
             options: {
                 sourceMap: true,
-                sourceMapFileInline: true
+                outputSourceFiles: true,
+                sourceMapBasepath: function (f) {
+                    // https://github.com/gruntjs/grunt-contrib-less/issues/236#issuecomment-174295069
+                    this.sourceMapFilename = this.sourceMapFilename.replace("web", "");
+                }
             }
         },
         watch: {
