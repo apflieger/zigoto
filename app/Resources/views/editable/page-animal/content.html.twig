@@ -51,23 +51,11 @@
                 </div>
             </header>
 
-            {% if isEditable %}
-                <div ngf-drop ngf-select
-                     class="photo-drop"
-                     id="photo-drop"
-                     accept="image/*"
-                     ngf-pattern="'image/*'"
-                     ngf-multiple="true"
-                     ngf-keep="'distinct'"
-                     ng-model="dirtyPhotos"
-                     ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
-                >+ Ajouter une photo</div>
-            {% endif %}
-
             <div class="gallerie grid-4-medium-3-small-2"
                 id="gallerie"
                 dnd-list="dirtyPhotos"
-                dnd-horizontal-list="true">
+                dnd-horizontal-list="true"
+                dnd-dragover="draggable(index)">
                 {% if isEditable %}
                     {% verbatim %}
                         <div class="photo"
@@ -83,6 +71,16 @@
                                 ng-click="gallerie($index)">
                         </div>
                     {% endverbatim %}
+                    <div ngf-drop ngf-select
+                         class="photo photo-drop"
+                         id="photo-drop"
+                         accept="image/*"
+                         ngf-pattern="'image/*'"
+                         ngf-multiple="true"
+                         ngf-keep="'distinct'"
+                         ng-model="dirtyPhotos"
+                         ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
+                    >+ Ajouter une photo</div>
                 {% else %}
                     {% for photo in pageAnimal.photos %}
                         <div class="photo">

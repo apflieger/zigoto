@@ -136,4 +136,8 @@ module.exports = function($scope, $http, Upload) {
     $scope.gallerie = function(index) {
         gallerie($scope.pageAnimal.photos, index);
     };
+
+    $scope.draggable = function(index) {
+        return index <= $scope.dirtyPhotos.length;
+    };
 };
