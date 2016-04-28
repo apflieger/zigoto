@@ -32,6 +32,15 @@ module.exports = function($scope, $http) {
         });
     };
 
+    $scope.supprimerAnimal = function(pageAnimal) {
+        var index = $scope.pageEleveur.animaux.indexOf(pageAnimal);
+        if (index > -1) {
+            $scope.pageEleveur.animaux.splice(index, 1);
+        }
+
+        $scope.commit();
+    };
+
     $scope.addActualite = function() {
         $scope.pageEleveur.actualites = $scope.pageEleveur.actualites || [];
         $scope.pageEleveur.actualites.push( {

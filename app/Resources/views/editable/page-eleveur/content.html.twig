@@ -83,6 +83,7 @@
                             <a href="/animal/{{ pageAnimal.id }}" class="animal">{{ pageAnimal.nom }}</a>
                             <span class="statut-animal chip {{ pageAnimal.statut | pageAnimalChipStatut }}">{{ pageAnimal.statut | pageAnimalTranslateStatut }}</span>
                             <img ng-if="pageAnimal.photos.length" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ pageAnimal.photos[0].nom }}">
+                            <button ng-click="supprimerAnimal(pageAnimal)" class="btn supprimer-animal">Supprimer</button>
                         </li>
                     {% endverbatim %}
                 {% else %}

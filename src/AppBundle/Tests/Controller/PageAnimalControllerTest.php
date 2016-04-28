@@ -6,6 +6,7 @@ namespace AppBundle\Tests\Controller;
 use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\Photo;
 use AppBundle\Service\PageAnimalService;
+use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\TestTimeService;
 use AppBundle\Tests\TestUtils;
 use JMS\Serializer\Serializer;
@@ -81,13 +82,31 @@ class PageAnimalControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
-        $this->assertEquals(1, $crawler->filter('nav a[href="/' . $pageEleveur->getSlug() . '"]')->count());
+        $this->assertEquals(1, $crawler->filter('#nav-page-animal a[href="/' . $pageEleveur->getSlug() . '"]')->count());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
         $this->assertEquals('Disponible', trim($crawler->filter('span#statut')->text()));
         $this->assertEquals(0, $crawler->filter('.photo')->count());
         $this->assertEquals(0, $crawler->filter('#photo-drop')->count());
+    }
+
+    public function testPageAnimalSupprime()
+    {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur();
+        $pageAnimal = $pageEleveur->getAnimaux()[0];
+
+        $pageEleveur->setAnimaux([]);
+
+        /** @var PageEleveurService $pageEleveurService */
+        $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
+
+        $pageEleveurService->commit($this->testUtils->getUser(), $pageEleveur);
+
+        $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
+
+        $this->assertTrue($this->client->getResponse()->isOk());
+        $this->assertEquals(0, $crawler->filter('#nav-page-animal a')->count());
     }
 
     public function testAccesOwner()

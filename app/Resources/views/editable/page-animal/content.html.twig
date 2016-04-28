@@ -1,8 +1,10 @@
 <div class="container padded">
-    <nav>
-        <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">
-            {{ pageEleveur.nom }}
-        </a>
+    <nav id="nav-page-animal">
+        {% if pageEleveur %}
+            <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">
+                {{ pageEleveur.nom }}
+            </a>
+        {% endif %}
     </nav>
 
     <section ng-app="zigotoo">

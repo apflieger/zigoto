@@ -240,6 +240,11 @@ class PageEleveurService
      */
     public function findByPageAnimal(PageAnimal $pageAnimal)
     {
-        return $this->fromBranch($this->pageEleveurBranchRepository->findByPageAnimal($pageAnimal));
+        $pageAnimalBranch = $this->pageEleveurBranchRepository->findByPageAnimal($pageAnimal);
+
+        if ($pageAnimalBranch === null)
+            return null;
+
+        return $this->fromBranch($pageAnimalBranch);
     }
 }
