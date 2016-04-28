@@ -3,7 +3,9 @@ var PageEleveurTab = require('./PageEleveurTab.js');
 module.exports = function($scope, $http) {
     // Variable injectée dans la page par le backend
     $scope.pageEleveur = globPageEleveur;
+
     $scope.tab = PageEleveurTab.EN_VENTE;
+    $scope.PageEleveurTab = PageEleveurTab;
 
     $scope.commit = function() {
         $http({
@@ -18,6 +20,7 @@ module.exports = function($scope, $http) {
     };
 
     $scope.addAnimal = function() {
+        $scope.tab = PageEleveurTab.EN_VENTE;
         $http({
             method: 'POST',
             url: '/add-animal',

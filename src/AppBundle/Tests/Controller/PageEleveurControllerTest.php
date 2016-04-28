@@ -65,7 +65,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(1, $crawler->filter('#lieu')->count());
         $this->assertEquals(1, $crawler->filter('#lieu')->count());
         $this->assertEquals(1, $crawler->filter('#description')->count());
-        $this->assertEquals('Ajouter un animal', $crawler->filter('.animaux button')->text());
+        $this->assertEquals('Ajouter un animal', $crawler->filter('#ajout-animal')->text());
         $this->assertEquals('Actualités', $crawler->filter('#actualites h2')->text());
         $this->assertEquals('Nouvelle actualité', $crawler->filter('#actualites #ajouter-actualite')->text());
 

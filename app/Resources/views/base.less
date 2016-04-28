@@ -80,11 +80,12 @@ input[type="submit"] {
     font-style: italic;
 }
 
+@btn-border-radius: .5em;
 .btn {
     display: inline-block;
     text-decoration: none;
     padding: .5em;
-    border-radius: 8px;
+    border-radius: @btn-border-radius;
     border: none;
     font-size: inherit;
     cursor: pointer;
@@ -97,7 +98,7 @@ input[type="submit"] {
         box-shadow: 0 0 2px 2px @brown inset;
     }
 
-    &:active {
+    &:active, &.active {
         background-color: @brown;
         color: @cream;
         box-shadow: none;
@@ -134,6 +135,19 @@ input[type="submit"] {
 
 .chip-error {
     .colored-btn(@error, white);
+}
+
+.tabs {
+    display: inline-flex;
+    .btn {
+        border-radius: 0;
+    }
+    .btn:first-child {
+        border-radius: @btn-border-radius 0 0 @btn-border-radius;
+    }
+    .btn:last-child {
+        border-radius: 0 @btn-border-radius @btn-border-radius 0;
+    }
 }
 
 .form-input {

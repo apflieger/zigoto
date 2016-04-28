@@ -67,7 +67,13 @@
 
         <section class="animaux" id="animaux">
             {% if isEditable %}
-                <button ng-click="addAnimal()" class="btn">Ajouter un animal</button>
+                {% verbatim %}
+                    <span class="tabs">
+                        <button ng-click="tab = PageEleveurTab.EN_VENTE" class="btn {{ tab == PageEleveurTab.EN_VENTE ? 'active' : '' }}">En vente</button>
+                        <button ng-click="tab = PageEleveurTab.ADOPTE" class="btn {{ tab == PageEleveurTab.ADOPTE ? 'active' : '' }}">Adoptés</button>
+                    </span>
+                    <button ng-click="addAnimal()" class="btn ajout-animal" id="ajout-animal">Ajouter un animal</button>
+                {% endverbatim %}
             {% endif %}
 
             <ul class="grid-4-medium-3-small-2">
