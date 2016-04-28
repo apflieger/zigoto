@@ -55,6 +55,6 @@ class Actualite implements StatePersistableInterface
 
     public function hashCode()
     {
-        return substr(md5(serialize([$this->contenu, $this->date])), 0, 16);
+        return substr(md5(serialize([$this->contenu, $this->date->getTimestamp()])), 0, 16);
     }
 }
