@@ -82,7 +82,8 @@
                         <li class="animal" ng-repeat="pageAnimal in pageEleveur.animaux | pageEleveurTabFilter:tab">
                             <a href="/animal/{{ pageAnimal.id }}" class="animal">{{ pageAnimal.nom }}</a>
                             <span class="statut-animal chip {{ pageAnimal.statut | pageAnimalChipStatut }}">{{ pageAnimal.statut | pageAnimalTranslateStatut }}</span>
-                            <img ng-if="pageAnimal.photos.length" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ pageAnimal.photos[0].nom }}">
+                            <img class="animal-photo" ng-if="pageAnimal.photos.length" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ pageAnimal.photos[0].nom }}">
+                            <span class="animal-photo" ng-if="!pageAnimal.photos.length">Aucune photo</span>
                             <button ng-click="supprimerAnimal(pageAnimal)" class="btn supprimer-animal">Supprimer</button>
                         </li>
                     {% endverbatim %}
@@ -93,7 +94,9 @@
                                 <a href="{{ path('getPageAnimal_route', {'pageAnimalId': pageAnimal.id}) }}">{{ pageAnimal.nom }}</a>
                                 <span class="statut-animal chip {{ pageAnimal.statut | chip_page_animal_statut }}">{{ pageAnimal.statut | translate_page_animal_statut }}</span>
                                 {% if pageAnimal.photos | length > 0 %}
-                                    <img src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ pageAnimal.photos[0].nom }}">
+                                    <img class="animal-photo" src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ pageAnimal.photos[0].nom }}">
+                                {% else %}
+                                    <span class="animal-photo">Aucune photo</span>
                                 {% endif %}
                             </li>
                         {% endif %}
