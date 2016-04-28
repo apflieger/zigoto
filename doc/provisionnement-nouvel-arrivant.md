@@ -3,6 +3,9 @@
 ## Github
 Donner les droits sur le repo
 
+## AWS
+* S3 : Acces au bucket
+
 ## Clever Cloud
 * Autoriser le nouveau compte à accéder à l'app
 * Créer les bdd dev et test
