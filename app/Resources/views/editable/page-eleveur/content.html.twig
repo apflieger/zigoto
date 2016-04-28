@@ -66,6 +66,10 @@
         </section>
 
         <section class="animaux" id="animaux">
+            {% if isEditable %}
+                <button ng-click="addAnimal()" class="btn">Ajouter un animal</button>
+            {% endif %}
+
             <ul class="grid-4-medium-3-small-2">
                 {% if isEditable %}
                     {% verbatim %}
@@ -87,10 +91,6 @@
                     {% endfor %}
                 {% endif %}
             </ul>
-
-            {% if isEditable %}
-                <button ng-click="addAnimal()" class="btn">Ajouter un animal</button>
-            {% endif %}
         </section>
 
 
