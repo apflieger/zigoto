@@ -73,7 +73,7 @@
             <ul class="grid-4-medium-3-small-2">
                 {% if isEditable %}
                     {% verbatim %}
-                        <li class="animal" ng-repeat="pageAnimal in pageEleveur.animaux">
+                        <li class="animal" ng-repeat="pageAnimal in pageEleveur.animaux | pageEleveurTabFilter:tab">
                             <a href="/animal/{{ pageAnimal.id }}" class="animal">{{ pageAnimal.nom }}</a>
                             <span class="statut-animal chip {{ pageAnimal.statut | pageAnimalChipStatut }}">{{ pageAnimal.statut | pageAnimalTranslateStatut }}</span>
                             <img ng-if="pageAnimal.photos.length" ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ pageAnimal.photos[0].nom }}">

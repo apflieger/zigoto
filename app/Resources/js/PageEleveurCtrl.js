@@ -1,6 +1,9 @@
+var PageEleveurTab = require('./PageEleveurTab.js');
+
 module.exports = function($scope, $http) {
     // Variable injectée dans la page par le backend
     $scope.pageEleveur = globPageEleveur;
+    $scope.tab = PageEleveurTab.EN_VENTE;
 
     $scope.commit = function() {
         $http({

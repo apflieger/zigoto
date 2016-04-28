@@ -1,13 +1,15 @@
+var PageAnimalStatut = require('./PageAnimalStatut.js');
+
 module.exports = function() {
     return function(statut) {
         switch (statut) {
-            case 1:
+            case PageAnimalStatut.DISPONIBLE:
                 return "Disponible";
-            case 2:
+            case PageAnimalStatut.OPTION:
                 return "Option";
-            case 3:
+            case PageAnimalStatut.RESERVE:
                 return "Réservé";
-            case 4:
+            case PageAnimalStatut.ADOPTE:
                 return "Adopté";
         }
     };
