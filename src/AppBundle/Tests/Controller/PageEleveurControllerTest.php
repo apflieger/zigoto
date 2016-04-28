@@ -14,6 +14,8 @@ use AppBundle\Entity\Actualite;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
+use AppBundle\Entity\Photo;
+use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
 use AppBundle\Tests\TestUtils;
 use Doctrine\ORM\EntityManager;
@@ -97,7 +99,7 @@ class PageEleveurControllerTest extends WebTestCase
 
     public function testContent_UserAnonyme_PageComplete()
     {
-        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->addAnimal()->getPageEleveur();
 
         $pageEleveur->setDescription('nouvelle description');
         $pageEleveur->setEspeces('chats');
@@ -116,13 +118,20 @@ class PageEleveurControllerTest extends WebTestCase
 
         $pageEleveur->setActualites([$actualite1, new Actualite('Nouvelle portée', new \DateTime())]);
 
+        $pageAnimal = $pageEleveur->getAnimaux()[0];
+        $photo = new Photo();
+        $photo->setNom('portrait');
+        $pageAnimal->setPhotos([$photo]);
+
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
-        $pageEleveurService->commit(
-            $this->testUtils->getUser(),
-            $pageEleveur
-        );
+        /** @var PageAnimalService $pageAnimalService */
+        $pageAnimalService = $this->client->getContainer()->get('zigotoo.page_animal');
+
+        $pageEleveurService->commit($this->testUtils->getUser(), $pageEleveur);
+
+        $pageAnimalService->commit($this->testUtils->getUser(), $pageAnimal);
 
         $this->testUtils->logout();
         $this->testUtils->clearEntities();
@@ -138,6 +147,9 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertContains('Nouvelle portée', $crawler->filter('#actualites .actualite')->first()->text());
         $this->assertContains('25/12/2015', $crawler->filter('#actualites .actualite')->nextAll()->text());
         $this->assertContains($actualite1->getContenu(), $crawler->filter('#actualites .actualite')->nextAll()->text());
+        $this->assertContains($pageEleveur->getAnimaux()[0]->getNom(), $crawler->filter('#animaux .animal')->text());
+        $this->assertContains($photo->getNom(), $crawler->filter('#animaux .animal img')->attr('src'));
+        $this->assertContains('Disponible', $crawler->filter('#animaux .animal .statut-animal.chip-valid')->text());
     }
 
     public function testCommit()

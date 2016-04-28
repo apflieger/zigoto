@@ -10,13 +10,18 @@ namespace AppBundle\Tests\Service;
 
 
 use AppBundle\Entity\Actualite;
+use AppBundle\Entity\PageAnimal;
+use AppBundle\Entity\PageAnimalBranch;
+use AppBundle\Entity\PageAnimalCommit;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
+use AppBundle\Entity\Photo;
 use AppBundle\Entity\User;
 use AppBundle\Repository\PageAnimalBranchRepository;
 use AppBundle\Repository\PageEleveurBranchRepository;
 use AppBundle\Service\PageEleveurService;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use PHPUnit_Framework_TestCase;
@@ -228,8 +233,12 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->pageEleveurBranchRepository
             ->method('findBySlug')->withAnyParameters()->willReturn($pageEleveurBranch);
 
+        $pageAnimal = new PageAnimalBranch();
+        $photo = new Photo();
+        $photo->setNom('portrait');
+        $pageAnimal->setCommit(new PageAnimalCommit(null, 'bobi', null, '', PageAnimal::DISPONIBLE, [$photo]));
         $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux', 'Roubaix',
-            null,
+            [$pageAnimal],
             [new Actualite('Nouvelle portée', new \DateTime())]
         );
 
@@ -248,6 +257,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Chartreux', $pageEleveur->getRaces());
         $this->assertEquals('Roubaix', $pageEleveur->getLieu());
         $this->assertEquals('Nouvelle portée', $pageEleveur->getActualites()[0]->getContenu());
+        $this->assertEquals('portrait', $pageEleveur->getAnimaux()[0]->getPhotos()[0]->getNom());
     }
 
     /**

@@ -7,7 +7,8 @@ var zigotoo = angular.module('zigotoo', ['xeditable', 'ngFileUpload', 'dndLists'
 
 zigotoo.run(['editableOptions', 'editableThemes', require('./ZigotooRun.js')]);
 
-zigotoo.filter('pageAnimalStatut', require('./PageAnimalStatutFilter.js'));
+zigotoo.filter('pageAnimalChipStatut', require('./PageAnimalStatutChipFilter.js'));
+zigotoo.filter('pageAnimalTranslateStatut', require('./PageAnimalStatutTranslateFilter.js'));
 
 zigotoo.controller('PageEleveurCtrl', ['$scope', '$http', require('./PageEleveurCtrl.js')]);
 zigotoo.controller('PageAnimalCtrl', ['$scope', '$http', 'Upload', require('./PageAnimalCtrl.js')]);

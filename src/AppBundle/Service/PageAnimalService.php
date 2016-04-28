@@ -51,10 +51,10 @@ class PageAnimalService
         if (!$branch)
             return null;
 
-        return $this->fromBranch($branch);
+        return self::fromBranch($branch);
     }
 
-    private function fromBranch(PageAnimalBranch $branch)
+    public static function fromBranch(PageAnimalBranch $branch)
     {
         $pageAnimal = new PageAnimal();
         $pageAnimal->setId($branch->getId());
@@ -95,7 +95,7 @@ class PageAnimalService
         $this->doctrine->persist($pageAnimalBranch);
         $this->doctrine->flush([$pageAnimalBranch->getCommit(), $pageAnimalBranch]);
 
-        return $this->fromBranch($pageAnimalBranch);
+        return self::fromBranch($pageAnimalBranch);
     }
 
     /**

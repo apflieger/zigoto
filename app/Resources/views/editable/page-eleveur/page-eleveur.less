@@ -9,3 +9,31 @@
 .supprimer-actualite {
     font-size: .75em;
 }
+
+.animaux ul {
+    display: flex;
+    padding: 0;
+    @animal-gutter: 10px;
+    margin-left: -@animal-gutter;
+    margin-right: -@animal-gutter;
+
+    li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        list-style: none;
+        padding: @animal-gutter;
+
+        a {
+            font-size: @bigger;
+        }
+        a, .statut-animal {
+            margin-bottom: .6em;
+        }
+
+        img {
+            width: 100%;
+        }
+    }
+}

@@ -22,7 +22,7 @@
                     {% if isEditable %}
                         <select
                             id="statut"
-                            class="statut chip {% verbatim %}{{ pageAnimal.statut | pageAnimalStatut }}{% endverbatim %}"
+                            class="statut chip {% verbatim %}{{ pageAnimal.statut | pageAnimalChipStatut }}{% endverbatim %}"
                             ng-model="pageAnimal.statut" z-integer-model
                             ng-change="commit()">
                             {% for statut in [

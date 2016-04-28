@@ -74,11 +74,7 @@ class PageEleveurService
         $animaux = [];
         /** @var PageAnimalBranch $pageAnimalBranch */
         foreach ($arrayCollection->toArray() as $pageAnimalBranch) {
-            $pageAnimal = new PageAnimal();
-            $pageAnimal->setId($pageAnimalBranch->getId());
-            $pageAnimal->setHead($pageAnimalBranch->getCommit()->getId());
-            $pageAnimal->setNom($pageAnimalBranch->getCommit()->getNom());
-            $animaux[] = $pageAnimal;
+            $animaux[] = PageAnimalService::fromBranch($pageAnimalBranch);
         }
         $pageEleveur->setAnimaux($animaux);
 
