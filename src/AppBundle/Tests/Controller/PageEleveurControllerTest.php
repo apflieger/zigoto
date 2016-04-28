@@ -11,6 +11,7 @@ namespace AppBundle\Tests\Controller;
 
 use AppBundle\Controller\PageEleveurController;
 use AppBundle\Entity\Actualite;
+use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\PageEleveurCommit;
@@ -347,5 +348,38 @@ class PageEleveurControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
 
         $this->assertEquals($animal->getNom(), $crawler->filter('a[href="/animal/'.$animal->getId().'"]')->text());
+    }
+
+    public function testAnimalList() {
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()
+            ->addAnimal()
+            ->addAnimal()
+            ->addAnimal()
+            ->addAnimal()
+            ->getPageEleveur();
+        $animal0 = $pageEleveur->getAnimaux()[0];
+        $animal1 = $pageEleveur->getAnimaux()[1];
+        $animal2 = $pageEleveur->getAnimaux()[2];
+        $animal3 = $pageEleveur->getAnimaux()[3];
+
+        // On met un animal dans chaque statut
+        $this->assertEquals(PageAnimal::DISPONIBLE, $animal0->getStatut());
+        $animal1->setStatut(PageAnimal::OPTION);
+        $animal2->setStatut(PageAnimal::RESERVE);
+        $animal3->setStatut(PageAnimal::ADOPTE);
+
+        /** @var PageAnimalService $pageAnimalService */
+        $pageAnimalService = $this->client->getContainer()->get('zigotoo.page_animal');
+
+        $pageAnimalService->commit($this->testUtils->getUser(), $animal1);
+        $pageAnimalService->commit($this->testUtils->getUser(), $animal2);
+        $pageAnimalService->commit($this->testUtils->getUser(), $animal3);
+
+        $this->testUtils->logout();
+
+        $this->testUtils->clearEntities();
+        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+
+        $this->assertEquals(3, $crawler->filter('.animaux .animal')->count());
     }
 }

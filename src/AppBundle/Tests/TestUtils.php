@@ -129,7 +129,12 @@ class TestUtils
         /** @var PageAnimalService $pageAnimalService */
         $pageAnimalService = $this->client->getContainer()->get('zigotoo.page_animal');
 
-        $this->pageEleveur->setAnimaux([$pageAnimalService->create($this->user)]);
+        if (count($this->pageEleveur->getAnimaux()) === 0)
+            $this->pageEleveur->setAnimaux([]);
+
+        $animaux = $this->pageEleveur->getAnimaux();
+        array_push($animaux, $pageAnimalService->create($this->user));
+        $this->pageEleveur->setAnimaux($animaux);
 
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
