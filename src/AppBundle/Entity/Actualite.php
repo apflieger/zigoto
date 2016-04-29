@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="actualite_eleveur")
+ * @ORM\Table(name="page_eleveur_actualite")
  */
 class Actualite implements StatePersistableInterface
 {
