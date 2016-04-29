@@ -78,9 +78,45 @@ class DefaultController
                 TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/teaser'
             ]);
 
+        $pageEleveur = $this->pageEleveurService->findByOwner($user);
+
+        $form = $this->formFactory->createNamedBuilder('creation-page-eleveur')
+            ->add('nom', TextType::class, ['label' => 'Nom de l\'élevage'])
+            ->add('save', SubmitType::class, array('label' => 'Créer ma page éleveur'))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() && $pageEleveur){
+            // un eleveur ne peux pas créer une 2eme page eleveur
+            return $this->templating->renderResponse('base.html.twig', [
+                TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/eleveur',
+                'pageEleveur' => $pageEleveur
+            ]);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // traitement du formulaire de creation de page eleveur
+            $nom = $form->getData()['nom'];
+            try {
+                $slug = $this->pageEleveurService->create($nom, $user)->getSlug();
+                return new RedirectResponse($this->router->generate('getPageEleveur_route', ['pageEleveurSlug' => $slug]));
+            } catch (HistoryException $e) {
+                switch ($e->getCode()) {
+                    case HistoryException::NOM_INVALIDE:
+                        return new Response('Le nom "'.$nom.'" n\'est pas valide.', Response::HTTP_NOT_ACCEPTABLE);
+                    case HistoryException::SLUG_DEJA_EXISTANT:
+                        return new Response('Une page éleveur du même nom existe déjà.', Response::HTTP_CONFLICT);
+                    case HistoryException::DEJA_OWNER:
+                        return new Response('Vous avez déjà une page éleveur.', Response::HTTP_BAD_REQUEST);
+                }
+            }
+        }
+
+        // home d'un user connecté mais qui n'a pas de page eleveur
         return $this->templating->renderResponse('base.html.twig', [
-            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/teaser_logged_in',
-            'user' => $user
+            TwigNodeTemplateTreeSection::TEMPLATE_TREE_BRANCH => 'home/creation-page-eleveur',
+            'creationPageEleveur' => $form->createView()
         ]);
     }
 }
