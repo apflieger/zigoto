@@ -1,3 +1,24 @@
-<div class="container">
-    <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">Votre page eleveur</a>
+<div class="container padded">
+    <section>
+        <h1>Votre page eleveur</h1>
+
+        <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">{{ pageEleveur.nom }}</a>
+    </section>
+    <section>
+        <h1>
+            Actualités des développeurs
+        </h1>
+
+        <article>
+            <h3>La première version de Zigotoo</h3>
+            <p>
+                Après des mois de travail, nous ouvrons enfin les inscriptions !<br>
+                Communiquer avec vous est très important
+                pour nous, c'est pourquoi nous vous tiendrons au courant des mises à jour et des nouvelles fonctionnalités
+                sur le site. Et parce qu'une bonne communication va dans les deux sens, n'hésitez pas à nous faire
+                part de vos remarques/probèmes/suggestions via le <a href="{{ path('contact_route') }}">formulaire de contact</a>.
+            </p>
+            <time pubdate>avril 2016</time>
+        </article>
+    </section>
 </div>
