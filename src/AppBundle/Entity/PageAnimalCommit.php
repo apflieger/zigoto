@@ -46,8 +46,8 @@ class PageAnimalCommit implements IdentityPersistableInterface
     private $statut;
 
     /**
-     * @var ArrayCollection
-     * @ORM\Column(type="photoarray", length=5000, nullable=true)
+     * @var Photo[]
+     * @ORM\Column(type="array", nullable=true)
      */
     private $photos;
 
@@ -73,7 +73,7 @@ class PageAnimalCommit implements IdentityPersistableInterface
         $this->dateNaissance = $dateNaissance;
         $this->description = $description;
         $this->statut = $statut;
-        $this->photos = new ArrayCollection($photos ?? []);
+        $this->photos = $photos;
     }
 
     /**
@@ -117,7 +117,7 @@ class PageAnimalCommit implements IdentityPersistableInterface
     }
 
     /**
-     * @return ArrayCollection
+     * @return Photo[]
      */
     public function getPhotos()
     {

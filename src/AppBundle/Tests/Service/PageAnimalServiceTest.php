@@ -111,7 +111,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $this->assertEquals('Inscrit au LOF', $pageAnimalBranch->getCommit()->getDescription());
         $this->assertEquals(PageAnimal::RESERVE, $pageAnimalBranch->getCommit()->getStatut());
         /** @var Photo[] $photos */
-        $photos = $pageAnimalBranch->getCommit()->getPhotos()->toArray();
+        $photos = $pageAnimalBranch->getCommit()->getPhotos();
         $this->assertEquals('bllbl', $photos[0]->getNom());
     }
 

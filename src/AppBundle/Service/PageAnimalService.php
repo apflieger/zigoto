@@ -64,7 +64,7 @@ class PageAnimalService
         $pageAnimal->setDateNaissance($branch->getCommit()->getDateNaissance());
         $pageAnimal->setDescription($branch->getCommit()->getDescription());
         $pageAnimal->setStatut($branch->getCommit()->getStatut());
-        $pageAnimal->setPhotos($branch->getCommit()->getPhotos()->toArray());
+        $pageAnimal->setPhotos($branch->getCommit()->getPhotos());
 
         return $pageAnimal;
     }
