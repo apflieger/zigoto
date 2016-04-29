@@ -88,6 +88,13 @@ services:
             - { name: kernel.event_subscriber }
             - { name: monolog.logger, channel: zigotoo.mail_subscriber }
 
+    zigotoo.registration_confirmation_subscriber:
+        class: AppBundle\Subscriber\RegistrationConfirmationSubscriber
+        arguments:
+            - "@router"
+        tags:
+            - { name: kernel.event_subscriber }
+
     zigotoo.time:
         class: AppBundle\Service\TimeService
 

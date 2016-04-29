@@ -43,5 +43,18 @@ class LoginControllerTest extends WebTestCase
         $this->assertEquals('Créez votre compte sur Zigotoo', $crawler->filter('meta[name="description"]')->attr('content'));
         $this->assertEquals(1, $crawler->filter('form input[name="fos_user_registration_form[email]"]')->count());
         $this->assertEquals(1, $crawler->filter('form input[name="fos_user_registration_form[username]"]')->count());
+
+        $username = $this->getName() . rand();
+
+        $form = $crawler->filter('form')->form([
+            'fos_user_registration_form[email]' => $username . '@zigotoo.com',
+            'fos_user_registration_form[username]' => $username,
+            'fos_user_registration_form[plainPassword][first]' => 'test',
+            'fos_user_registration_form[plainPassword][second]' => 'test',
+        ]);
+
+        $this->client->submit($form);
+
+        $this->assertTrue($this->client->getResponse()->isRedirect('/'));
     }
 }
