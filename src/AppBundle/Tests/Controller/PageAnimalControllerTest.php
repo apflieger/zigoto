@@ -82,7 +82,7 @@ class PageAnimalControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
-        $this->assertEquals(1, $crawler->filter('#nav-page-animal a[href="/' . $pageEleveur->getSlug() . '"]')->count());
+        $this->assertEquals(1, $crawler->filter('#nav-page-animal a[href="/elevage/' . $pageEleveur->getSlug() . '"]')->count());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());

@@ -47,7 +47,7 @@ class PageEleveurControllerTest extends WebTestCase
 
     public function test404()
     {
-        $this->client->request('GET', '/nonexisting-eleveur');
+        $this->client->request('GET', '/elevage/nonexisting-eleveur');
 
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
@@ -56,7 +56,7 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertEquals(1, $crawler->filter('#eleveur-toolbar #preview.btn')->count());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
@@ -84,7 +84,7 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
         $this->testUtils->logout();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertEquals(0, $crawler->filter('#eleveur-toolbar')->count());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
@@ -136,7 +136,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->testUtils->logout();
         $this->testUtils->clearEntities();
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('h1')->text());
         $this->assertEquals($pageEleveur->getNom(), $crawler->filter('title')->text());
@@ -177,7 +177,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->assertEquals($this->serializer->serialize($pageEleveur, 'json'), $this->client->getResponse()->getContent());
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
         $this->assertEquals('nouveau nom', $crawler->filter('title')->text());
         $this->assertEquals('description non nulle', $crawler->filter('#description')->text());
     }
@@ -214,7 +214,7 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertContains(self::FLAG_JS_EDITABLE, $crawler->html());
     }
@@ -225,7 +225,7 @@ class PageEleveurControllerTest extends WebTestCase
 
         $this->testUtils->logout();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertNotContains(self::FLAG_JS_EDITABLE, $crawler->html(), 'ca marche pas !');
     }
@@ -237,7 +237,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->testUtils->logout();
         $this->testUtils->createUser();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertNotContains(self::FLAG_JS_EDITABLE, $crawler->html(), 'ca marche pas !');
     }
@@ -246,7 +246,7 @@ class PageEleveurControllerTest extends WebTestCase
     {
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
 
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertContains(self::FLAG_JS_EDITABLE, $crawler->html());
 
@@ -266,9 +266,9 @@ class PageEleveurControllerTest extends WebTestCase
         $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
         $this->testUtils->logout();
 
-        $this->client->request('GET', '/' . $pageEleveur->getSlug() . '?preview');
+        $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug() . '?preview');
 
-        $this->assertTrue($this->client->getResponse()->isRedirect('/' . $pageEleveur->getSlug()));
+        $this->assertTrue($this->client->getResponse()->isRedirect('/elevage/' . $pageEleveur->getSlug()));
     }
 
     public function testCommit_BrancheInconnue()
@@ -345,7 +345,7 @@ class PageEleveurControllerTest extends WebTestCase
         $animal = $pageEleveur->getAnimaux()[0];
 
         $this->testUtils->logout();
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertEquals($animal->getNom(), $crawler->filter('a[href="/animal/'.$animal->getId().'"]')->text());
     }
@@ -378,7 +378,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->testUtils->logout();
 
         $this->testUtils->clearEntities();
-        $crawler = $this->client->request('GET', '/' . $pageEleveur->getSlug());
+        $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
         $this->assertEquals(3, $crawler->filter('.animaux .animal')->count());
     }

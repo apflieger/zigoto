@@ -83,7 +83,7 @@ class DefaultControllerTest extends WebTestCase
         $this->assertEquals(302, $this->client->getResponse()->getStatusCode());
         $this->client->followRedirect();
         $this->assertTrue($this->client->getResponse()->isOk());
-        $this->assertEquals('/les-chartreux-de-tatouine-' . $rand, $this->client->getRequest()->getRequestUri());
+        $this->assertEquals('/elevage/les-chartreux-de-tatouine-' . $rand, $this->client->getRequest()->getRequestUri());
     }
 
     public function testCreationPageEleveur_Deconnecte()
@@ -153,6 +153,6 @@ class DefaultControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/');
 
-        $this->assertEquals(1, $crawler->filter('a[href="'.'/' . $pageEleveur->getSlug().'"]')->count());
+        $this->assertEquals(1, $crawler->filter('a[href="'.'/elevage/' . $pageEleveur->getSlug().'"]')->count());
     }
 }

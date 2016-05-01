@@ -76,7 +76,7 @@ class PageEleveurController
     }
 
     /**
-     * @Route("/{pageEleveurSlug}", name="getPageEleveur_route")
+     * @Route("/elevage/{pageEleveurSlug}", name="getPageEleveur_route")
      * @Method("GET")
      *
      * @param $pageEleveurSlug
