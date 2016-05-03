@@ -61,7 +61,7 @@
                 dnd-dragover="draggable(index)">
                 {% if isEditable %}
                     {% verbatim %}
-                        <div class="photo photo-editable"
+                        <div class="photo-editable"
                             ng-repeat="photo in dirtyPhotos"
                             dnd-draggable="photo"
                             dnd-moved="dirtyPhotos.splice($index, 1)"
@@ -76,7 +76,7 @@
                             </div>
                         </div>
                         <div
-                             class="photo photo-drop"
+                             class="photo-drop"
                              id="photo-drop"
                         >
                             <div ngf-drop ngf-select
