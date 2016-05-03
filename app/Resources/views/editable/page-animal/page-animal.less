@@ -22,9 +22,17 @@
     color: @cream;
 }
 
-.photo, .dndPlaceholder {
+.photo, .photo-editable, .photo-drop, .dndPlaceholder {
     padding: @photo-gutter;
     text-align: center;
+
+    display: flex;
+    align-items: stretch;
+    > div {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
 
     img {
         width: 100%;
@@ -33,9 +41,8 @@
 
 .dndPlaceholder {
     &:before {
-        content: "";
-        display: block;
-        height: 100%;
+        width: 100%;
+        content: " ";
         .photo-dragover();
     }
 }
@@ -43,8 +50,6 @@
 .photo-editable {
     > div {
         .photo-editable-border();
-        display: flex;
-        flex-wrap: wrap;
         cursor: move;
     }
 
@@ -58,9 +63,6 @@
 .photo-drop {
     > div {
         .photo-editable-border();
-        height: 100%;
-        display: flex;
-        align-items: center;
         justify-content: center;
         cursor: pointer;
 
@@ -70,7 +72,7 @@
     }
 }
 
-.gallerie, .photo {
+.photo-editable, .photo-drop {
     position: relative; // requis par angular-drag-and-drop-lists : https://github.com/marceljuenemann/angular-drag-and-drop-lists#required-css-styles
 }
 
