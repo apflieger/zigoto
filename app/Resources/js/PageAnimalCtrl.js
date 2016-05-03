@@ -97,12 +97,32 @@ module.exports = function($scope, $http, Upload) {
                     });
 
                     function uploadResizedFile(resizedFile, key) {
-                        // Il n'y a aucune authentification, le bucket autorise tous les POST.
+                        // pour écrire la policy voir http://docs.aws.amazon.com/fr_fr/AmazonS3/latest/API/sigv4-post-example.html
+                        // pour générer la signature et la policy en base64 : https://angular-file-upload.appspot.com/
+
+                        /*
+                        la policy :
+
+                         { "expiration": "2050-12-30T12:00:00.000Z",
+                             "conditions": [
+                                 {"bucket": "zigotoo-runtime"},
+                                 ["starts-with", "$key", "images/"],
+                                 ["starts-with", "$Content-Type", "image/"],
+                                 {"acl": "public-read"},
+                                 {"x-amz-credential": "AKIAIOSFODNN7EXAMPLE/20151229/us-east-1/s3/aws4_request"}
+                             ]
+                         }
+                         */
                         Upload.upload({
                             url: 'https://zigotoo-runtime.s3.amazonaws.com/',
                             method: 'POST',
                             data: {
+                                "X-amz-credential": "AKIAIOSFODNN7EXAMPLE/20151229/us-east-1/s3/aws4_request",
                                 key: key,
+                                acl: "public-read",
+                                AWSAccessKeyId: 'AKIAJHA63IJWUWG5UB6Q', // Secret Access Key: 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 (oui la clé privé est envoyée coté client par ce commentaire)
+                                policy: "eyAiZXhwaXJhdGlvbiI6ICIyMDUwLTEyLTMwVDEyOjAwOjAwLjAwMFoiLAogICJjb25kaXRpb25zIjogWwogICAgeyJidWNrZXQiOiAiemlnb3Rvby1ydW50aW1lIn0sCiAgICBbInN0YXJ0cy13aXRoIiwgIiRrZXkiLCAiaW1hZ2VzLyJdLAogICAgWyJzdGFydHMtd2l0aCIsICIkQ29udGVudC1UeXBlIiwgImltYWdlLyJdLAogICAgeyJhY2wiOiAicHVibGljLXJlYWQifSwKICAgIHsieC1hbXotY3JlZGVudGlhbCI6ICJBS0lBSU9TRk9ETk43RVhBTVBMRS8yMDE1MTIyOS91cy1lYXN0LTEvczMvYXdzNF9yZXF1ZXN0In0KICBdCn0=",
+                                Signature: "JPw3t/rbQN/2P86xUpmN66ea9Gc=",
                                 "Content-Type": contentType,
                                 file: resizedFile
                             }
