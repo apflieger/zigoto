@@ -80,7 +80,7 @@ module.exports = function($scope, $http, Upload) {
             for (var i = 0; i < $newFiles.length; i++) {
                 var file = $newFiles[i];
 
-                file.nom = Math.random().toString(16).slice(2);
+                file.nom = Math.random().toString(16).slice(2) + file.type.replace('image/', '.');
                 file.uploaded = false;
 
                 var contentType = file.type != '' ? file.type : 'application/octet-stream';
