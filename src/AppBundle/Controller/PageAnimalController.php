@@ -17,6 +17,7 @@ use AppBundle\Service\PageEleveurService;
 use AppBundle\Service\ValidationException;
 use AppBundle\Twig\TwigNodeTemplateTreeSection;
 use JMS\Serializer\Serializer;
+use Symfony\Bridge\Monolog\Logger;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -51,14 +52,17 @@ class PageAnimalController
     /** @var PageEleveurService */
     private $pageEleveurService;
 
+    /** @var Logger */
+    private $logger;
+
     public function __construct(
         TokenStorage $tokenStorage,
         TwigEngine $templating,
         RouterInterface $router,
         Serializer $serializer,
         PageAnimalService $pageAnimalService,
-        PageEleveurService $pageEleveurService
-
+        PageEleveurService $pageEleveurService,
+        Logger $logger
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
@@ -66,6 +70,7 @@ class PageAnimalController
         $this->serializer = $serializer;
         $this->pageAnimalService = $pageAnimalService;
         $this->pageEleveurService = $pageEleveurService;
+        $this->logger = $logger;
     }
 
     /**
@@ -120,19 +125,22 @@ class PageAnimalController
             $this->pageAnimalService->commit($user, $pageAnimal);
             return new Response($this->serializer->serialize($pageAnimal, 'json'));
         } catch (HistoryException $e) {
-            return $this->createHistoryErrorResponse($e);
+            return $this->createHistoryErrorResponse($e, $user, $pageAnimal);
         } catch (ValidationException $e) {
-            return $this->createValidationErrorResponse($e);
+            return $this->createValidationErrorResponse($e, $user, $pageAnimal);
         }
     }
 
     /**
      * @param HistoryException $e
+     * @param User $user
+     * @param PageAnimal $pageAnimal
      * @return Response
      * @throws HistoryException
      */
-    private function createHistoryErrorResponse(HistoryException $e)
+    private function createHistoryErrorResponse(HistoryException $e, User $user, PageAnimal $pageAnimal)
     {
+        $this->logger->error($e->getMessage(), ['exception' => $e, 'user' => $user, 'pageAnimal' => $pageAnimal]);
         switch ($e->getCode()) {
             case HistoryException::NON_FAST_FORWARD:
                 return new Response(
@@ -152,11 +160,14 @@ class PageAnimalController
 
     /**
      * @param ValidationException $e
+     * @param User $user
+     * @param PageAnimal $pageAnimal
      * @return Response
      * @throws ValidationException
      */
-    private function createValidationErrorResponse(ValidationException $e)
+    private function createValidationErrorResponse(ValidationException $e, User $user, PageAnimal $pageAnimal)
     {
+        $this->logger->error($e->getMessage(), ['exception' => $e, 'user' => $user, 'pageAnimal' => $pageAnimal]);
         switch ($e->getCode()) {
             case ValidationException::EMPTY_NOM:
                 return new Response(

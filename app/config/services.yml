@@ -7,6 +7,7 @@ services:
             - "@form.factory"
             - "@router"
             - "@zigotoo.page_eleveur"
+            - "@logger"
 
     zigotoo.quisommesnous_controller:
         class: AppBundle\Controller\QuiSommesNousController
@@ -52,6 +53,7 @@ services:
             - "@serializer"
             - "@zigotoo.page_animal"
             - "@zigotoo.page_eleveur"
+            - "@logger"
 
     zigotoo.page_eleveur:
         class: AppBundle\Service\PageEleveurService

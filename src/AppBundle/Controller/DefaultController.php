@@ -24,39 +24,38 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
  */
 class DefaultController
 {
-    /**
-     * @var TokenStorage
-     */
+    /** @var TokenStorage */
     private $tokenStorage;
-    /**
-     * @var TwigEngine
-     */
+
+    /** @var TwigEngine */
     private $templating;
-    /**
-     * @var FormFactory
-     */
+
+    /** @var FormFactory */
     private $formFactory;
-    /**
-     * @var Router
-     */
+
+    /** @var Router */
     private $router;
-    /**
-     * @var PageEleveurService
-     */
+
+    /** @var PageEleveurService */
     private $pageEleveurService;
+
+    /** @var Logger */
+    private $logger;
 
     public function __construct(
         TokenStorage $tokenStorage,
         TwigEngine $templating,
         FormFactory $formFactory,
         Router $router,
-        PageEleveurService $pageEleveurService
+        PageEleveurService $pageEleveurService,
+        Logger $logger
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->templating = $templating;
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->pageEleveurService = $pageEleveurService;
+        $this->logger = $logger;
     }
 
     /**
@@ -102,6 +101,7 @@ class DefaultController
                 $slug = $this->pageEleveurService->create($nom, $user)->getSlug();
                 return new RedirectResponse($this->router->generate('getPageEleveur_route', ['pageEleveurSlug' => $slug]));
             } catch (HistoryException $e) {
+                $this->logger->error($e->getMessage(), ['exception' => $e, 'user' => $user, 'nom' => $nom]);
                 switch ($e->getCode()) {
                     case HistoryException::NOM_INVALIDE:
                         return new Response('Le nom "'.$nom.'" n\'est pas valide.', Response::HTTP_NOT_ACCEPTABLE);

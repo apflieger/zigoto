@@ -151,7 +151,7 @@ class PageEleveurController
             $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
-            return $this->createErrorResponse($e);
+            return $this->createErrorResponse($e, $user, $pageEleveur);
         }
     }
 
@@ -182,7 +182,7 @@ class PageEleveurController
             $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);
             return new Response(self::jsonPageEleveur($pageEleveur));
         } catch (HistoryException $e) {
-            return $this->createErrorResponse($e);
+            return $this->createErrorResponse($e, $user, $pageEleveur);
         }
     }
 
@@ -191,8 +191,9 @@ class PageEleveurController
      * @return Response
      * @throws HistoryException
      */
-    private function createErrorResponse(HistoryException $e)
+    private function createErrorResponse(HistoryException $e, User $user, PageEleveur $pageEleveur)
     {
+        $this->logger->error($e->getMessage(), ['exception' => $e, 'user' => $user, 'pageEleveur' => $pageEleveur]);
         switch ($e->getCode()) {
             case HistoryException::NON_FAST_FORWARD:
                 return new Response(
