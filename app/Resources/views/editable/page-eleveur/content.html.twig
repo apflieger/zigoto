@@ -116,7 +116,7 @@
 
                 {% if isEditable %}
                     {% verbatim %}
-                        <article ng-repeat="actualite in pageEleveur.actualites | orderBy:'':true" class="actualite">
+                        <article ng-repeat="actualite in pageEleveur.actualites" class="actualite">
                             <header class="actualite-date">
                                 <span class="italic">{{ actualite.date | date : 'dd/MM/yyyy' }}</span>
                                 <button class="btn supprimer-actualite" ng-click="removeActualite(actualite)">Supprimer</button>
@@ -131,7 +131,7 @@
                         </article>
                     {% endverbatim %}
                 {% else %}
-                    {% for actualite in pageEleveur.actualites | reverse %}
+                    {% for actualite in pageEleveur.actualites %}
                         <article class="actualite"> <!-- {{ actualite.id }} -->
                             <header class="actualite-date"><span class="italic">{{ actualite.date | date("d/m/Y") }}</span></header>
                             {{ actualite.contenu }}
