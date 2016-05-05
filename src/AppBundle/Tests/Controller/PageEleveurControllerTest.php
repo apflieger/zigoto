@@ -18,6 +18,8 @@ use AppBundle\Entity\PageEleveurCommit;
 use AppBundle\Entity\Photo;
 use AppBundle\Service\PageAnimalService;
 use AppBundle\Service\PageEleveurService;
+use AppBundle\Service\TimeService;
+use AppBundle\Tests\TestTimeService;
 use AppBundle\Tests\TestUtils;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
@@ -110,13 +112,19 @@ class PageEleveurControllerTest extends WebTestCase
          * Enregistrement d'une actualité en base pour simuler le fait que
          * la page eleveur a déjà une actualité.
          */
+        /** @var TestTimeService $timeService */
+        $timeService = $this->client->getContainer()->get('zigotoo.time');
+        $timeService->lockNow(new \DateTime());
+
         /** @var EntityManager $entityManager */
         $entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
         $actualite1 = new Actualite($this->getName() . rand(), new \DateTime('2015/12/25'));
         $entityManager->persist($actualite1);
         $entityManager->flush($actualite1);
         $this->testUtils->clearEntities();
-
+        /* On doit avancer le temps pour que les actualités aient des createdAt différents
+         parceque les requêtes font des orderBy createdAt */
+        $timeService->lockNow((new \DateTime())->add(new \DateInterval('P1D')));
         $pageEleveur->setActualites([$actualite1, new Actualite('Nouvelle portée', new \DateTime())]);
 
         $pageAnimal = $pageEleveur->getAnimaux()[0];
