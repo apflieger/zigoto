@@ -54,10 +54,10 @@ class PageEleveurService
     }
 
     /**
-     * @param PageEleveurBranch $branch
+     * @param PageEleveurBranch|null $branch
      * @return PageEleveur
      */
-    private function fromBranch(PageEleveurBranch $branch)
+    private function fromBranch(PageEleveurBranch $branch = null)
     {
         $pageEleveur = new PageEleveur();
         $pageEleveur->setId($branch->getId());
@@ -70,10 +70,14 @@ class PageEleveurService
         $pageEleveur->setRaces($branch->getCommit()->getRaces());
         $pageEleveur->setLieu($branch->getCommit()->getLieu());
 
-        $arrayCollection = $branch->getCommit()->getAnimaux();
+        $arrayCollection = $branch->getCommit()->getAnimaux()->toArray();
+        usort($arrayCollection, function(PageAnimalBranch $a, PageAnimalBranch $b){
+            return $b->getCreatedAt()->getTimestamp() - $a->getCreatedAt()->getTimestamp();
+        });
+
         $animaux = [];
         /** @var PageAnimalBranch $pageAnimalBranch */
-        foreach ($arrayCollection->toArray() as $pageAnimalBranch) {
+        foreach ($arrayCollection as $pageAnimalBranch) {
             $animaux[] = PageAnimalService::fromBranch($pageAnimalBranch);
         }
         $pageEleveur->setAnimaux($animaux);
@@ -201,9 +205,35 @@ class PageEleveurService
         $pageEleveurBranch->setCommit($newCommit);
         $this->doctrine->flush([$newCommit, $pageEleveurBranch]);
 
-        $commitingPageEleveur->setHead($newCommit->getId());
+        $pageEleveur = $this->fromBranch(
+            $this->findAtCommit(
+                $commitingPageEleveur->getId(),
+                $newCommit->getId()
+            )
+        );
 
-        return $commitingPageEleveur;
+        return $pageEleveur;
+    }
+
+    /**
+     * @param string $pageEleveurId
+     * @param string|null $commitId
+     * @return PageEleveurBranch
+     * @throws HistoryException
+     */
+    private function findAtCommit($pageEleveurId, $commitId = null)
+    {
+        /** @var PageEleveurBranch $branch */
+        $branch = $this->pageEleveurBranchRepository->find($pageEleveurId);
+
+        if (!empty($commitId)){
+            /** @var PageEleveurCommit $commit */
+            $commit = $this->pageEleveurCommitRepository->find($commitId);
+
+            $branch->setCommit($commit);
+        }
+
+        return $branch;
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+
 use AppBundle\Entity\PageAnimal;
-use AppBundle\Entity\PageEleveur;
 use AppBundle\Entity\PageEleveurBranch;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;

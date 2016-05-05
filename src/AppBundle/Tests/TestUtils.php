@@ -139,7 +139,7 @@ class TestUtils
         /** @var PageEleveurService $pageEleveurService */
         $pageEleveurService = $this->client->getContainer()->get('zigotoo.page_eleveur');
 
-        $pageEleveurService->commit(
+        $this->pageEleveur = $pageEleveurService->commit(
             $this->user,
             $this->pageEleveur
         );
