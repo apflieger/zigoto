@@ -63,6 +63,7 @@ class PageEleveurCommit implements IdentityPersistableInterface
      *      joinColumns={@ORM\JoinColumn(name="page_eleveur_commit_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="page_animal_id", referencedColumnName="id")}
      *      )
+     * @ORM\OrderBy({"createdAt" = "ASC"})
      * @var ArrayCollection
      */
     private $animaux;
@@ -73,6 +74,7 @@ class PageEleveurCommit implements IdentityPersistableInterface
      *      joinColumns={@ORM\JoinColumn(name="page_eleveur_commit_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="actualite_id", referencedColumnName="id")}
      *      )
+     * @ORM\OrderBy({"createdAt" = "ASC"})
      * @var ArrayCollection
      */
     private $actualites;
