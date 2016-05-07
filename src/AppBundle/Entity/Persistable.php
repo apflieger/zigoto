@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: apflieger
- * Date: 28/02/16
- * Time: 00:53
- */
 
 namespace AppBundle\Entity;
 
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Pour que ce trait soit utilisé automatiquement, il faut également implementer PersistableInterface
@@ -21,18 +15,24 @@ trait Persistable
      * @ORM\Id
      * @ORM\Column(type="string", length=16)
      * @var string
+     *
+     * @JMS\Expose
      */
     protected $id;
 
     /**
      * @ORM\Column(type="datetime")
      * @var DateTime
+     *
+     * @JMS\Exclude
      */
     protected $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
      * @var DateTime
+     *
+     * @JMS\Exclude
      */
     protected $modifiedAt;
 

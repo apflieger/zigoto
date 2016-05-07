@@ -27,7 +27,7 @@ class Commitable
     private $head;
 
     /**
-     * @Exclude
+     * @Type("AppBundle\Entity\User")
      * @var User
      */
     private $owner;

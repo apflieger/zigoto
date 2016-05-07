@@ -43,6 +43,21 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_NOT_FOUND, $this->client->getResponse()->getStatusCode());
     }
 
+    public function test_CreateAnimal_success()
+    {
+        $this->testUtils->createUser()->toEleveur();
+
+        $this->client->request('POST', '/animal');
+
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+
+        /** @var PageAnimal $pageAnimal */
+        $pageAnimal = $this->serializer->deserialize($this->client->getResponse()->getContent(), PageAnimal::class, 'json');
+
+        $this->client->request('GET', '/animal/' . $pageAnimal->getId());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+    }
+
     public function testContent_Owner_PageVide()
     {
         /** @var TestTimeService $timeService */

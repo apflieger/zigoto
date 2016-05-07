@@ -23,10 +23,14 @@ module.exports = function($scope, $http) {
         $scope.tab = PageEleveurTab.EN_VENTE;
         $http({
             method: 'POST',
-            url: '/add-animal',
-            data: $scope.pageEleveur
+            url: '/animal'
         }).then(function successCallback(response) {
-            $scope.pageEleveur = response.data;
+            var pageAnimal = response.data;
+
+            $scope.pageEleveur.animaux = $scope.pageEleveur.animaux || [];
+            $scope.pageEleveur.animaux.unshift(pageAnimal);
+
+            $scope.commit();
         }, function errorCallback(response) {
             console.debug(response);
         });

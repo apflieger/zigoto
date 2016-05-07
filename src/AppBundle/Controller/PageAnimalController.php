@@ -74,6 +74,24 @@ class PageAnimalController
     }
 
     /**
+     * @Route("/animal", name="createPageAnimal_route")
+     * @Method("POST")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function createAction()
+    {
+        /** @var AnonymousToken $token */
+        $token = $this->tokenStorage->getToken();
+
+        /** @var User $user */
+        $user = $token->getUser();
+
+        $pageAnimal = $this->pageAnimalService->create($user);
+
+        return new Response($this->serializer->serialize($pageAnimal, 'json'));
+    }
+
+    /**
      * @Route("/animal/{pageAnimalId}", name="getPageAnimal_route")
      * @Method("GET")
      * @return \Symfony\Component\HttpFoundation\Response

@@ -193,7 +193,9 @@ class PageEleveurService
             $commitingPageEleveur->getLieu(),
             $commitingPageEleveur->getAnimaux() !== null ?
                 array_map(
-                    function(PageAnimal $pageAnimal) {
+                    function(PageAnimal $pageAnimal) use ($user) {
+                        if ($pageAnimal->getOwner()->getId() !== $user->getId())
+                            throw new HistoryException(HistoryException::DROIT_REFUSE);
                         return $this->pageAnimalBranchRepository->find($pageAnimal->getId());
                     }, $commitingPageEleveur->getAnimaux()
                 ) :

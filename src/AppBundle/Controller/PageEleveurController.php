@@ -156,37 +156,6 @@ class PageEleveurController
     }
 
     /**
-     * @Route("/add-animal", name="addAnimal_route")
-     * @Method("POST")
-     * @param Request $request
-     * @return Response
-     */
-    public function addAnimalAction(Request $request)
-    {
-        /** @var PageEleveur $pageEleveur */
-        $pageEleveur = $this->serializer->deserialize($request->getContent(), PageEleveur::class, 'json');
-
-        /** @var AnonymousToken $token */
-        $token = $this->tokenStorage->getToken();
-
-        /** @var User $user */
-        $user = $token->getUser();
-
-        $newPageAnimal = $this->pageAnimalService->create($user);
-
-        $animaux = $pageEleveur->getAnimaux() ?? [];
-        $animaux[] = $newPageAnimal;
-        $pageEleveur->setAnimaux($animaux);
-
-        try {
-            $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);
-            return new Response(self::jsonPageEleveur($pageEleveur));
-        } catch (HistoryException $e) {
-            return $this->createErrorResponse($e, $user, $pageEleveur);
-        }
-    }
-
-    /**
      * @param HistoryException $e
      * @return Response
      * @throws HistoryException

@@ -307,34 +307,20 @@ class PageEleveurControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_CONFLICT, $this->client->getResponse()->getStatusCode());
     }
 
-    public function testAddAnimal_success()
-    {
-        $pageEleveur0 = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
-
-        $this->client->request('POST', '/add-animal',
-            array(), array(), array(),
-            $this->serializer->serialize($pageEleveur0, 'json')
-        );
-
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-
-        /** @var PageEleveur $pageEleveur1 */
-        $pageEleveur1 = $this->serializer->deserialize($this->client->getResponse()->getContent(), PageEleveur::class, 'json');
-
-        $this->client->request('GET', '/animal/' . $pageEleveur1->getAnimaux()[0]->getId());
-        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
-    }
-
     public function testAddAnimal_droit_refuse()
     {
-        $pageEleveur0 = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
-
         $this->testUtils->createUser();
+        $this->client->request('POST', '/animal');
+        /** @var PageAnimal $pageAnimal */
+        $pageAnimal = $this->serializer->deserialize($this->client->getResponse()->getContent(), PageAnimal::class, 'json');
 
-        $this->client->request('POST', '/add-animal',
+        // un autre owner essaye d'ajouer la PA à sa PE
+        $pageEleveur = $this->testUtils->createUser()->toEleveur()->getPageEleveur();
+        $pageEleveur->setAnimaux([$pageAnimal]);
+
+        $this->client->request('POST', '/commit-page-eleveur',
             array(), array(), array(),
-            $this->serializer->serialize($pageEleveur0, 'json')
-        );
+            $this->serializer->serialize($pageEleveur, 'json'));
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $this->client->getResponse()->getStatusCode());
     }
