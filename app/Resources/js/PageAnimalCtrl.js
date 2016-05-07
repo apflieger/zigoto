@@ -17,7 +17,7 @@ module.exports = function($scope, $http, Upload) {
      si commit() a été appelé alors qu'une requete de commit est deja en cours,
      on ne peut pas en lancer une 2eme en parallèle car le 2eme commit
      ne serait pas fastforward du 1er. On bloque alors le 2eme commit, en attendant
-     que le 1er se finisse. C'est donc à la réponse du 1er commit que le 2eme est lancé.
+     que le 1er se finisse.
      */
     var pendingChanges = false;
 
@@ -54,7 +54,6 @@ module.exports = function($scope, $http, Upload) {
         }, function errorCallback(response) {
             commiting = false;
             pendingChanges = true;
-            console.debug(response);
         });
     };
 

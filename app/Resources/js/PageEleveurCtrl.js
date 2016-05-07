@@ -7,15 +7,45 @@ module.exports = function($scope, $http) {
     $scope.tab = PageEleveurTab.EN_VENTE;
     $scope.PageEleveurTab = PageEleveurTab;
 
+    // si une requete http de commit est en cours
+    var commiting = false;
+
+    /*
+     si commit() a été appelé alors qu'une requete de commit est deja en cours,
+     on ne peut pas en lancer une 2eme en parallèle car le 2eme commit
+     ne serait pas fastforward du 1er. On bloque alors le 2eme commit, en attendant
+     que le 1er se finisse.
+     */
+    var pendingChanges = false;
+
     $scope.commit = function() {
+
+        if (commiting) {
+            pendingChanges = true;
+            return;
+        }
+        commiting = true;
+
         $http({
             method: 'POST',
             url: '/commit-page-eleveur',
             data: $scope.pageEleveur
         }).then(function successCallback(response) {
-            $scope.pageEleveur = response.data;
+            commiting = false;
+            if (pendingChanges) {
+                $scope.pageEleveur.head = response.data.head;
+            } else {
+                $scope.pageEleveur = response.data;
+            }
+
+            if (pendingChanges) {
+                pendingChanges = false;
+                $scope.commit();
+            }
+
         }, function errorCallback(response) {
-            console.debug(response);
+            commiting = false;
+            pendingChanges = true;
         });
     };
 
