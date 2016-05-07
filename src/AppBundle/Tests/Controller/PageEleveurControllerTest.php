@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: apf
- * Date: 05/11/15
- * Time: 20:56
- */
 
 namespace AppBundle\Tests\Controller;
-
 
 use AppBundle\Entity\Actualite;
 use AppBundle\Entity\PageAnimal;

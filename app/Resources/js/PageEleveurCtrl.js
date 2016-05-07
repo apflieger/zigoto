@@ -77,7 +77,7 @@ module.exports = function($scope, $http) {
 
     $scope.addActualite = function() {
         $scope.pageEleveur.actualites = $scope.pageEleveur.actualites || [];
-        $scope.pageEleveur.actualites.push( {
+        $scope.pageEleveur.actualites.unshift( {
             contenu: '',
             date: new Date()
         });

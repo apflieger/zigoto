@@ -9,6 +9,7 @@
 namespace AppBundle\Service;
 
 
+use AppBundle\Entity\Actualite;
 use AppBundle\Entity\PageAnimal;
 use AppBundle\Entity\PageAnimalBranch;
 use AppBundle\Entity\PageEleveur;
@@ -70,6 +71,10 @@ class PageEleveurService
         $pageEleveur->setRaces($branch->getCommit()->getRaces());
         $pageEleveur->setLieu($branch->getCommit()->getLieu());
 
+        /*
+         * Le tri permet de retourner une PE dans le bon ordre même si
+         * le commit a été fait dans un mauvais ordre.
+         */
         $arrayCollection = $branch->getCommit()->getAnimaux()->toArray();
         usort($arrayCollection, function(PageAnimalBranch $a, PageAnimalBranch $b){
             return $b->getCreatedAt()->getTimestamp() - $a->getCreatedAt()->getTimestamp();
@@ -82,7 +87,12 @@ class PageEleveurService
         }
         $pageEleveur->setAnimaux($animaux);
 
-        $pageEleveur->setActualites($branch->getCommit()->getActualites()->toArray());
+        $actualites = $branch->getCommit()->getActualites()->toArray();
+        usort($actualites, function(Actualite $a, Actualite $b){
+            return $b->getDate()->getTimestamp() - $a->getDate()->getTimestamp();
+        });
+
+        $pageEleveur->setActualites($actualites);
 
         return $pageEleveur;
     }

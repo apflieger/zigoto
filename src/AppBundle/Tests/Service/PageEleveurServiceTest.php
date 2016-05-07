@@ -343,4 +343,39 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $pageEleveur->setHead(10);
         $this->pageEleveurService->commit($user2, $pageEleveur);
     }
+
+    public function testOrdre_Actualite()
+    {
+        // Mock d'une page eleveur en base de données
+        $user = new User();
+        $user->setId(1);
+        $pageEleveurBranch = new PageEleveurBranch();
+        $pageEleveurBranch->setId(1);
+        $pageEleveurBranch->setOwner($user);
+
+        $this->pageEleveurBranchRepository
+            ->method('find')->withAnyParameters()->willReturn($pageEleveurBranch);
+
+        $commit1 = $this->newCommit(1);
+
+        $pageEleveurBranch->setCommit($commit1);
+
+        $this->pageEleveurCommitRepository
+            ->method('find')->withAnyParameters()->willReturn($commit1);
+
+        //Simulation d'une requete de commit
+        $pageEleveur = new PageEleveur();
+        $pageEleveur->setId($pageEleveurBranch->getId());
+        $pageEleveur->setHead($commit1->getId());
+        // Les actu sont commités dans le mauvais ordre
+        $pageEleveur->setActualites([
+            new Actualite('actu 1', new \DateTime()),
+            new Actualite('actu 2', (new \DateTime())->add(new \DateInterval('P2D')))
+        ]);
+
+        $pageEleveur = $this->pageEleveurService->commit($user, $pageEleveur);
+        // commit() doit retourner les actu dans le bon ordre
+        $this->assertEquals('actu 2', $pageEleveur->getActualites()[0]->getContenu());
+        $this->assertEquals('actu 1', $pageEleveur->getActualites()[1]->getContenu());
+    }
 }
