@@ -68,11 +68,17 @@
         <section class="animaux" id="animaux">
             {% if isEditable %}
                 {% verbatim %}
-                    <span class="tabs">
-                        <button ng-click="tab = PageEleveurTab.EN_VENTE" class="btn {{ tab == PageEleveurTab.EN_VENTE ? 'active' : '' }}">En vente</button>
-                        <button ng-click="tab = PageEleveurTab.ADOPTE" class="btn {{ tab == PageEleveurTab.ADOPTE ? 'active' : '' }}">Adoptés</button>
-                    </span>
-                    <button ng-click="addAnimal()" class="btn ajout-animal" id="ajout-animal">Ajouter un animal</button>
+                    <div class="grid-2-tiny-1 animaux-toolbar">
+                        <div>
+                            <button ng-click="addAnimal()" class="btn ajout-animal" id="ajout-animal">Ajouter un animal</button>
+                        </div>
+                        <div class="text-right-tiny-left">
+                            <span class="tabs">
+                                <button ng-click="tab = PageEleveurTab.EN_VENTE" class="btn {{ tab == PageEleveurTab.EN_VENTE ? 'active' : '' }}">En vente</button>
+                                <button ng-click="tab = PageEleveurTab.ADOPTE" class="btn {{ tab == PageEleveurTab.ADOPTE ? 'active' : '' }}">Adoptés</button>
+                            </span>
+                        </div>
+                    </div>
                 {% endverbatim %}
             {% endif %}
 
