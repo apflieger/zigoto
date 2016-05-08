@@ -97,7 +97,7 @@ class PageAnimalControllerTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
-        $this->assertEquals(1, $crawler->filter('#nav-page-animal a[href="/elevage/' . $pageEleveur->getSlug() . '"]')->count());
+        $this->assertEquals(1, $crawler->filter('h1 a[href="/elevage/' . $pageEleveur->getSlug() . '"]')->count());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
@@ -121,7 +121,7 @@ class PageAnimalControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
 
         $this->assertTrue($this->client->getResponse()->isOk());
-        $this->assertEquals(0, $crawler->filter('#nav-page-animal a')->count());
+        $this->assertEquals(0, $crawler->filter('h1 a')->count());
     }
 
     public function testAccesOwner()

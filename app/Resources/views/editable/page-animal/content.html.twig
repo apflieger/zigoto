@@ -1,15 +1,13 @@
 <div class="container padded">
-    <nav id="nav-page-animal">
-        {% if pageEleveur %}
-            <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">
-                {{ pageEleveur.nom }}
-            </a>
-        {% endif %}
-    </nav>
-
     <section ng-app="zigotoo">
         <div ng-controller="PageAnimalCtrl">
-            <h1><span editable-text="pageAnimal.nom" blur="ignore"
+            <h1>
+                {% if pageEleveur %}
+                    <a href="{{ path('getPageEleveur_route', {'pageEleveurSlug': pageEleveur.slug}) }}">
+                        {{ pageEleveur.nom }}</a>
+                 /
+                {% endif %}
+                <span editable-text="pageAnimal.nom" blur="ignore"
                       onbeforesave="validateNom($data)"
                       onaftersave="commit()"
                       ng-bind="pageAnimal.nom || 'saisir'"
