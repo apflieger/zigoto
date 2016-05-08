@@ -66,7 +66,11 @@ module.exports = function($scope, $http) {
         });
     };
 
-    $scope.supprimerAnimal = function(pageAnimal) {
+    $scope.supprimerAnimal = function(pageAnimal, $event) {
+        // le bouton est dans le lien vers la PA, on ne veut pas que le lien soit cliqué
+        $event.stopPropagation();
+        $event.preventDefault();
+        
         var index = $scope.pageEleveur.animaux.indexOf(pageAnimal);
         if (index > -1) {
             $scope.pageEleveur.animaux.splice(index, 1);

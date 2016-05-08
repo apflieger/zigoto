@@ -27,10 +27,15 @@
 
         a {
             display: block;
-            font-size: @bigger;
+            text-decoration: none;
         }
 
-        > * {
+        .animal-nom {
+            font-size: @bigger;
+            text-decoration: underline;
+        }
+
+        a > * {
             margin-bottom: .6em;
         }
 
@@ -46,6 +51,8 @@
             background: @lightbrown;
             color: @cream;
         }
+
+        // quand il n'y a pas de photo, c'est un <span> au lieu d'un <img>
         span.animal-photo {
             padding-bottom: 50%;
             padding-top: 50%;

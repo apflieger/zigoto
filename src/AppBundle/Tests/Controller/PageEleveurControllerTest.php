@@ -326,7 +326,7 @@ class PageEleveurControllerTest extends WebTestCase
         $this->testUtils->logout();
         $crawler = $this->client->request('GET', '/elevage/' . $pageEleveur->getSlug());
 
-        $this->assertEquals($animal->getNom(), $crawler->filter('a[href="/animal/'.$animal->getId().'"]')->text());
+        $this->assertEquals($animal->getNom(), $crawler->filter('a[href="/animal/'.$animal->getId().'"] .animal-nom')->text());
     }
 
     public function testAnimalList() {
