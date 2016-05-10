@@ -81,6 +81,14 @@ module.exports = function($scope, $http, Upload) {
 
                 file.nom = Math.random().toString(16).slice(2) + file.type.replace('image/', '.');
                 file.uploaded = false;
+                file.thumbnailStatus = {
+                    total: 0,
+                    loaded: 0
+                };
+                file.fullStatus = {
+                    total: 0,
+                    loaded: 0
+                };
 
                 var contentType = file.type != '' ? file.type : 'application/octet-stream';
 
@@ -88,14 +96,14 @@ module.exports = function($scope, $http, Upload) {
                     var fileUploaded = 0;
 
                     // Upload de la version full de l'image
-                    uploadResizedFile(file, 'images/full/' + file.nom);
+                    uploadResizedFile(file, 'images/full/' + file.nom, file.fullStatus);
 
                     // Upload de la version thumbnail de l'image
                     Upload.resize(file, 300, 300, 0.8, null, null, true).then(function(resizedFile){
-                        uploadResizedFile(resizedFile, 'images/thumbnail/' + file.nom);
+                        uploadResizedFile(resizedFile, 'images/thumbnail/' + file.nom, file.thumbnailStatus);
                     });
 
-                    function uploadResizedFile(resizedFile, key) {
+                    function uploadResizedFile(resizedFile, key, status) {
                         // pour écrire la policy voir http://docs.aws.amazon.com/fr_fr/AmazonS3/latest/API/sigv4-post-example.html
                         // pour générer la signature et la policy en base64 : https://angular-file-upload.appspot.com/
 
@@ -125,7 +133,7 @@ module.exports = function($scope, $http, Upload) {
                                 "Content-Type": contentType,
                                 file: resizedFile
                             }
-                        }).then(function() {
+                        }).then(function(response) {
                             fileUploaded++;
                             if (fileUploaded == 2) {
                                 file.uploaded = true;
@@ -137,6 +145,14 @@ module.exports = function($scope, $http, Upload) {
                                     $scope.commit();
                                 });
                             }
+                        }, function(response) {
+                            file.uploadStatus = 'Echec de l\'envoi';
+                        }, function(event) {
+                            status.loaded = event.loaded;
+                            status.total = event.total;
+                            file.uploadStatus = parseInt(
+                                    100.0 * (file.fullStatus.loaded + file.thumbnailStatus.loaded)
+                                    / (file.fullStatus.total + file.thumbnailStatus.total)) + '%';
                         });
                     }
                 })(file, contentType);

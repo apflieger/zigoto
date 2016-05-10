@@ -67,6 +67,7 @@
                             >
                             <div>
                                 <div class="btn supprimer-photo" ng-click="deletePhoto(photo)">Supprimer</div>
+                                <div ng-if="!photo.uploaded">{{ photo.uploadStatus }}</div>
                                 <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
                                 <img ng-if="photo.uploaded"
                                     ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}"
