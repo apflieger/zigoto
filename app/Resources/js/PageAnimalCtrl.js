@@ -1,5 +1,6 @@
 var moment = require('moment');
 var gallerie = require('./gallerie.js');
+var Photo = require('./Photo.js');
 
 module.exports = function($scope, $http, Upload) {
     // Variable injectée dans la page par le backend
@@ -30,7 +31,7 @@ module.exports = function($scope, $http, Upload) {
         commiting = true;
 
         $scope.pageAnimal.photos = $scope.dirtyPhotos.filter(function(photo){
-            return !Upload.isFile(photo) || photo.uploaded;
+            return photo.uploaded;
         });
 
         $http({
@@ -78,29 +79,22 @@ module.exports = function($scope, $http, Upload) {
         if ($newFiles && $newFiles.length) {
             for (var i = 0; i < $newFiles.length; i++) {
                 var file = $newFiles[i];
-
-                file.nom = Math.random().toString(16).slice(2) + file.type.replace('image/', '.');
-                file.uploaded = false;
-                file.thumbnailStatus = {
-                    total: 0,
-                    loaded: 0
-                };
-                file.fullStatus = {
-                    total: 0,
-                    loaded: 0
-                };
+                var photo = new Photo();
+                $scope.dirtyPhotos.push(photo);
+                photo.file = file;
+                photo.nom = Math.random().toString(16).slice(2) + file.type.replace('image/', '.');
 
                 var contentType = file.type != '' ? file.type : 'application/octet-stream';
 
-                (function(file, contentType) {
+                (function(file, contentType, photo) {
                     var fileUploaded = 0;
 
                     // Upload de la version full de l'image
-                    uploadResizedFile(file, 'images/full/' + file.nom, file.fullStatus);
+                    uploadResizedFile(file, 'images/full/' + photo.nom, photo.fullStatus);
 
                     // Upload de la version thumbnail de l'image
                     Upload.resize(file, 300, 300, 0.8, null, null, true).then(function(resizedFile){
-                        uploadResizedFile(resizedFile, 'images/thumbnail/' + file.nom, file.thumbnailStatus);
+                        uploadResizedFile(resizedFile, 'images/thumbnail/' + photo.nom, photo.thumbnailStatus);
                     });
 
                     function uploadResizedFile(resizedFile, key, status) {
@@ -136,26 +130,26 @@ module.exports = function($scope, $http, Upload) {
                         }).then(function(response) {
                             fileUploaded++;
                             if (fileUploaded == 2) {
-                                file.uploaded = true;
+                                photo.uploaded = true;
                                 Upload.imageDimensions(file).then(function(dimensions){
                                     /* On doit enregistrer les dimensions car
                                      photoswipe en a besoin à l'affichage */
-                                    file.width = dimensions.width;
-                                    file.height = dimensions.height;
+                                    photo.width = dimensions.width;
+                                    photo.height = dimensions.height;
                                     $scope.commit();
                                 });
                             }
                         }, function(response) {
-                            file.uploadStatus = 'Echec de l\'envoi';
+                            photo.uploadStatus = 'Echec de l\'envoi';
                         }, function(event) {
                             status.loaded = event.loaded;
                             status.total = event.total;
-                            file.uploadStatus = parseInt(
-                                    100.0 * (file.fullStatus.loaded + file.thumbnailStatus.loaded)
-                                    / (file.fullStatus.total + file.thumbnailStatus.total)) + '%';
+                            photo.uploadStatus = parseInt(
+                                    100.0 * (photo.fullStatus.loaded + photo.thumbnailStatus.loaded)
+                                    / (photo.fullStatus.total + photo.thumbnailStatus.total)) + '%';
                         });
                     }
-                })(file, contentType);
+                })(file, contentType, photo);
             }
         }
     };

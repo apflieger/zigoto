@@ -68,7 +68,7 @@
                             <div>
                                 <div class="btn supprimer-photo" ng-click="deletePhoto(photo)">Supprimer</div>
                                 <div ng-if="!photo.uploaded">{{ photo.uploadStatus }}</div>
-                                <img ng-if="!photo.uploaded" ngf-thumbnail="photo">
+                                <img ng-if="!photo.uploaded" ngf-thumbnail="photo.file">
                                 <img ng-if="photo.uploaded"
                                     ng-src="https://s3-eu-west-1.amazonaws.com/zigotoo-runtime/images/thumbnail/{{ photo.nom }}"
                                     ng-click="gallerie($index)">
@@ -83,8 +83,9 @@
                                 ngf-pattern="'image/*'"
                                 ngf-multiple="true"
                                 ngf-keep="'distinct'"
-                                ng-model="dirtyPhotos"
+                                ng-model="ngfFiles"
                                 ngf-change="uploadPhotos($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
+                                ngf-fix-orientation="true"
                             ><span>Ajouter une photo</span></div>
                         </div>
                     {% endverbatim %}
