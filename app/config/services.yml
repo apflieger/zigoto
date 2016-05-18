@@ -55,6 +55,13 @@ services:
             - "@zigotoo.page_eleveur"
             - "@logger"
 
+    zigotoo.sitemap_controller:
+            class: AppBundle\Controller\SitemapController
+            arguments:
+                - "@=service('doctrine.orm.entity_manager').getRepository('AppBundle:PageEleveurBranch')"
+                - "@templating"
+                - "@logger"
+
     zigotoo.page_eleveur:
         class: AppBundle\Service\PageEleveurService
         arguments:

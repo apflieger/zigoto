@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: apf
- * Date: 16/11/15
- * Time: 12:06
- */
 
 namespace AppBundle\Command;
 
