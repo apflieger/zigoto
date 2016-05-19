@@ -36,7 +36,7 @@ class PageEleveurCommand extends ContainerAwareCommand
         $pageEleveurBranch = $pageEleveurBranchRepository->find($input->getArgument('id'));
 
         if (!$pageEleveurBranch)
-            throw new Exception('Page eleveur ' . $input->getArgument('id') . ' n\'exiset pas.');
+            throw new Exception('Page eleveur ' . $input->getArgument('id') . ' n\'existe pas.');
 
         /**
          * @var \Doctrine\ORM\EntityManager $doctrine
