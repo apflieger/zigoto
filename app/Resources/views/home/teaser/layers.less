@@ -9,6 +9,13 @@ html, body {
     align-items: stretch;
     text-align: center;
 
+    @media (max-width: @small-screen) {
+        height: auto;
+        #map {
+            height: 40vh;
+        }
+    }
+
     background-repeat: no-repeat;
 
     &:nth-child(2n+1) {
