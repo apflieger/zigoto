@@ -23,7 +23,7 @@ class DefaultControllerTest extends WebTestCase
     public function testGetTeaser()
     {
         $crawler = $this->client->request('GET', '/');
-        $this->assertEquals('Créez votre site d\'éleveur', $crawler->filter('h1')->text());
+        $this->assertEquals('Les éleveurs présents sur Zigotoo', $crawler->filter('h1')->text());
         $this->assertEquals('Zigotoo - Créez votre site d\'éleveur', $crawler->filter('title')->text());
         $this->assertEquals(1, $crawler->filter('meta[name="description"]')->count());
         $this->assertEquals(1, $crawler->filter('nav.global-header a[href="/"]')->count());

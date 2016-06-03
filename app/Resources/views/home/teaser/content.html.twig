@@ -1,18 +1,21 @@
 <section class="layer">
     <div class="map-container container">
+        <h1>Les éleveurs présents sur Zigotoo</h1>
         <div id="map"></div>
+        <h2>Rejoignez nous ! </h2>
+        <p>
+            <a href="{{ path('fos_user_registration_register') }}"><button class="btn btn-primary">Créer un compte</button></a>
+        </p>
     </div>
 </section>
 <section class="layer">
+    <div class="layer-arrow"></div>
     <div class="container">
         <h1>Créez votre site d'éleveur</h1>
         <p>
             Professionnel ou particulier, pour tous types d'élevages (chiens, chats, rongeurs, oiseaux...), <br>
             Aucune connaissance technique n'est nécessaire pour créer votre page éleveur <br>
             Gérez votre contenu : description de l'élevage, actualités, contacts, sans oublier les animaux...<br>
-        </p>
-        <p>
-            <a class="btn btn-primary" href="{{ path('fos_user_registration_register') }}">Créer un compte</a>
         </p>
         <p>
             Voir une <a href="{{ path('getPageEleveur_route', { pageEleveurSlug: 'les-aristochats'}) }}">page d'exemple</a>
