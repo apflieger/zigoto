@@ -20,6 +20,15 @@ class PageAnimal extends Commitable
      */
     private $dateNaissance;
 
+    const MALE = 1;
+    const FEMELLE = 2;
+
+    /**
+     * @Type("integer")
+     * @var int
+     */
+    private $sexe;
+
     /**
      * @Type("string")
      * @var string
@@ -121,5 +130,21 @@ class PageAnimal extends Commitable
     public function setPhotos($photos)
     {
         $this->photos = $photos;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSexe()
+    {
+        return $this->sexe;
+    }
+
+    /**
+     * @param int $sexe
+     */
+    public function setSexe($sexe)
+    {
+        $this->sexe = $sexe;
     }
 }

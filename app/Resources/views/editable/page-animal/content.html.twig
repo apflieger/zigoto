@@ -43,6 +43,26 @@
                         </span>
                     {% endif %}
                 </div>
+                <div>
+                    {% if isEditable %}
+                        <select
+                                id="statut"
+                                ng-model="pageAnimal.sexe" z-integer-model
+                                ng-change="commit()">
+                            {% for sexe in [
+                            constant('AppBundle\\Entity\\PageAnimal::MALE'),
+                            constant('AppBundle\\Entity\\PageAnimal::FEMELLE'),
+                            ] %}
+                                <option value="{{ sexe }}"
+                                        {{ pageAnimal.sexe == sexe ? "selected" : "" }}>
+                                    {{ sexe | translate_page_animal_sexe }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <span id="sexe">{{ pageAnimal.sexe | translate_page_animal_sexe }}</span>
+                    {% endif %}
+                </div>
                 <div id="date-naissance" class="oneline-field">Date de naissance :
                     <span
                         editable-text="dateNaissanceString" blur="ignore"

@@ -101,6 +101,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
         $this->assertContains($timeService->now()->format('d/m/Y'), $crawler->filter('#date-naissance')->text());
         $this->assertEquals(1, $crawler->filter('#description')->count());
+        $this->assertEquals('Mâle', trim($crawler->filter('span#sexe')->text()));
         $this->assertEquals('Disponible', trim($crawler->filter('span#statut')->text()));
         $this->assertEquals(0, $crawler->filter('.photo')->count());
         $this->assertEquals(0, $crawler->filter('#photo-drop')->count());
@@ -163,6 +164,7 @@ class PageAnimalControllerTest extends WebTestCase
         $pageAnimal->setNom('Bernard');
         $pageAnimal->setDateNaissance(new \DateTime('2015/01/18'));
         $pageAnimal->setDescription('Un gros toutou');
+        $pageAnimal->setSexe(PageAnimal::FEMELLE);
         $pageAnimal->setStatut(PageAnimal::RESERVE);
         $photo = new Photo();
         $photo->setNom('img1.jpg');
@@ -194,6 +196,7 @@ class PageAnimalControllerTest extends WebTestCase
         $this->testUtils->clearEntities();
         $crawler = $this->client->request('GET', '/animal/' . $pageAnimal->getId());
         $this->assertEquals($pageAnimal->getNom(), $crawler->filter('title')->text());
+        $this->assertEquals('Femelle', trim($crawler->filter('#sexe')->text()));
         $this->assertContains('18/01/2015', $crawler->filter('#date-naissance')->text());
         $this->assertEquals('Un gros toutou', $crawler->filter('#description')->text());
         $this->assertEquals('Réservé', trim($crawler->filter('#statut')->text()));

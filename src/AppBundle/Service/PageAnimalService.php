@@ -64,6 +64,7 @@ class PageAnimalService
         $pageAnimal->setDateNaissance($branch->getCommit()->getDateNaissance());
         $pageAnimal->setDescription($branch->getCommit()->getDescription());
         $pageAnimal->setStatut($branch->getCommit()->getStatut());
+        $pageAnimal->setSexe($branch->getCommit()->getSexe());
         $pageAnimal->setPhotos($branch->getCommit()->getPhotos());
 
         return $pageAnimal;
@@ -88,6 +89,7 @@ class PageAnimalService
             $this->timeService->now(),
             null,
             PageAnimal::DISPONIBLE,
+            PageAnimal::MALE,
             null
         ));
 
@@ -133,6 +135,7 @@ class PageAnimalService
             $pageAnimal->getDateNaissance(),
             $pageAnimal->getDescription(),
             $pageAnimal->getStatut(),
+            $pageAnimal->getSexe(),
             $pageAnimal->getPhotos()
         );
         

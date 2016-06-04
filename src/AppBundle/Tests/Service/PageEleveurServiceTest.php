@@ -236,7 +236,7 @@ class PageEleveurServiceTest extends PHPUnit_Framework_TestCase
         $pageAnimal = new PageAnimalBranch();
         $photo = new Photo();
         $photo->setNom('portrait');
-        $pageAnimal->setCommit(new PageAnimalCommit(null, 'bobi', null, '', PageAnimal::DISPONIBLE, [$photo]));
+        $pageAnimal->setCommit(new PageAnimalCommit(null, 'bobi', null, '', PageAnimal::DISPONIBLE, PageAnimal::MALE, [$photo]));
         $commit = new PageEleveurCommit(null, 'Tatouine', 'Plein de chartreux', 'Chats', 'Chartreux', 'Roubaix',
             [$pageAnimal],
             [new Actualite('Nouvelle portée', new \DateTime())]

@@ -49,6 +49,15 @@ class EnumTranslationExtension extends Twig_Extension
                         return '';
                 }
                 return '';
+            }),
+            new Twig_SimpleFilter('translate_page_animal_sexe', function($statut) {
+                switch($statut) {
+                    case PageAnimal::MALE:
+                        return 'Mâle';
+                    case PageAnimal::FEMELLE:
+                        return 'Femelle';
+                }
+                return "";
             })
 
         ];

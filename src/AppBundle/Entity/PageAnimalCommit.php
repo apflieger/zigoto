@@ -46,6 +46,12 @@ class PageAnimalCommit implements IdentityPersistableInterface
     private $statut;
 
     /**
+     * @var int
+     * @ORM\Column(type="integer")
+     */
+    private $sexe;
+
+    /**
      * @var Photo[]
      * @ORM\Column(type="array", nullable=true)
      */
@@ -58,6 +64,7 @@ class PageAnimalCommit implements IdentityPersistableInterface
      * @param DateTime $dateNaissance
      * @param string $description
      * @param int $statut
+     * @param int $sexe
      * @param Photo[] $photos
      */
     public function __construct(
@@ -66,6 +73,7 @@ class PageAnimalCommit implements IdentityPersistableInterface
         DateTime $dateNaissance = null,
         $description,
         $statut,
+        $sexe,
         $photos
     ) {
         $this->parent = $parent;
@@ -73,6 +81,7 @@ class PageAnimalCommit implements IdentityPersistableInterface
         $this->dateNaissance = $dateNaissance;
         $this->description = $description;
         $this->statut = $statut;
+        $this->sexe = $sexe;
         $this->photos = $photos;
     }
 
@@ -114,6 +123,14 @@ class PageAnimalCommit implements IdentityPersistableInterface
     public function getStatut()
     {
         return $this->statut;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSexe()
+    {
+        return $this->sexe;
     }
 
     /**

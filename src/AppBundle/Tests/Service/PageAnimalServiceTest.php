@@ -71,6 +71,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $this->assertEquals($owner, $pageAnimal->getOwner());
         $this->assertEquals($this->timeService->now(), $pageAnimal->getDateNaissance());
         $this->assertNotEmpty($pageAnimal->getNom());
+        $this->assertEquals(PageAnimal::MALE, $pageAnimal->getSexe());
         $this->assertEmpty($pageAnimal->getDescription());
         $this->assertEquals(PageAnimal::DISPONIBLE, $pageAnimal->getStatut());
         $this->assertEmpty($pageAnimal->getPhotos());
@@ -84,7 +85,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $pageAnimalBranch = new PageAnimalBranch();
 
         $pageAnimalBranch->setOwner($user);
-        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null, PageAnimal::DISPONIBLE, null);
+        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null, PageAnimal::DISPONIBLE, PageAnimal::MALE, null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
@@ -99,6 +100,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $pageAnimal->setDateNaissance($this->timeService->now());
         $pageAnimal->setDescription('Inscrit au LOF');
         $pageAnimal->setStatut(PageAnimal::RESERVE);
+        $pageAnimal->setSexe(PageAnimal::FEMELLE);
         $photo = new Photo();
         $photo->setNom('bllbl');
         $pageAnimal->setPhotos([$photo]);
@@ -110,6 +112,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $this->assertEquals($this->timeService->now(), $pageAnimalBranch->getCommit()->getDateNaissance());
         $this->assertEquals('Inscrit au LOF', $pageAnimalBranch->getCommit()->getDescription());
         $this->assertEquals(PageAnimal::RESERVE, $pageAnimalBranch->getCommit()->getStatut());
+        $this->assertEquals(PageAnimal::FEMELLE, $pageAnimalBranch->getCommit()->getSexe());
         /** @var Photo[] $photos */
         $photos = $pageAnimalBranch->getCommit()->getPhotos();
         $this->assertEquals('bllbl', $photos[0]->getNom());
@@ -126,7 +129,7 @@ class PageAnimalServiceTest extends KernelTestCase
 
         $photo = new Photo();
         $photo->setNom('zzccd');
-        $commit = new PageAnimalCommit(null, 'rudy', $this->timeService->now(), 'Un beau chien', PageAnimal::DISPONIBLE, [$photo]);
+        $commit = new PageAnimalCommit(null, 'rudy', $this->timeService->now(), 'Un beau chien', PageAnimal::DISPONIBLE, PageAnimal::FEMELLE, [$photo]);
         $pageAnimalBranch->setCommit($commit);
 
         // Requete de la page animal
@@ -137,6 +140,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $this->assertEquals($this->timeService->now(), $pageAnimal->getDateNaissance());
         $this->assertEquals('Un beau chien', $pageAnimal->getDescription());
         $this->assertEquals(PageAnimal::DISPONIBLE, $pageAnimal->getStatut());
+        $this->assertEquals(PageAnimal::FEMELLE, $pageAnimal->getSexe());
         $this->assertEquals('zzccd', $pageAnimal->getPhotos()[0]->getNom());
     }
 
@@ -151,7 +155,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $user->setId(1);
         $pageAnimalBranch = new PageAnimalBranch();
         $pageAnimalBranch->setOwner($user);
-        $commit = new PageAnimalCommit(null, 'Joey', null, null, PageAnimal::DISPONIBLE, null);
+        $commit = new PageAnimalCommit(null, 'Joey', null, null, PageAnimal::DISPONIBLE, PageAnimal::MALE, null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
@@ -162,7 +166,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $pageAnimal->setHead(2);
         $pageAnimal->setId(10);
         $this->pageAnimalCommitRepository->method('find')->with(2)
-            ->willReturn(new PageAnimalCommit(null, 'Joey', null, null, PageAnimal::DISPONIBLE, null));
+            ->willReturn(new PageAnimalCommit(null, 'Joey', null, null, PageAnimal::DISPONIBLE, PageAnimal::MALE, null));
         $this->pageAnimalService->commit($user, $pageAnimal);
     }
 
@@ -196,7 +200,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $pageAnimalBranch = new PageAnimalBranch();
 
         $pageAnimalBranch->setOwner($user);
-        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null, PageAnimal::DISPONIBLE, null);
+        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null, PageAnimal::DISPONIBLE, PageAnimal::MALE, null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
@@ -220,7 +224,7 @@ class PageAnimalServiceTest extends KernelTestCase
         $pageAnimalBranch = new PageAnimalBranch();
 
         $pageAnimalBranch->setOwner($user);
-        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null, PageAnimal::DISPONIBLE, null);
+        $commit = new PageAnimalCommit(null, 'rodolf', $this->timeService->now(), null, PageAnimal::DISPONIBLE, PageAnimal::MALE, null);
         $commit->setId(1);
         $pageAnimalBranch->setCommit($commit);
 
