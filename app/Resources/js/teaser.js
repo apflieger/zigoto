@@ -70,19 +70,13 @@ function initMap() {
     ];
 
     for (var i = 0; i < markers.length; i++) {
-        new google.maps.Marker({
+        var marker = new google.maps.Marker({
             position: markers[i],
             map: map
         });
+
+        marker.addListener("click", function() {
+            ga("send", "event", "map", "click-marker");
+        });
     }
-
-    /*var geocoder = new google.maps.Geocoder();
-
-    geocoder.geocode({address: "France"}, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-            map.setCenter(results[0].geometry.location);
-        } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-        }
-    });*/
 }
