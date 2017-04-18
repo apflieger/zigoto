@@ -11,6 +11,9 @@ env:
 before_install:
     - pip install --user codecov
 
+before_install:
+    - pip install --user codecov
+
 install:
     - composer install
     - php app/console doctrine:database:create --env=test
